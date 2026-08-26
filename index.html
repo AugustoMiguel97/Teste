@@ -905,30 +905,31 @@
                     </div>
                 </div>
 
-                <!-- PAGE: Usuários (admin) -->
-                <div class="page" id="pageUsers">
-                    <div class="page-header">
-                        <h1>👥 Usuários</h1>
-                        <p>Gerencie os usuários do sistema</p>
-                    </div>
-                    <div class="alert alert-error" id="usersError"></div>
-                    <div class="alert alert-success" id="usersSuccess"></div>
-
-                    <div class="section">
+               
+                                    <!-- FORMULÁRIO DE NOVO / EDITAR USUÁRIO -->
+                    <div class="section" id="userFormSection">
                         <div class="section-header">
-                            <h2>Novo usuário</h2>
+                            <h2 id="userFormTitle">Novo usuário</h2>
                         </div>
                         <div class="section-body">
+                            <input type="hidden" id="editUserId" value="">
                             <div class="form-row">
-                                <div class="form-group"><label>Nome</label><input type="text" id="nuName"
-                                        placeholder="João Silva"></div>
-                                <div class="form-group"><label>Email</label><input type="email" id="nuEmail"
-                                        placeholder="joao@hospital.com"></div>
+                                <div class="form-group">
+                                    <label>Nome</label>
+                                    <input type="text" id="nuName" placeholder="João Silva">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" id="nuEmail" placeholder="joao@hospital.com">
+                                </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group"><label>Senha</label><input type="password" id="nuPass"
-                                        placeholder="Senha segura"></div>
-                                <div class="form-group"><label>Tipo de acesso</label>
+                                <div class="form-group">
+                                    <label id="nuPassLabel">Senha</label>
+                                    <input type="password" id="nuPass" placeholder="Senha de acesso">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de acesso</label>
                                     <select id="nuRole">
                                         <option value="colaborador">Colaborador</option>
                                         <option value="nutricionista">Nutricionista</option>
@@ -943,9 +944,13 @@
                                 </select>
                                 <div class="chip-list" id="nuCompanyChips"></div>
                             </div>
-                            <button class="btn btn-success" onclick="createUser()">Criar usuário</button>
+                            <div style="display:flex;gap:10px;margin-top:10px">
+                                <button class="btn btn-success" id="btnSaveUser" onclick="saveUser()">Criar usuário</button>
+                                <button class="btn btn-secondary" id="btnCancelEditUser" style="display:none" onclick="cancelEditUser()">Cancelar edição</button>
+                            </div>
                         </div>
                     </div>
+
 
                     <div class="section">
                         <div class="section-header">
