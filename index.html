@@ -1134,7 +1134,13 @@
                 }
 
                 // 4. Remove qualquer duplicidade de empresas pelo ID
-                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
+                const seen = new Set();
+                companies = companies.filter(c => {
+                    const key = (c.name || '').trim().toLowerCase();
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
                 state.pendingCompanies = companies;
 
                 if (companies.length === 0) {
