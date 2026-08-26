@@ -1134,7 +1134,13 @@
                 }
 
                 // 4. Remove qualquer duplicidade de empresas pelo ID
-                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
+                const seen = new Set();
+                companies = companies.filter(c => {
+                    const key = (c.name || '').trim().toLowerCase();
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
                 state.pendingCompanies = companies;
 
                 if (companies.length === 0) {
@@ -1168,6 +1174,7 @@
                 alert_('loginError', e.message || 'Erro ao realizar login');
             }
         }
+
 
         async function doLogout() {
             await sb.auth.signOut();
@@ -1647,32 +1654,47 @@
         let nuCompanyIds = [];
         let allCompanies = [];
 
-        async function loadUsers() {
+                async function loadUsers() {
             try {
-                const { data: comps } = await sb.from('companies').select('*');
+                // 1. Carregar empresas para o select
+                const { data: comps } = await sb.from('companies').select('*').eq('active', true);
                 allCompanies = comps || [];
                 const sel = document.getElementById('nuCompanySelect');
-                sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
-                allCompanies.forEach(c => {
-                    const o = document.createElement('option');
-                    o.value = c.id; o.textContent = c.name;
-                    sel.appendChild(o);
-                });
+                if (sel) {
+                    sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+                    allCompanies.forEach(c => {
+                        const o = document.createElement('option');
+                        o.value = c.id; 
+                        o.textContent = c.name;
+                        sel.appendChild(o);
+                    });
+                }
 
-                const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*))');
-                if (error) throw error;
+                // 2. Carregar todos os perfis
+                const { data: users, error: usersErr } = await sb.from('profiles').select('*').order('name');
+                if (usersErr) throw usersErr;
+
+                // 3. Carregar os vínculos de empresas
+                const { data: allUserComps } = await sb.from('company_users').select('user_id, companies(id, name)');
 
                 const el = document.getElementById('usersBody');
                 if (!users || !users.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
                     return;
                 }
+
+                // Mapear empresas por usuário
+                const userCompanyMap = {};
+                (allUserComps || []).forEach(uc => {
+                    if (!userCompanyMap[uc.user_id]) userCompanyMap[uc.user_id] = [];
+                    if (uc.companies?.name) userCompanyMap[uc.user_id].push(uc.companies.name);
+                });
 
                 el.innerHTML = `<div class="tbl-wrap"><table>
                     <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
                     <tbody>
                         ${users.map(u => {
-                            const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
+                            const compsList = (userCompanyMap[u.id] || []).join(', ') || 'Nenhuma';
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
                                 <td>${u.email}</td>
@@ -1691,6 +1713,7 @@
                 document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
         }
+
 
         function addCompanyChip() {
             const sel = document.getElementById('nuCompanySelect');
@@ -1820,4 +1843,3 @@
 </body>
 
 </html>
-
