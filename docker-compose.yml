@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:14-alpine
+    container_name: hospital-postgres
+    environment:
+      POSTGRES_USER: hospital_user
+      POSTGRES_PASSWORD: hospital_password_dev
+      POSTGRES_DB: hospital_meals
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hospital-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hospital_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend Node.js
+  backend:
+    build: .
+    container_name: hospital-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_USER: hospital_user
+      DB_PASSWORD: hospital_password_dev
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: hospital_meals
+      JWT_SECRET: seu_jwt_secret_muito_seguro_aqui_com_128_caracteres_minimo_para_dev
+      CORS_ORIGIN: http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - hospital-network
+    command: sh -c "npm run migrate && npm run dev"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  hospital-network:
+    driver: bridge
