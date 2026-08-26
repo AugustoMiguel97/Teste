@@ -2,6 +2,10 @@
 <html lang="pt-BR">
 
 <head>
+    <!-- Importa o SDK do Supabase direto pela internet (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Refeições Hospitalares</title>
@@ -1002,14 +1006,23 @@
     <script src="config.js"></script>
     <script>
         // ══════════════════════════════════════════════
-        //  ESTADO
+        //  1. CONFIGURAÇÃO DO SUPABASE
+        // ══════════════════════════════════════════════
+        const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
+
+        // Inicializa o cliente do Supabase
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ══════════════════════════════════════════════
+        //  ESTADO GLOBAL
         // ══════════════════════════════════════════════
         let state = {
             token: null,
             user: null,
             company: null,
-            pendingUser: null,   // usuário autenticado aguardando seleção de empresa
-            pendingCompanies: [] // lista de empresas disponíveis
+            pendingUser: null,
+            pendingCompanies: []
         };
 
         const MEAL_LABELS = {
@@ -1021,31 +1034,18 @@
         };
 
         // ══════════════════════════════════════════════
-        //  UTILS
+        //  FUNÇÕES AUXILIARES DE TELA
         // ══════════════════════════════════════════════
-        const API = window.API_URL || 'http://localhost:3000/api';
-
-        async function api(method, path, body) {
-            const opts = {
-                method,
-                headers: { 'Content-Type': 'application/json' }
-            };
-            if (state.token) opts.headers['Authorization'] = 'Bearer ' + state.token;
-            if (body) opts.body = JSON.stringify(body);
-            const r = await fetch(API + path, opts);
-            const data = await r.json();
-            if (!r.ok) throw new Error(data.error || 'Erro na requisição');
-            return data;
-        }
-
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
         }
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+            const el = document.getElementById(id);
+            if (el) el.classList.add('active');
             document.querySelectorAll('.nav-item').forEach(n => {
                 n.classList.toggle('active', n.dataset.page === id);
             });
@@ -1061,6 +1061,7 @@
         }
 
         function fmtDate(d) {
+            if (!d) return '-';
             return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
         }
 
@@ -1069,77 +1070,82 @@
         }
 
         // ══════════════════════════════════════════════
-        //  AUTH
+        //  AUTENTICAÇÃO COM SUPABASE
         // ══════════════════════════════════════════════
         async function doLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
-            try {
-                const data = await api('POST', '/auth/login', { email, password });
-                state.pendingUser = data.user;
-                state.pendingCompanies = data.companies;
 
-                if (!data.companies.length) {
-                    return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+            try {
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+
+                // Buscar perfil
+                const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+
+                // Buscar empresas vinculadas
+                const { data: userComps } = await sb.from('company_users').select('company_id, companies(*)').eq('user_id', data.user.id);
+                const companies = (userComps || []).map(uc => uc.companies).filter(Boolean);
+
+                if (companies.length === 0) {
+                    const { data: allComps } = await sb.from('companies').select('*').limit(1);
+                    if (allComps && allComps.length > 0) companies.push(allComps[0]);
                 }
-                if (data.companies.length === 1) {
-                    // Pula tela de seleção
-                    return selectCompany(data.companies[0].id);
+
+                state.user = {
+                    id: data.user.id,
+                    email: data.user.email,
+                    name: profile?.name || data.user.email.split('@')[0],
+                    role: profile?.role || 'colaborador'
+                };
+                state.token = data.session.access_token;
+                state.pendingCompanies = companies;
+
+                if (companies.length <= 1) {
+                    state.company = companies[0] || { id: 1, name: 'Hospital Central' };
+                    buildApp();
+                    showScreen('screenApp');
+                } else {
+                    document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha a empresa:`;
+                    const list = document.getElementById('companyList');
+                    list.innerHTML = '';
+                    companies.forEach(c => {
+                        const btn = document.createElement('button');
+                        btn.className = 'company-btn';
+                        btn.textContent = '🏢 ' + c.name;
+                        btn.onclick = () => {
+                            state.company = c;
+                            buildApp();
+                            showScreen('screenApp');
+                        };
+                        list.appendChild(btn);
+                    });
+                    showScreen('screenCompany');
                 }
-                // Mostrar tela de seleção
-                document.getElementById('companyGreeting').textContent =
-                    `Olá, ${data.user.name}! Escolha em qual empresa deseja entrar:`;
-                const list = document.getElementById('companyList');
-                list.innerHTML = '';
-                data.companies.forEach(c => {
-                    const btn = document.createElement('button');
-                    btn.className = 'company-btn';
-                    btn.textContent = '🏢 ' + c.name;
-                    btn.onclick = () => selectCompany(c.id);
-                    list.appendChild(btn);
-                });
-                showScreen('screenCompany');
             } catch (e) {
-                alert_('loginError', e.message);
+                alert_('loginError', e.message || 'Erro ao realizar login');
             }
         }
 
-        async function selectCompany(companyId) {
-            try {
-                const data = await api('POST', '/auth/select-company', {
-                    user_id: state.pendingUser.id,
-                    company_id: companyId
-                });
-                state.token = data.token;
-                state.user = data.user;
-                state.company = data.company;
-                buildApp();
-                showScreen('screenApp');
-            } catch (e) {
-                alert_('companyError', e.message);
-            }
-        }
-
-        function goToLogin() {
-            state.token = null; state.user = null; state.company = null;
-            showScreen('screenLogin');
-        }
-
-        function doLogout() {
+        async function doLogout() {
+            await sb.auth.signOut();
             state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
             showScreen('screenLogin');
         }
 
+        function goToLogin() {
+            doLogout();
+        }
+
         // ══════════════════════════════════════════════
-        //  BUILD APP
+        //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
         // ══════════════════════════════════════════════
         function buildApp() {
             const role = state.user.role;
             document.getElementById('sbUser').textContent = state.user.name;
             document.getElementById('sbCompany').textContent = state.company.name;
-            document.getElementById('homeTitle').textContent =
-                `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
+            document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
             document.getElementById('homeSubtitle').textContent =
                 `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
 
@@ -1198,57 +1204,53 @@
         }
 
         // ══════════════════════════════════════════════
-        //  HOME
+        //  PÁGINA INICIAL (HOME)
         // ══════════════════════════════════════════════
         async function loadHome() {
-            const role = state.user.role;
             const statsEl = document.getElementById('homeStats');
             const contentEl = document.getElementById('homeContent');
 
             try {
                 const today = new Date().toISOString().slice(0, 10);
-                const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+                const { data: menu } = await sb.from('menus')
+                    .select('*, options:menu_options(*)')
+                    .eq('company_id', state.company.id)
+                    .gte('meal_date', today);
 
-                const menu = await api('GET', `/menu?date_from=${today}&date_to=${tomorrow}`);
-                const myReqs = await api('GET', '/requests/me');
+                const { data: myReqs } = await sb.from('meal_requests')
+                    .select('id')
+                    .eq('user_id', state.user.id);
 
                 statsEl.innerHTML = `
-      <div class="stat-card"><div class="val">${myReqs.length}</div><div class="lbl">Minhas solicitações</div></div>
-      <div class="stat-card"><div class="val">${menu.length}</div><div class="lbl">Refeições disponíveis</div></div>
-    `;
+                    <div class="stat-card"><div class="val">${menu?.length || 0}</div><div class="lbl">Cardápios ativos</div></div>
+                    <div class="stat-card"><div class="val">${myReqs?.length || 0}</div><div class="lbl">Minhas solicitações</div></div>
+                `;
 
-                if (role === 'nutricionista' || role === 'admin') {
-                    const stats = await api('GET', `/stats?date=${today}`);
-                    const total = stats.reduce((s, r) => s + parseInt(r.total), 0);
-                    statsEl.innerHTML += `
-        <div class="stat-card"><div class="val">${total}</div><div class="lbl">Solicitações hoje</div></div>
-      `;
-                }
-
-                // Próximas refeições disponíveis para solicitar
-                const available = menu.filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
-                if (available.length) {
+                if (menu && menu.length > 0) {
                     contentEl.innerHTML = `
-        <div class="section">
-          <div class="section-header"><h2>Próximas refeições disponíveis</h2></div>
-          <div class="section-body">
-            ${available.map(m => `
-              <div class="menu-card">
-                <div class="menu-card-header">
-                  <div class="menu-card-title">
-                    <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type]}</span>
-                    <span style="color:#718096;font-size:13px">${fmtDate(m.meal_date)} às ${m.meal_time}</span>
-                  </div>
-                </div>
-                <div class="option-tags">${m.options.map(o => `<span class="option-tag">${o.description}</span>`).join('')}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>`;
+                        <div class="section">
+                            <div class="section-header"><h2>Próximas Refeições Disponíveis</h2></div>
+                            <div class="section-body">
+                                ${menu.map(m => `
+                                    <div class="menu-card">
+                                        <div class="menu-card-header">
+                                            <div class="menu-card-title">
+                                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                                            </div>
+                                        </div>
+                                        <div class="option-tags">
+                                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
                 } else {
                     contentEl.innerHTML = `<div class="section"><div class="section-body">
-        <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível para solicitar no momento</p></div>
-      </div></div>`;
+                        <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível no momento</p></div>
+                    </div></div>`;
                 }
             } catch (e) {
                 contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${e.message}</div>`;
@@ -1256,75 +1258,84 @@
         }
 
         // ══════════════════════════════════════════════
-        //  SOLICITAR REFEIÇÃO
+        //  SOLICITAR REFEIÇÃO (COLABORADOR)
         // ══════════════════════════════════════════════
+        let selectedOptions = {};
+
         async function loadRequestPage() {
             const el = document.getElementById('requestMenuList');
             el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
             try {
                 const today = new Date().toISOString().slice(0, 10);
-                const in7 = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
-                const menu = await api('GET', `/menu?date_from=${today}&date_to=${in7}`);
-                const myReqs = await api('GET', '/requests/me');
-                const requestedMenuIds = new Set(myReqs.map(r => r.menu_id));
+                const { data: menu } = await sb.from('menus')
+                    .select('*, options:menu_options(*)')
+                    .eq('company_id', state.company.id)
+                    .gte('meal_date', today);
 
-                const available = menu.filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
+                const { data: myReqs } = await sb.from('meal_requests')
+                    .select('menu_id')
+                    .eq('user_id', state.user.id);
+
+                const requestedMenuIds = new Set((myReqs || []).map(r => r.menu_id));
+                const available = (menu || []).filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
 
                 if (!available.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (todas precisam de 24h de antecedência)</p></div>';
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (necessário antecedência mínima de 24h)</p></div>';
                     return;
                 }
 
                 el.innerHTML = available.map(m => {
                     const already = requestedMenuIds.has(m.id);
                     return `
-        <div class="section" id="menuSection${m.id}">
-          <div class="section-header">
-            <div>
-              <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type]}</span>
-              <span style="margin-left:8px;color:#718096;font-size:13px">${fmtDate(m.meal_date)} às ${m.meal_time}</span>
-            </div>
-            ${already ? '<span class="badge badge-confirmed">✓ Já solicitado</span>' : ''}
-          </div>
-          <div class="section-body">
-            ${already ? '<p style="color:#718096;font-size:13px">Você já fez sua solicitação para esta refeição. Cancele em <em>Minhas solicitações</em> se quiser alterar.</p>' : `
-              <p style="font-size:13px;color:#4a5568;margin-bottom:10px">Escolha sua opção:</p>
-              <div class="options-grid">
-                ${m.options.map(o => `
-                  <div class="option-card" id="opt_${m.id}_${o.id}"
-                       onclick="selectOption(${m.id}, ${o.id})">
-                    ${o.description}
-                  </div>`).join('')}
-              </div>
-              <button class="btn btn-success btn-sm" style="margin-top:8px"
-                      onclick="submitRequest(${m.id})">Confirmar solicitação</button>
-            `}
-          </div>
-        </div>
-      `;
+                        <div class="section" id="menuSection${m.id}">
+                            <div class="section-header">
+                                <div>
+                                    <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                                    <strong style="margin-left:8px">${fmtDate(m.meal_date)} às ${m.meal_time}</strong>
+                                </div>
+                                ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
+                            </div>
+                            <div class="section-body">
+                                ${already ? '<p style="color:#718096;font-size:13px">Você já solicitou esta refeição. Acesse "Minhas solicitações" para acompanhar.</p>' : `
+                                    <p style="font-size:13px;color:#718096;margin-bottom:8px">Escolha uma opção:</p>
+                                    <div class="options-grid">
+                                        ${(m.options || []).map(o => `
+                                            <div class="option-card" id="opt_${m.id}_${o.id}" onclick="selectOption(${m.id}, ${o.id})">
+                                                ${o.description}
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <button class="btn btn-primary btn-sm" onclick="submitRequest(${m.id})">Confirmar solicitação</button>
+                                `}
+                            </div>
+                        </div>
+                    `;
                 }).join('');
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
         }
 
-        let selectedOptions = {}; // menuId -> optionId
-
         function selectOption(menuId, optionId) {
             selectedOptions[menuId] = optionId;
-            // Atualizar visual
             document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
-            document.getElementById(`opt_${menuId}_${optionId}`).classList.add('selected');
+            const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
+            if (optEl) optEl.classList.add('selected');
         }
 
         async function submitRequest(menuId) {
             const optionId = selectedOptions[menuId];
             if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
             try {
-                await api('POST', '/requests', { menu_id: menuId, option_id: optionId });
+                const { error } = await sb.from('meal_requests').insert({
+                    user_id: state.user.id,
+                    menu_id: menuId,
+                    option_id: optionId
+                });
+                if (error) throw error;
                 alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
                 delete selectedOptions[menuId];
-                setTimeout(() => loadRequestPage(), 1500);
+                setTimeout(() => loadRequestPage(), 1200);
             } catch (e) {
                 alert_('reqError', e.message);
             }
@@ -1336,37 +1347,46 @@
         async function loadMyReqs() {
             const el = document.getElementById('myReqsBody');
             try {
-                const data = await api('GET', '/requests/me');
-                if (!data.length) {
+                const { data, error } = await sb.from('meal_requests')
+                    .select('id, menu:menus(*), option:menu_options(*)')
+                    .eq('user_id', state.user.id)
+                    .order('id', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || !data.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação ainda</p></div>';
                     return;
                 }
+
                 el.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Cancelar</th></tr></thead>
-      <tbody>
-        ${data.map(r => {
-                    const hrs = hoursUntil(r.meal_date, r.meal_time);
-                    const canCancel = hrs >= 24;
-                    return `<tr>
-            <td><strong>${fmtDate(r.meal_date)}</strong></td>
-            <td><span class="meal-pill ${r.meal_type}">${MEAL_LABELS[r.meal_type]}</span></td>
-            <td>${r.meal_time}</td>
-            <td>${r.option_description}</td>
-            <td>${canCancel
-                            ? `<button class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
-                            : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado</span>`}</td>
-          </tr>`;
-                }).join('')}
-      </tbody></table></div>`;
+                    <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        ${data.map(r => {
+                            const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
+                            const canCancel = hrs >= 24;
+                            return `<tr>
+                                <td><strong>${r.menu ? fmtDate(r.menu.meal_date) : '-'}</strong></td>
+                                <td><span class="meal-pill ${r.menu?.meal_type}">${MEAL_LABELS[r.menu?.meal_type] || '-'}</span></td>
+                                <td>${r.menu?.meal_time || '-'}</td>
+                                <td>${r.option?.description || '-'}</td>
+                                <td>${canCancel 
+                                    ? `<button class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
+                                    : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado</span>`}
+                                </td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody></table></div>`;
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
         }
 
         async function cancelMyReq(id) {
-            if (!confirm('Cancelar esta solicitação?')) return;
+            if (!confirm('Deseja cancelar esta solicitação?')) return;
             try {
-                await api('DELETE', `/requests/${id}`);
+                const { error } = await sb.from('meal_requests').delete().eq('id', id);
+                if (error) throw error;
                 alert_('myReqSuccess', 'Solicitação cancelada.', 'success');
                 loadMyReqs();
             } catch (e) {
@@ -1375,14 +1395,14 @@
         }
 
         // ══════════════════════════════════════════════
-        //  CARDÁPIO (NUTRI)
+        //  GERENCIAR CARDÁPIO (NUTRI)
         // ══════════════════════════════════════════════
         function addOptionInput() {
             const list = document.getElementById('optionInputs');
             const row = document.createElement('div');
             row.className = 'option-input-row';
             row.innerHTML = `<input type="text" placeholder="Ex: Salada vegana">
-    <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>`;
+                <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>`;
             list.appendChild(row);
         }
 
@@ -1397,24 +1417,35 @@
             const meal_type = document.getElementById('newMenuType').value;
             const meal_time = document.getElementById('newMenuTime').value;
             const inputs = [...document.querySelectorAll('#optionInputs input')];
-            const options = inputs.map(i => ({ description: i.value.trim() })).filter(o => o.description);
+            const options = inputs.map(i => i.value.trim()).filter(Boolean);
 
-            if (!meal_date || !meal_type || !meal_time)
-                return alert_('menuError', 'Preencha data, tipo e horário');
-            if (!options.length)
-                return alert_('menuError', 'Adicione pelo menos uma opção');
+            if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
+            if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
 
             try {
-                await api('POST', '/menu', { meal_date, meal_type, meal_time, options });
+                const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
+                    company_id: state.company.id,
+                    meal_date,
+                    meal_type,
+                    meal_time
+                }).select().single();
+
+                if (menuErr) throw menuErr;
+
+                const optionsToInsert = options.map(desc => ({ menu_id: newMenu.id, description: desc }));
+                const { error: optErr } = await sb.from('menu_options').insert(optionsToInsert);
+                if (optErr) throw optErr;
+
                 alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
                 document.getElementById('newMenuDate').value = '';
                 document.getElementById('newMenuType').value = '';
                 document.getElementById('newMenuTime').value = '';
                 document.getElementById('optionInputs').innerHTML = `
-      <div class="option-input-row">
-        <input type="text" placeholder="Ex: Frango grelhado">
-        <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
-      </div>`;
+                    <div class="option-input-row">
+                        <input type="text" placeholder="Ex: Frango grelhado">
+                        <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
+                    </div>
+                `;
                 loadMenuNutri();
             } catch (e) {
                 alert_('menuError', e.message);
@@ -1425,24 +1456,31 @@
             const el = document.getElementById('menuListBody');
             const date = document.getElementById('menuFilterDate').value;
             try {
-                let path = '/menu';
-                if (date) path += `?date_from=${date}&date_to=${date}`;
-                const data = await api('GET', path);
-                if (!data.length) {
+                let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
+                if (date) query = query.eq('meal_date', date);
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                if (!data || !data.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
                     return;
                 }
+
                 el.innerHTML = data.map(m => `
-      <div class="menu-card">
-        <div class="menu-card-header">
-          <div class="menu-card-title">
-            <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type]}</span>
-            <span style="color:#718096;font-size:13px">${fmtDate(m.meal_date)} às ${m.meal_time}</span>
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Remover</button>
-        </div>
-        <div class="option-tags">${m.options.map(o => `<span class="option-tag">${o.description}</span>`).join('')}</div>
-      </div>`).join('');
+                    <div class="menu-card">
+                        <div class="menu-card-header">
+                            <div class="menu-card-title">
+                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                            </div>
+                            <button class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Excluir</button>
+                        </div>
+                        <div class="option-tags">
+                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
@@ -1451,7 +1489,8 @@
         async function deleteMenu(id) {
             if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
             try {
-                await api('DELETE', `/menu/${id}`);
+                const { error } = await sb.from('menus').delete().eq('id', id);
+                if (error) throw error;
                 alert_('menuSuccess', 'Refeição removida.', 'success');
                 loadMenuNutri();
             } catch (e) {
@@ -1460,29 +1499,38 @@
         }
 
         // ══════════════════════════════════════════════
-        //  PAINEL DE SOLICITAÇÕES (NUTRI)
+        //  SOLICITAÇÕES RECEBIDAS (NUTRI)
         // ══════════════════════════════════════════════
         async function loadAllRequests() {
             const el = document.getElementById('allReqsBody');
             const date = document.getElementById('reqFilterDate').value;
             try {
-                const path = date ? `/requests?date=${date}` : '/requests';
-                const data = await api('GET', path);
-                if (!data.length) {
+                let query = sb.from('meal_requests')
+                    .select('id, profiles(name), menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                    .eq('menus.company_id', state.company.id)
+                    .order('id', { ascending: false });
+
+                if (date) query = query.eq('menus.meal_date', date);
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                if (!data || !data.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
                     return;
                 }
+
                 el.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
-      <tbody>
-        ${data.map(r => `<tr>
-          <td><strong>${r.user_name}</strong><br><span style="color:#a0aec0;font-size:11px">${r.email}</span></td>
-          <td>${fmtDate(r.meal_date)}</td>
-          <td><span class="meal-pill ${r.meal_type}">${MEAL_LABELS[r.meal_type]}</span></td>
-          <td>${r.meal_time}</td>
-          <td>${r.option_description}</td>
-        </tr>`).join('')}
-      </tbody></table></div>`;
+                    <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
+                    <tbody>
+                        ${data.map(r => `<tr>
+                            <td><strong>${r.profiles?.name || 'Colaborador'}</strong></td>
+                            <td>${fmtDate(r.menus?.meal_date)}</td>
+                            <td><span class="meal-pill ${r.menus?.meal_type}">${MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type}</span></td>
+                            <td>${r.menus?.meal_time || '-'}</td>
+                            <td>${r.menu_options?.description || '-'}</td>
+                        </tr>`).join('')}
+                    </tbody></table></div>`;
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
@@ -1495,47 +1543,57 @@
             const el = document.getElementById('statsBody');
             const date = document.getElementById('statsDate').value;
             try {
-                const path = date ? `/stats?date=${date}` : '/stats';
-                const data = await api('GET', path);
-                if (!data.length) {
+                let query = sb.from('meal_requests')
+                    .select('menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                    .eq('menus.company_id', state.company.id);
+
+                if (date) query = query.eq('menus.meal_date', date);
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                if (!data || !data.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado disponível</p></div>';
                     return;
                 }
 
-                // Agrupar por menu (data + tipo)
                 const groups = {};
                 data.forEach(r => {
-                    const key = `${r.meal_date}_${r.meal_type}`;
-                    if (!groups[key]) groups[key] = { meal_date: r.meal_date, meal_type: r.meal_type, meal_time: r.meal_time, options: [] };
-                    groups[key].options.push({ option: r.option, total: parseInt(r.total) });
+                    const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
+                    if (!groups[key]) groups[key] = { meal_date: r.menus.meal_date, meal_type: r.menus.meal_type, meal_time: r.menus.meal_time, counts: {} };
+                    const opt = r.menu_options?.description || 'Opção';
+                    groups[key].counts[opt] = (groups[key].counts[opt] || 0) + 1;
                 });
 
                 el.innerHTML = Object.values(groups).map(g => {
-                    const total = g.options.reduce((s, o) => s + o.total, 0);
+                    const total = Object.values(g.counts).reduce((a, b) => a + b, 0);
                     return `
-        <div class="menu-card">
-          <div class="menu-card-header">
-            <div class="menu-card-title">
-              <span class="meal-pill ${g.meal_type}">${MEAL_LABELS[g.meal_type]}</span>
-              <span style="color:#718096;font-size:13px">${fmtDate(g.meal_date)} às ${g.meal_time}</span>
-            </div>
-            <strong style="color:#1e5f9e">${total} solicitações</strong>
-          </div>
-          <div style="margin-top:10px">
-            ${g.options.map(o => {
-                        const pct = total ? Math.round(o.total / total * 100) : 0;
-                        return `<div style="margin-bottom:8px">
-                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
-                  <span>${o.option}</span>
-                  <strong>${o.total} (${pct}%)</strong>
-                </div>
-                <div style="background:#e2e8f0;border-radius:4px;height:8px">
-                  <div style="background:#1e5f9e;width:${pct}%;height:8px;border-radius:4px;transition:.4s"></div>
-                </div>
-              </div>`;
-                    }).join('')}
-          </div>
-        </div>`;
+                        <div class="menu-card">
+                            <div class="menu-card-header">
+                                <div class="menu-card-title">
+                                    <span class="meal-pill ${g.meal_type}">${MEAL_LABELS[g.meal_type] || g.meal_type}</span>
+                                    <span>${fmtDate(g.meal_date)} (${g.meal_time})</span>
+                                </div>
+                                <strong>Total: ${total} refeição(ões)</strong>
+                            </div>
+                            <div style="margin-top:10px">
+                                ${Object.entries(g.counts).map(([opt, count]) => {
+                                    const pct = total ? Math.round((count / total) * 100) : 0;
+                                    return `
+                                        <div style="margin-bottom:8px">
+                                            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
+                                                <span>${opt}</span>
+                                                <strong>${count} (${pct}%)</strong>
+                                            </div>
+                                            <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
+                                                <div style="background:#1e5f9e;width:${pct}%;height:8px;border-radius:4px;transition:.4s"></div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
                 }).join('');
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
@@ -1549,9 +1607,9 @@
         let allCompanies = [];
 
         async function loadUsers() {
-            // Carregar empresas para o select
             try {
-                allCompanies = await api('GET', '/companies');
+                const { data: comps } = await sb.from('companies').select('*');
+                allCompanies = comps || [];
                 const sel = document.getElementById('nuCompanySelect');
                 sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
                 allCompanies.forEach(c => {
@@ -1559,33 +1617,37 @@
                     o.value = c.id; o.textContent = c.name;
                     sel.appendChild(o);
                 });
-            } catch (e) { }
 
-            const el = document.getElementById('usersBody');
-            try {
-                const data = await api('GET', '/users');
-                if (!data.length) {
+                const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*))');
+                if (error) throw error;
+
+                const el = document.getElementById('usersBody');
+                if (!users || !users.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
                     return;
                 }
+
                 el.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
-      <tbody>
-        ${data.map(u => `<tr>
-          <td><strong>${u.name}</strong></td>
-          <td style="color:#718096">${u.email}</td>
-          <td><span class="badge badge-${u.role}">${u.role}</span></td>
-          <td style="font-size:12px">${u.companies.map(c => c.name).join(', ') || '—'}</td>
-          <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
-          <td>
-            ${u.email !== 'admin@hospital.com'
-                        ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Excluir</button>`
-                        : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
-          </td>
-        </tr>`).join('')}
-      </tbody></table></div>`;
+                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        ${users.map(u => {
+                            const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
+                            return `<tr>
+                                <td><strong>${u.name}</strong></td>
+                                <td>${u.email}</td>
+                                <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                                <td>${compsList}</td>
+                                <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
+                                <td>
+                                    ${u.email !== 'admin@hospital.com'
+                                        ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`
+                                        : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                </td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody></table></div>`;
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
         }
 
@@ -1593,7 +1655,6 @@
             const sel = document.getElementById('nuCompanySelect');
             const id = parseInt(sel.value);
             if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
-            const company = allCompanies.find(c => c.id === id);
             nuCompanyIds.push(id);
             sel.value = '';
             renderChips();
@@ -1607,7 +1668,7 @@
         function renderChips() {
             const el = document.getElementById('nuCompanyChips');
             el.innerHTML = nuCompanyIds.map(id => {
-                const c = allCompanies.find(c => c.id === id);
+                const c = allCompanies.find(comp => comp.id === id);
                 return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip(${id})">×</span></div>`;
             }).join('');
         }
@@ -1618,8 +1679,20 @@
             const password = document.getElementById('nuPass').value;
             const role = document.getElementById('nuRole').value;
             if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
+
             try {
-                await api('POST', '/auth/register', { name, email, password, role, company_ids: nuCompanyIds });
+                const { data, error } = await sb.auth.signUp({ email, password });
+                if (error) throw error;
+
+                if (data.user) {
+                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
+                    if (nuCompanyIds.length > 0) {
+                        await sb.from('company_users').insert(
+                            nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
+                        );
+                    }
+                }
+
                 alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
                 document.getElementById('nuName').value = '';
                 document.getElementById('nuEmail').value = '';
@@ -1635,7 +1708,7 @@
         async function deleteUser(id) {
             if (!confirm('Excluir este usuário?')) return;
             try {
-                await api('DELETE', `/users/${id}`);
+                await sb.from('profiles').delete().eq('id', id);
                 alert_('usersSuccess', 'Usuário excluído.', 'success');
                 loadUsers();
             } catch (e) {
@@ -1649,25 +1722,24 @@
         async function loadCompanies() {
             const el = document.getElementById('companiesBody');
             try {
-                const data = await api('GET', '/companies');
-                if (!data.length) {
+                const { data, error } = await sb.from('companies').select('*').order('id', { ascending: false });
+                if (error) throw error;
+                if (!data || !data.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div><p>Nenhuma empresa cadastrada</p></div>';
                     return;
                 }
                 el.innerHTML = `<div class="tbl-wrap"><table>
-      <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Criada em</th><th>Ação</th></tr></thead>
-      <tbody>
-        ${data.map(c => `<tr>
-          <td><strong>${c.name}</strong></td>
-          <td style="color:#718096">${c.cnpj || '—'}</td>
-          <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
-          <td style="color:#a0aec0;font-size:12px">${new Date(c.created_at).toLocaleDateString('pt-BR')}</td>
-          <td style="display:flex;gap:6px">
-            <button class="btn btn-secondary btn-sm" onclick="toggleCompany(${c.id},${!c.active})">${c.active ? 'Desativar' : 'Ativar'}</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button>
-          </td>
-        </tr>`).join('')}
-      </tbody></table></div>`;
+                    <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        ${data.map(c => `<tr>
+                            <td><strong>${c.name}</strong></td>
+                            <td>${c.cnpj || '-'}</td>
+                            <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button>
+                            </td>
+                        </tr>`).join('')}
+                    </tbody></table></div>`;
             } catch (e) {
                 el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
             }
@@ -1678,7 +1750,8 @@
             const cnpj = document.getElementById('ncCnpj').value.trim();
             if (!name) return alert_('compError', 'Nome da empresa é obrigatório');
             try {
-                await api('POST', '/companies', { name, cnpj });
+                const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
+                if (error) throw error;
                 alert_('compSuccess', `Empresa "${name}" criada!`, 'success');
                 document.getElementById('ncName').value = '';
                 document.getElementById('ncCnpj').value = '';
@@ -1688,19 +1761,11 @@
             }
         }
 
-        async function toggleCompany(id, active) {
-            try {
-                await api('PUT', `/companies/${id}`, { active });
-                loadCompanies();
-            } catch (e) {
-                alert_('compError', e.message);
-            }
-        }
-
         async function deleteCompany(id) {
-            if (!confirm('Excluir esta empresa? Todos os cardápios e solicitações vinculados serão removidos.')) return;
+            if (!confirm('Excluir esta empresa?')) return;
             try {
-                await api('DELETE', `/companies/${id}`);
+                const { error } = await sb.from('companies').delete().eq('id', id);
+                if (error) throw error;
                 alert_('compSuccess', 'Empresa excluída.', 'success');
                 loadCompanies();
             } catch (e) {
@@ -1708,6 +1773,7 @@
             }
         }
     </script>
+
 </body>
 
 </html>
