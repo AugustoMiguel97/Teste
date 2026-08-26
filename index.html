@@ -1090,42 +1090,65 @@
         // ══════════════════════════════════════════════
         //  AUTENTICAÇÃO COM SUPABASE
         // ══════════════════════════════════════════════
+                // ══════════════════════════════════════════════
+        //  AUTENTICAÇÃO COM SUPABASE
+        // ══════════════════════════════════════════════
         async function doLogin() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
 
             try {
+                // 1. Autentica no Supabase
                 const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
 
-                // Buscar perfil
+                // 2. Busca perfil do usuário
                 const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-
-                // Buscar empresas vinculadas
-                const { data: userComps } = await sb.from('company_users').select('company_id, companies(*)').eq('user_id', data.user.id);
-                const companies = (userComps || []).map(uc => uc.companies).filter(Boolean);
-
-                if (companies.length === 0) {
-                    const { data: allComps } = await sb.from('companies').select('*').limit(1);
-                    if (allComps && allComps.length > 0) companies.push(allComps[0]);
-                }
+                const role = profile?.role || 'colaborador';
 
                 state.user = {
                     id: data.user.id,
                     email: data.user.email,
                     name: profile?.name || data.user.email.split('@')[0],
-                    role: profile?.role || 'colaborador'
+                    role: role
                 };
                 state.token = data.session.access_token;
+
+                // 3. Regra de Empresas:
+                let companies = [];
+
+                if (role === 'admin') {
+                    // Administrador tem acesso a TODAS as empresas ativas
+                    const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
+                    companies = allComps || [];
+                } else {
+                    // Colaboradores e Nutricionistas veem apenas as empresas vinculadas a eles
+                    const { data: userComps } = await sb.from('company_users')
+                        .select('companies(*)')
+                        .eq('user_id', data.user.id);
+
+                    companies = (userComps || [])
+                        .map(uc => uc.companies)
+                        .filter(c => c && c.active);
+                }
+
+                // 4. Remove qualquer duplicidade de empresas pelo ID
+                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
                 state.pendingCompanies = companies;
 
-                if (companies.length <= 1) {
-                    state.company = companies[0] || { id: 1, name: 'Hospital Central' };
+                if (companies.length === 0) {
+                    return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+                }
+
+                // Se tiver apenas 1 empresa, entra direto sem perguntar
+                if (companies.length === 1) {
+                    state.company = companies[0];
                     buildApp();
                     showScreen('screenApp');
                 } else {
-                    document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha a empresa:`;
+                    // Se tiver mais de 1 empresa, abre a tela de seleção limpa e sem duplicatas
+                    document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
                     const list = document.getElementById('companyList');
                     list.innerHTML = '';
                     companies.forEach(c => {
@@ -1145,6 +1168,7 @@
                 alert_('loginError', e.message || 'Erro ao realizar login');
             }
         }
+
 
         async function doLogout() {
             await sb.auth.signOut();
