@@ -24,16 +24,19 @@
         }
 
         .screen {
-            display: none;
+            display: none !important;
         }
         .screen.active {
-            display: block;
+            display: block !important;
         }
         .auth-wrap.active {
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            background: linear-gradient(135deg, #1e5f9e, #0f3d6b);
+            padding: 20px;
+            box-sizing: border-box;
         }
         /* ── LOGIN / SELECT-COMPANY ── */
         .auth-wrap {
