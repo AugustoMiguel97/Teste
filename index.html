@@ -1653,13 +1653,15 @@
             }
         }
 
+
         // ══════════════════════════════════════════════
-        //  USUÁRIOS (ADMIN)
+        //  USUÁRIOS (ADMIN) - LISTAR, CRIAR E EDITAR
         // ══════════════════════════════════════════════
         let nuCompanyIds = [];
         let allCompanies = [];
+        let loadedUsersList = [];
 
-                async function loadUsers() {
+        async function loadUsers() {
             try {
                 // 1. Carregar empresas para o select
                 const { data: comps } = await sb.from('companies').select('*').eq('active', true);
@@ -1675,12 +1677,13 @@
                     });
                 }
 
-                // 2. Carregar todos os perfis
+                // 2. Carregar perfis
                 const { data: users, error: usersErr } = await sb.from('profiles').select('*').order('name');
                 if (usersErr) throw usersErr;
+                loadedUsersList = users || [];
 
-                // 3. Carregar os vínculos de empresas
-                const { data: allUserComps } = await sb.from('company_users').select('user_id, companies(id, name)');
+                // 3. Carregar vínculos de empresas
+                const { data: allUserComps } = await sb.from('company_users').select('user_id, company_id, companies(id, name)');
 
                 const el = document.getElementById('usersBody');
                 if (!users || !users.length) {
@@ -1690,9 +1693,12 @@
 
                 // Mapear empresas por usuário
                 const userCompanyMap = {};
+                const userCompanyIdsMap = {};
                 (allUserComps || []).forEach(uc => {
                     if (!userCompanyMap[uc.user_id]) userCompanyMap[uc.user_id] = [];
+                    if (!userCompanyIdsMap[uc.user_id]) userCompanyIdsMap[uc.user_id] = [];
                     if (uc.companies?.name) userCompanyMap[uc.user_id].push(uc.companies.name);
+                    if (uc.company_id) userCompanyIdsMap[uc.user_id].push(uc.company_id);
                 });
 
                 el.innerHTML = `<div class="tbl-wrap"><table>
@@ -1700,6 +1706,7 @@
                     <tbody>
                         ${users.map(u => {
                             const compsList = (userCompanyMap[u.id] || []).join(', ') || 'Nenhuma';
+                            const compsIdsJson = JSON.stringify(userCompanyIdsMap[u.id] || []);
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
                                 <td>${u.email}</td>
@@ -1707,9 +1714,10 @@
                                 <td>${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
+                                    <button class="btn btn-secondary btn-sm" onclick='editUser("${u.id}", ${compsIdsJson})' style="margin-right:4px">Editar</button>
                                     ${u.email !== 'admin@hospital.com'
                                         ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`
-                                        : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                        : '<span style="font-size:11px;color:#a0aec0">Admin</span>'}
                                 </td>
                             </tr>`;
                         }).join('')}
@@ -1719,6 +1727,100 @@
             }
         }
 
+        // Entrar no modo de Edição
+        function editUser(userId, companyIds = []) {
+            const user = loadedUsersList.find(u => u.id === userId);
+            if (!user) return;
+
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('nuName').value = user.name;
+            document.getElementById('nuEmail').value = user.email;
+            document.getElementById('nuPass').value = '';
+            document.getElementById('nuPass').placeholder = 'Deixe em branco para não alterar';
+            document.getElementById('nuRole').value = user.role;
+
+            nuCompanyIds = Array.isArray(companyIds) ? [...companyIds] : [];
+            renderChips();
+
+            document.getElementById('userFormTitle').textContent = `✏️ Editando: ${user.name}`;
+            document.getElementById('btnSaveUser').textContent = 'Salvar alterações';
+            document.getElementById('btnCancelEditUser').style.display = 'inline-block';
+
+            // Rola suavemente até o formulário
+            document.getElementById('userFormSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Cancelar o modo de Edição e voltar para "Novo usuário"
+        function cancelEditUser() {
+            document.getElementById('editUserId').value = '';
+            document.getElementById('nuName').value = '';
+            document.getElementById('nuEmail').value = '';
+            document.getElementById('nuPass').value = '';
+            document.getElementById('nuPass').placeholder = 'Senha de acesso';
+            document.getElementById('nuRole').value = 'colaborador';
+            nuCompanyIds = [];
+            renderChips();
+
+            document.getElementById('userFormTitle').textContent = 'Novo usuário';
+            document.getElementById('btnSaveUser').textContent = 'Criar usuário';
+            document.getElementById('btnCancelEditUser').style.display = 'none';
+        }
+
+        // Salvar (Cria se for novo, ou Atualiza se estiver editando)
+        async function saveUser() {
+            const editId = document.getElementById('editUserId').value;
+            const name = document.getElementById('nuName').value.trim();
+            const email = document.getElementById('nuEmail').value.trim();
+            const password = document.getElementById('nuPass').value;
+            const role = document.getElementById('nuRole').value;
+
+            if (!name || !email) return alert_('usersError', 'Preencha nome e email');
+
+            try {
+                if (editId) {
+                    // ── MODO EDIÇÃO ──
+                    // 1. Atualiza dados na tabela de perfis
+                    const { error: profErr } = await sb.from('profiles')
+                        .update({ name, email, role })
+                        .eq('id', editId);
+                    if (profErr) throw profErr;
+
+                    // 2. Atualiza vínculos de empresas (apaga antigos e adiciona novos)
+                    await sb.from('company_users').delete().eq('user_id', editId);
+                    if (nuCompanyIds.length > 0) {
+                        await sb.from('company_users').insert(
+                            nuCompanyIds.map(cid => ({ user_id: editId, company_id: cid }))
+                        );
+                    }
+
+                    alert_('usersSuccess', `Usuário "${name}" atualizado com sucesso!`, 'success');
+                    cancelEditUser();
+                    loadUsers();
+
+                } else {
+                    // ── MODO CRIAÇÃO (NOVO USUÁRIO) ──
+                    if (!password) return alert_('usersError', 'Defina uma senha para o novo usuário');
+
+                    const { data, error } = await sb.auth.signUp({ email, password });
+                    if (error) throw error;
+
+                    if (data.user) {
+                        await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
+                        if (nuCompanyIds.length > 0) {
+                            await sb.from('company_users').insert(
+                                nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
+                            );
+                        }
+                    }
+
+                    alert_('usersSuccess', `Usuário "${name}" criado com sucesso!`, 'success');
+                    cancelEditUser();
+                    loadUsers();
+                }
+            } catch (e) {
+                alert_('usersError', e.message);
+            }
+        }
 
         function addCompanyChip() {
             const sel = document.getElementById('nuCompanySelect');
@@ -1742,38 +1844,6 @@
             }).join('');
         }
 
-        async function createUser() {
-            const name = document.getElementById('nuName').value.trim();
-            const email = document.getElementById('nuEmail').value.trim();
-            const password = document.getElementById('nuPass').value;
-            const role = document.getElementById('nuRole').value;
-            if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
-
-            try {
-                const { data, error } = await sb.auth.signUp({ email, password });
-                if (error) throw error;
-
-                if (data.user) {
-                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
-                    if (nuCompanyIds.length > 0) {
-                        await sb.from('company_users').insert(
-                            nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
-                        );
-                    }
-                }
-
-                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
-                document.getElementById('nuName').value = '';
-                document.getElementById('nuEmail').value = '';
-                document.getElementById('nuPass').value = '';
-                nuCompanyIds = [];
-                renderChips();
-                loadUsers();
-            } catch (e) {
-                alert_('usersError', e.message);
-            }
-        }
-
         async function deleteUser(id) {
             if (!confirm('Excluir este usuário?')) return;
             try {
@@ -1784,6 +1854,7 @@
                 alert_('usersError', e.message);
             }
         }
+
 
         // ══════════════════════════════════════════════
         //  EMPRESAS (ADMIN)
