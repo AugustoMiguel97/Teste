@@ -1036,18 +1036,28 @@
         // ══════════════════════════════════════════════
         //  FUNÇÕES AUXILIARES DE TELA
         // ══════════════════════════════════════════════
-          function showScreen(id) {
+        function showScreen(id) {
+            // 1. Esconde TODAS as telas e força display: none
             document.querySelectorAll('.screen').forEach(s => {
                 s.classList.remove('active');
-                s.style.display = 'none'; // Força a tela anterior a sumir
+                s.style.setProperty('display', 'none', 'important');
             });
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.add('active');
-                el.style.display = ''; // Exibe apenas a nova tela
+
+            // 2. Exibe APENAS a tela solicitada
+            const target = document.getElementById(id);
+            if (target) {
+                target.classList.add('active');
+                if (target.classList.contains('auth-wrap')) {
+                    target.style.setProperty('display', 'flex', 'important');
+                } else {
+                    target.style.setProperty('display', 'block', 'important');
+                }
             }
-            window.scrollTo(0, 0); // Rola a página para o topo automaticamente
+
+            // 3. Rola a página para o topo
+            window.scrollTo(0, 0);
         }
+
 
 
         function showPage(id) {
@@ -1780,6 +1790,8 @@
                 alert_('compError', e.message);
             }
         }
+            // Inicializa mostrando apenas a tela de Login
+        showScreen('screenLogin');
     </script>
 
 </body>
