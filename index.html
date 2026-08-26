@@ -2,1676 +2,1681 @@
 <html lang="pt-BR">
 
 <head>
-    <!-- Importa o SDK do Supabase direto pela internet (CDN) -->
+<!-- Importa o SDK do Supabase direto pela internet (CDN) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Refeições Hospitalares</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f0f4f8;
-            color: #1a202c;
-            min-height: 100vh
-        }
-
-        .screen {
-            display: none !important;
-        }
-        .screen.active {
-            display: block !important;
-        }
-        .auth-wrap.active {
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1e5f9e, #0f3d6b);
-            padding: 20px;
-            box-sizing: border-box;
-        }
-        /* ── LOGIN / SELECT-COMPANY ── */
-
-
-        .auth-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 14px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, .2);
-            width: 100%;
-            max-width: 420px
-        }
-
-        .auth-card h1 {
-            font-size: 26px;
-            color: #1e5f9e;
-            margin-bottom: 6px;
-            text-align: center
-        }
-
-                .auth-logo {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        .auth-logo img {
-            max-width: 220px;       /* Largura máxima da imagem */
-            max-height: 90px;       /* Altura máxima da imagem */
-            width: auto;
-            height: auto;
-            display: block;
-            margin: 0 auto;         /* Centraliza perfeitamente */
-            object-fit: contain;
-        }
-
-        .auth-card p {
-            color: #718096;
-            font-size: 13px;
-            text-align: center;
-            margin-bottom: 28px
-        }
-
-        .form-group {
-            margin-bottom: 16px
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #4a5568
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: .2s
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #1e5f9e;
-            box-shadow: 0 0 0 3px rgba(30, 95, 158, .1)
-        }
-
-        .company-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px
-        }
-
-        .company-btn {
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            color: #2d3748;
-            text-align: left;
-            transition: .2s
-        }
-
-        .company-btn:hover {
-            border-color: #1e5f9e;
-            background: #ebf4ff;
-            color: #1e5f9e
-        }
-
-        /* ── BUTTONS ── */
-        .btn {
-            padding: 11px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: .2s;
-            display: inline-block
-        }
-
-        .btn-full {
-            width: 100%
-        }
-
-        .btn-primary {
-            background: #1e5f9e;
-            color: #fff
-        }
-
-        .btn-primary:hover {
-            background: #174682
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: #fff
-        }
-
-        .btn-success:hover {
-            background: #15803d
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: #fff
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c
-        }
-
-        .btn-secondary {
-            background: #edf2f7;
-            color: #4a5568;
-            border: 1px solid #e2e8f0
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0
-        }
-
-        .btn-sm {
-            padding: 5px 12px;
-            font-size: 12px
-        }
-
-        .btn-icon {
-            padding: 6px 10px;
-            font-size: 13px
-        }
-
-        /* ── LAYOUT ── */
-        .layout {
-            display: flex;
-            min-height: 100vh
-        }
-
-        .sidebar {
-            width: 220px;
-            background: #1a365d;
-            color: #fff;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column
-        }
-
-        .sidebar-brand {
-            padding: 24px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, .1)
-        }
-
-        .sidebar-brand h2 {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 2px
-        }
-
-        .sidebar-brand p {
-            font-size: 11px;
-            color: #90cdf4;
-            margin-bottom: 2px
-        }
-
-        .sidebar-brand small {
-            font-size: 10px;
-            color: #63b3ed;
-            font-style: italic
-        }
-
-        .sidebar-nav {
-            flex: 1;
-            padding: 16px 0
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 20px;
-            color: rgba(255, 255, 255, .75);
-            cursor: pointer;
-            font-size: 14px;
-            transition: .2s;
-            border-left: 3px solid transparent
-        }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, .07);
-            color: #fff
-        }
-
-        .nav-item.active {
-            background: rgba(255, 255, 255, .12);
-            color: #fff;
-            border-left-color: #63b3ed
-        }
-
-        .nav-icon {
-            font-size: 16px;
-            width: 20px;
-            text-align: center
-        }
-
-        .nav-sep {
-            padding: 10px 20px 4px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, .35)
-        }
-
-        .sidebar-footer {
-            padding: 16px 20px;
-            border-top: 1px solid rgba(255, 255, 255, .1)
-        }
-
-        .sidebar-footer button {
-            width: 100%;
-            padding: 8px;
-            background: rgba(255, 255, 255, .08);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, .15);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px
-        }
-
-        .sidebar-footer button:hover {
-            background: rgba(255, 255, 255, .15)
-        }
-
-        .main {
-            flex: 1;
-            overflow-y: auto;
-            padding: 28px
-        }
-
-        /* ── PAGES ── */
-        .page {
-            display: none
-        }
-
-        .page.active {
-            display: block
-        }
-
-        .page-header {
-            margin-bottom: 24px
-        }
-
-        .page-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a202c
-        }
-
-        .page-header p {
-            font-size: 13px;
-            color: #718096;
-            margin-top: 3px
-        }
-
-        /* ── CARDS ── */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px
-        }
-
-        .stat-card {
-            background: #fff;
-            padding: 18px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
-            border: 1px solid #e2e8f0
-        }
-
-        .stat-card .val {
-            font-size: 30px;
-            font-weight: 700;
-            color: #1e5f9e
-        }
-
-        .stat-card .lbl {
-            font-size: 11px;
-            color: #a0aec0;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            margin-top: 2px
-        }
-
-        /* ── SECTION ── */
-        .section {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px
-        }
-
-        .section-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between
-        }
-
-        .section-header h2 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #2d3748
-        }
-
-        .section-body {
-            padding: 20px
-        }
-
-        /* ── FORM ── */
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px
-        }
-
-        .form-row.cols3 {
-            grid-template-columns: 1fr 1fr 1fr
-        }
-
-        .form-row.col1 {
-            grid-template-columns: 1fr
-        }
-
-        /* ── TABLE ── */
-        .tbl-wrap {
-            overflow-x: auto
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px
-        }
-
-        thead tr {
-            background: #f7fafc
-        }
-
-        th {
-            padding: 10px 14px;
-            text-align: left;
-            font-weight: 600;
-            color: #718096;
-            border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap
-        }
-
-        td {
-            padding: 10px 14px;
-            border-bottom: 1px solid #edf2f7;
-            vertical-align: middle
-        }
-
-        tr:last-child td {
-            border-bottom: none
-        }
-
-        tr:hover td {
-            background: #fafbfc
-        }
-
-        /* ── BADGE ── */
-        .badge {
-            display: inline-block;
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600
-        }
-
-        .badge-admin {
-            background: #e9d8fd;
-            color: #553c9a
-        }
-
-        .badge-nutricionista {
-            background: #c6f6d5;
-            color: #22543d
-        }
-
-        .badge-colaborador {
-            background: #bee3f8;
-            color: #2a4365
-        }
-
-        .badge-confirmed {
-            background: #c6f6d5;
-            color: #22543d
-        }
-
-        .badge-canceled {
-            background: #fed7d7;
-            color: #742a2a
-        }
-
-        /* ── MEAL TYPE PILL ── */
-        .meal-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600
-        }
-
-        .meal-pill.cafe_manha {
-            background: #fefce8;
-            color: #854d0e
-        }
-
-        .meal-pill.almoco {
-            background: #dcfce7;
-            color: #166534
-        }
-
-        .meal-pill.lanche_tarde {
-            background: #fff7ed;
-            color: #9a3412
-        }
-
-        .meal-pill.janta {
-            background: #ede9fe;
-            color: #5b21b6
-        }
-
-        .meal-pill.lanche_noite {
-            background: #e0f2fe;
-            color: #075985
-        }
-
-        /* ── MEAL OPTION CARDS ── */
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 10px;
-            margin: 12px 0
-        }
-
-        .option-card {
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: .2s;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a5568
-        }
-
-        .option-card:hover {
-            border-color: #1e5f9e;
-            background: #ebf4ff;
-            color: #1e5f9e
-        }
-
-        .option-card.selected {
-            border-color: #16a34a;
-            background: #f0fdf4;
-            color: #166534
-        }
-
-        /* ── MENU ITEMS ── */
-        .menu-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px
-        }
-
-        .menu-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px
-        }
-
-        .menu-card-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            color: #2d3748
-        }
-
-        .option-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px
-        }
-
-        .option-tag {
-            padding: 4px 10px;
-            background: #edf2f7;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #4a5568
-        }
-
-        /* ── OPTIONS INPUT ── */
-        .options-input-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 8px
-        }
-
-        .option-input-row {
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        .option-input-row input {
-            flex: 1;
-            padding: 8px 10px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 13px
-        }
-
-        /* ── COMPANY CHIPS ── */
-        .chip-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px
-        }
-
-        .chip {
-            padding: 4px 10px;
-            background: #ebf4ff;
-            color: #1e5f9e;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px
-        }
-
-        .chip-x {
-            cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
-            color: #90cdf4
-        }
-
-        .chip-x:hover {
-            color: #1e5f9e
-        }
-
-        /* ── ALERT ── */
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none
-        }
-
-        .alert-error {
-            background: #fff5f5;
-            border: 1px solid #fed7d7;
-            color: #c53030
-        }
-
-        .alert-success {
-            background: #f0fff4;
-            border: 1px solid #c6f6d5;
-            color: #276749
-        }
-
-        .alert-warn {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #92400e
-        }
-
-        /* ── EMPTY ── */
-        .empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: #a0aec0
-        }
-
-        .empty-icon {
-            font-size: 44px;
-            margin-bottom: 10px
-        }
-
-        /* ── RESPONSIVE ── */
-        @media(max-width:700px) {
-            .layout {
-                flex-direction: column
-            }
-
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap
-            }
-
-            .form-row,
-            .form-row.cols3 {
-                grid-template-columns: 1fr
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Refeições Hospitalares</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box
+}
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+background: #f0f4f8;
+color: #1a202c;
+min-height: 100vh
+}
+
+.screen {
+display: none !important;
+}
+.screen.active {
+display: block !important;
+}
+.auth-wrap.active {
+display: flex !important;
+align-items: center;
+justify-content: center;
+min-height: 100vh;
+background: linear-gradient(135deg, #1e5f9e, #0f3d6b);
+padding: 20px;
+box-sizing: border-box;
+}
+/* ── LOGIN / SELECT-COMPANY ── */
+
+
+.auth-card {
+background: #fff;
+padding: 40px;
+border-radius: 14px;
+box-shadow: 0 12px 40px rgba(0, 0, 0, .2);
+width: 100%;
+max-width: 420px
+}
+
+.auth-card h1 {
+font-size: 26px;
+color: #1e5f9e;
+margin-bottom: 6px;
+text-align: center
+}
+
+.auth-card p {
+color: #718096;
+font-size: 13px;
+text-align: center;
+margin-bottom: 28px
+}
+
+.form-group {
+margin-bottom: 16px
+}
+
+.form-group label {
+display: block;
+font-size: 13px;
+font-weight: 600;
+margin-bottom: 5px;
+color: #4a5568
+}
+
+.form-group input,
+.form-group select {
+width: 100%;
+padding: 10px 12px;
+border: 1.5px solid #e2e8f0;
+border-radius: 8px;
+font-size: 14px;
+transition: .2s
+}
+
+.form-group input:focus,
+.form-group select:focus {
+outline: none;
+border-color: #1e5f9e;
+box-shadow: 0 0 0 3px rgba(30, 95, 158, .1)
+}
+
+.company-list {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 20px
+}
+
+.company-btn {
+padding: 14px 16px;
+border: 2px solid #e2e8f0;
+border-radius: 10px;
+background: #fff;
+cursor: pointer;
+font-size: 15px;
+font-weight: 600;
+color: #2d3748;
+text-align: left;
+transition: .2s
+}
+
+.company-btn:hover {
+border-color: #1e5f9e;
+background: #ebf4ff;
+color: #1e5f9e
+}
+
+/* ── BUTTONS ── */
+.btn {
+padding: 11px 20px;
+border: none;
+border-radius: 8px;
+font-size: 14px;
+font-weight: 600;
+cursor: pointer;
+transition: .2s;
+display: inline-block
+}
+
+.btn-full {
+width: 100%
+}
+
+.btn-primary {
+background: #1e5f9e;
+color: #fff
+}
+
+.btn-primary:hover {
+background: #174682
+}
+
+.btn-success {
+background: #16a34a;
+color: #fff
+}
+
+.btn-success:hover {
+background: #15803d
+}
+
+.btn-danger {
+background: #dc2626;
+color: #fff
+}
+
+.btn-danger:hover {
+background: #b91c1c
+}
+
+.btn-secondary {
+background: #edf2f7;
+color: #4a5568;
+border: 1px solid #e2e8f0
+}
+
+.btn-secondary:hover {
+background: #e2e8f0
+}
+
+.btn-sm {
+padding: 5px 12px;
+font-size: 12px
+}
+
+.btn-icon {
+padding: 6px 10px;
+font-size: 13px
+}
+
+/* ── LAYOUT ── */
+.layout {
+display: flex;
+min-height: 100vh
+}
+
+.sidebar {
+width: 220px;
+background: #1a365d;
+color: #fff;
+flex-shrink: 0;
+display: flex;
+flex-direction: column
+}
+
+.sidebar-brand {
+padding: 24px 20px;
+border-bottom: 1px solid rgba(255, 255, 255, .1)
+}
+
+.sidebar-brand h2 {
+font-size: 16px;
+color: #fff;
+margin-bottom: 2px
+}
+
+.sidebar-brand p {
+font-size: 11px;
+color: #90cdf4;
+margin-bottom: 2px
+}
+
+.sidebar-brand small {
+font-size: 10px;
+color: #63b3ed;
+font-style: italic
+}
+
+.sidebar-nav {
+flex: 1;
+padding: 16px 0
+}
+
+.nav-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 11px 20px;
+color: rgba(255, 255, 255, .75);
+cursor: pointer;
+font-size: 14px;
+transition: .2s;
+border-left: 3px solid transparent
+}
+
+.nav-item:hover {
+background: rgba(255, 255, 255, .07);
+color: #fff
+}
+
+.nav-item.active {
+background: rgba(255, 255, 255, .12);
+color: #fff;
+border-left-color: #63b3ed
+}
+
+.nav-icon {
+font-size: 16px;
+width: 20px;
+text-align: center
+}
+
+.nav-sep {
+padding: 10px 20px 4px;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 1px;
+color: rgba(255, 255, 255, .35)
+}
+
+.sidebar-footer {
+padding: 16px 20px;
+border-top: 1px solid rgba(255, 255, 255, .1)
+}
+
+.sidebar-footer button {
+width: 100%;
+padding: 8px;
+background: rgba(255, 255, 255, .08);
+color: #fff;
+border: 1px solid rgba(255, 255, 255, .15);
+border-radius: 6px;
+cursor: pointer;
+font-size: 12px
+}
+
+.sidebar-footer button:hover {
+background: rgba(255, 255, 255, .15)
+}
+
+.main {
+flex: 1;
+overflow-y: auto;
+padding: 28px
+}
+
+/* ── PAGES ── */
+.page {
+display: none
+}
+
+.page.active {
+display: block
+}
+
+.page-header {
+margin-bottom: 24px
+}
+
+.page-header h1 {
+font-size: 22px;
+font-weight: 700;
+color: #1a202c
+}
+
+.page-header p {
+font-size: 13px;
+color: #718096;
+margin-top: 3px
+}
+
+/* ── CARDS ── */
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+gap: 16px;
+margin-bottom: 24px
+}
+
+.stat-card {
+background: #fff;
+padding: 18px;
+border-radius: 10px;
+box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+border: 1px solid #e2e8f0
+}
+
+.stat-card .val {
+font-size: 30px;
+font-weight: 700;
+color: #1e5f9e
+}
+
+.stat-card .lbl {
+font-size: 11px;
+color: #a0aec0;
+text-transform: uppercase;
+letter-spacing: .5px;
+margin-top: 2px
+}
+
+/* ── SECTION ── */
+.section {
+background: #fff;
+border-radius: 10px;
+box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+border: 1px solid #e2e8f0;
+margin-bottom: 20px
+}
+
+.section-header {
+padding: 16px 20px;
+border-bottom: 1px solid #e2e8f0;
+display: flex;
+align-items: center;
+justify-content: space-between
+}
+
+.section-header h2 {
+font-size: 15px;
+font-weight: 600;
+color: #2d3748
+}
+
+.section-body {
+padding: 20px
+}
+
+/* ── FORM ── */
+.form-row {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 14px
+}
+
+.form-row.cols3 {
+grid-template-columns: 1fr 1fr 1fr
+}
+
+.form-row.col1 {
+grid-template-columns: 1fr
+}
+
+/* ── TABLE ── */
+.tbl-wrap {
+overflow-x: auto
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+font-size: 13px
+}
+
+thead tr {
+background: #f7fafc
+}
+
+th {
+padding: 10px 14px;
+text-align: left;
+font-weight: 600;
+color: #718096;
+border-bottom: 2px solid #e2e8f0;
+white-space: nowrap
+}
+
+td {
+padding: 10px 14px;
+border-bottom: 1px solid #edf2f7;
+vertical-align: middle
+}
+
+tr:last-child td {
+border-bottom: none
+}
+
+tr:hover td {
+background: #fafbfc
+}
+
+/* ── BADGE ── */
+.badge {
+display: inline-block;
+padding: 3px 9px;
+border-radius: 20px;
+font-size: 11px;
+font-weight: 600
+}
+
+.badge-admin {
+background: #e9d8fd;
+color: #553c9a
+}
+
+.badge-nutricionista {
+background: #c6f6d5;
+color: #22543d
+}
+
+.badge-colaborador {
+background: #bee3f8;
+color: #2a4365
+}
+
+.badge-confirmed {
+background: #c6f6d5;
+color: #22543d
+}
+
+.badge-canceled {
+background: #fed7d7;
+color: #742a2a
+}
+
+/* ── MEAL TYPE PILL ── */
+.meal-pill {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+padding: 4px 10px;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 600
+}
+
+.meal-pill.cafe_manha {
+background: #fefce8;
+color: #854d0e
+}
+
+.meal-pill.almoco {
+background: #dcfce7;
+color: #166534
+}
+
+.meal-pill.lanche_tarde {
+background: #fff7ed;
+color: #9a3412
+}
+
+.meal-pill.janta {
+background: #ede9fe;
+color: #5b21b6
+}
+
+.meal-pill.lanche_noite {
+background: #e0f2fe;
+color: #075985
+}
+
+/* ── MEAL OPTION CARDS ── */
+.options-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+gap: 10px;
+margin: 12px 0
+}
+
+.option-card {
+padding: 14px;
+border: 2px solid #e2e8f0;
+border-radius: 10px;
+cursor: pointer;
+transition: .2s;
+text-align: center;
+font-size: 13px;
+font-weight: 600;
+color: #4a5568
+}
+
+.option-card:hover {
+border-color: #1e5f9e;
+background: #ebf4ff;
+color: #1e5f9e
+}
+
+.option-card.selected {
+border-color: #16a34a;
+background: #f0fdf4;
+color: #166534
+}
+
+/* ── MENU ITEMS ── */
+.menu-card {
+border: 1px solid #e2e8f0;
+border-radius: 10px;
+padding: 16px;
+margin-bottom: 12px
+}
+
+.menu-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 10px
+}
+
+.menu-card-title {
+display: flex;
+align-items: center;
+gap: 8px;
+font-weight: 600;
+color: #2d3748
+}
+
+.option-tags {
+display: flex;
+flex-wrap: wrap;
+gap: 6px
+}
+
+.option-tag {
+padding: 4px 10px;
+background: #edf2f7;
+border-radius: 20px;
+font-size: 12px;
+color: #4a5568
+}
+
+/* ── OPTIONS INPUT ── */
+.options-input-list {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-top: 8px
+}
+
+.option-input-row {
+display: flex;
+gap: 8px;
+align-items: center
+}
+
+.option-input-row input {
+flex: 1;
+padding: 8px 10px;
+border: 1.5px solid #e2e8f0;
+border-radius: 6px;
+font-size: 13px
+}
+
+/* ── COMPANY CHIPS ── */
+.chip-list {
+display: flex;
+flex-wrap: wrap;
+gap: 6px;
+margin-top: 6px
+}
+
+.chip {
+padding: 4px 10px;
+background: #ebf4ff;
+color: #1e5f9e;
+border-radius: 20px;
+font-size: 12px;
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 5px
+}
+
+.chip-x {
+cursor: pointer;
+font-size: 14px;
+line-height: 1;
+color: #90cdf4
+}
+
+.chip-x:hover {
+color: #1e5f9e
+}
+
+/* ── ALERT ── */
+.alert {
+padding: 12px 16px;
+border-radius: 8px;
+font-size: 13px;
+margin-bottom: 16px;
+display: none
+}
+
+.alert-error {
+background: #fff5f5;
+border: 1px solid #fed7d7;
+color: #c53030
+}
+
+.alert-success {
+background: #f0fff4;
+border: 1px solid #c6f6d5;
+color: #276749
+}
+
+.alert-warn {
+background: #fffbeb;
+border: 1px solid #fde68a;
+color: #92400e
+}
+
+/* ── EMPTY ── */
+.empty {
+text-align: center;
+padding: 40px 20px;
+color: #a0aec0
+}
+
+.empty-icon {
+font-size: 44px;
+margin-bottom: 10px
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px) {
+.layout {
+flex-direction: column
+}
+
+.sidebar {
+width: 100%;
+flex-direction: row;
+flex-wrap: wrap
+}
+
+.form-row,
+.form-row.cols3 {
+grid-template-columns: 1fr
+}
+
+.stats-grid {
+grid-template-columns: 1fr 1fr
+}
+}
+</style>
 </head>
 
 <body>
 
-    <!-- ══ TELA 1: LOGIN ══ -->
+<!-- ══ TELA 1: LOGIN ══ -->
 
-  <!-- ══ TELA 1: LOGIN ══ -->
-    <div id="screenLogin" class="screen auth-wrap active">
-        <div class="auth-card">
-            <!-- LOGO CENTRALIZADO -->
-            <div class="auth-logo">
-                <img src="logo.png" alt="Logo da Empresa">
-            </div>
-            <div class="alert alert-error" id="loginError"></div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" id="loginEmail" placeholder="seu@email.com">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="loginPassword" placeholder="••••••••"
-                    onkeydown="if(event.key==='Enter')doLogin()">
-            </div>
-            <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
-            <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
-                Admin padrão: admin@hospital.com / Admin@2024</p>
-        </div>
-    </div>
+<div id="screenLogin" class="screen auth-wrap active">
+<div class="auth-card" style="width: 100%; max-width: 420px; margin: 0 auto;">
+            <h1>🏥 NutriFlow</h1>
+            <h1><link href="https://play-lh.googleusercontent.com/Jy15yno9LkSEp7hQjqEUSLRKT4FPP0f6sbkMgcHRWuGrmaAYfT86aKcspbZ1_o5CRQhL0fYmDDAkJ5nV6EsjxQ=w480-h960-rw" rel="icon" type="image/x-icon"> NutriFlow</h1>
+<p>Sistema de refeições hospitalares</p>
+<div class="alert alert-error" id="loginError"></div>
+<div class="form-group"><label>Email</label>
+<input type="email" id="loginEmail" placeholder="seu@email.com">
+</div>
+<div class="form-group"><label>Senha</label>
+<input type="password" id="loginPassword" placeholder="••••••••"
+onkeydown="if(event.key==='Enter')doLogin()">
+</div>
+<button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+<p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
+Admin padrão: admin@hospital.com / Admin@2024</p>
+</div>
+</div>
+<!--<div id="screenLogin" class="screen auth-wrap active">
+           <div class="auth-card">
+               <h1>🏥 NutriFlow</h1>
+               <p>Sistema de refeições hospitalares</p>
+               <div class="alert alert-error" id="loginError"></div>
+               <div class="form-group"><label>Email</label>
+                   <input type="email" id="loginEmail" placeholder="seu@email.com">
+               </div>
+               <div class="form-group"><label>Senha</label>
+                   <input type="password" id="loginPassword" placeholder="••••••••"
+                       onkeydown="if(event.key==='Enter')doLogin()">
+               </div>
+               <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+               <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
+                   Admin padrão: admin@hospital.com / Admin@2024</p>
+           </div>
+       </div> -->
 
-    <!--<div id="screenLogin" class="screen auth-wrap active">
-            <div class="auth-card">
-                <h1>🏥 NutriFlow</h1>
-                <p>Sistema de refeições hospitalares</p>
-                <div class="alert alert-error" id="loginError"></div>
-                <div class="form-group"><label>Email</label>
-                    <input type="email" id="loginEmail" placeholder="seu@email.com">
-                </div>
-                <div class="form-group"><label>Senha</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••"
-                        onkeydown="if(event.key==='Enter')doLogin()">
-                </div>
-                <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
-                <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
-                    Admin padrão: admin@hospital.com / Admin@2024</p>
-            </div>
-        </div> -->
+<!-- ══ TELA 2: SELECIONAR EMPRESA ══ -->
+<div id="screenCompany" class="screen auth-wrap">
+<div class="auth-card">
+<h1>🏢 Selecionar empresa</h1>
+<p id="companyGreeting">Escolha em qual empresa deseja entrar</p>
+<div class="alert alert-error" id="companyError"></div>
+<div class="company-list" id="companyList"></div>
+<button class="btn btn-secondary btn-full" onclick="goToLogin()">← Voltar</button>
+</div>
+</div>
 
-    <!-- ══ TELA 2: SELECIONAR EMPRESA ══ -->
-    <div id="screenCompany" class="screen auth-wrap">
-        <div class="auth-card">
-            <h1>🏢 Selecionar empresa</h1>
-            <p id="companyGreeting">Escolha em qual empresa deseja entrar</p>
-            <div class="alert alert-error" id="companyError"></div>
-            <div class="company-list" id="companyList"></div>
-            <button class="btn btn-secondary btn-full" onclick="goToLogin()">← Voltar</button>
-        </div>
-    </div>
+<!-- ══ TELA 3: DASHBOARD ══ -->
+<div id="screenApp" class="screen">
+<div class="layout">
 
-    <!-- ══ TELA 3: DASHBOARD ══ -->
-    <div id="screenApp" class="screen">
-        <div class="layout">
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div class="sidebar-brand">
+<h2>🏥 NutriFlow</h2>
+<p id="sbUser" style="font-weight:600"></p>
+<small id="sbCompany"></small>
+</div>
+<nav class="sidebar-nav" id="sidebarNav"></nav>
+<div class="sidebar-footer">
+<button onclick="goToLogin()">↩ Trocar empresa</button>
+<button onclick="doLogout()"
+style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕
+Sair</button>
+</div>
+</div>
 
-            <!-- SIDEBAR -->
-            <div class="sidebar">
-                <div class="sidebar-brand">
-                    <h2>🏥 NutriFlow</h2>
-                    <p id="sbUser" style="font-weight:600"></p>
-                    <small id="sbCompany"></small>
-                </div>
-                <nav class="sidebar-nav" id="sidebarNav"></nav>
-                <div class="sidebar-footer">
-                    <button onclick="goToLogin()">↩ Trocar empresa</button>
-                    <button onclick="doLogout()"
-                        style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕
-                        Sair</button>
-                </div>
-            </div>
+<!-- MAIN -->
+<div class="main">
 
-            <!-- MAIN -->
-            <div class="main">
+<!-- PAGE: Início -->
+<div class="page active" id="pageHome">
+<div class="page-header">
+<h1 id="homeTitle">Bom dia 👋</h1>
+<p id="homeSubtitle"></p>
+</div>
+<div class="stats-grid" id="homeStats"></div>
+<div id="homeContent"></div>
+</div>
 
-                <!-- PAGE: Início -->
-                <div class="page active" id="pageHome">
-                    <div class="page-header">
-                        <h1 id="homeTitle">Bom dia 👋</h1>
-                        <p id="homeSubtitle"></p>
-                    </div>
-                    <div class="stats-grid" id="homeStats"></div>
-                    <div id="homeContent"></div>
-                </div>
+<!-- PAGE: Fazer solicitação (colaborador/nutri) -->
+<div class="page" id="pageRequest">
+<div class="page-header">
+<h1>🍽️ Solicitar refeição</h1>
+<p>Escolha a refeição e sua opção preferida</p>
+</div>
+<div class="alert alert-error" id="reqError"></div>
+<div class="alert alert-success" id="reqSuccess"></div>
+<div id="requestMenuList"></div>
+</div>
 
-                <!-- PAGE: Fazer solicitação (colaborador/nutri) -->
-                <div class="page" id="pageRequest">
-                    <div class="page-header">
-                        <h1>🍽️ Solicitar refeição</h1>
-                        <p>Escolha a refeição e sua opção preferida</p>
-                    </div>
-                    <div class="alert alert-error" id="reqError"></div>
-                    <div class="alert alert-success" id="reqSuccess"></div>
-                    <div id="requestMenuList"></div>
-                </div>
+<!-- PAGE: Minhas solicitações -->
+<div class="page" id="pageMyReqs">
+<div class="page-header">
+<h1>📋 Minhas solicitações</h1>
+<p>Acompanhe e cancele suas solicitações</p>
+</div>
+<div class="alert alert-error" id="myReqError"></div>
+<div class="alert alert-success" id="myReqSuccess"></div>
+<div class="section">
+<div class="section-body" id="myReqsBody">
+<div class="empty">
+<div class="empty-icon">📭</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                <!-- PAGE: Minhas solicitações -->
-                <div class="page" id="pageMyReqs">
-                    <div class="page-header">
-                        <h1>📋 Minhas solicitações</h1>
-                        <p>Acompanhe e cancele suas solicitações</p>
-                    </div>
-                    <div class="alert alert-error" id="myReqError"></div>
-                    <div class="alert alert-success" id="myReqSuccess"></div>
-                    <div class="section">
-                        <div class="section-body" id="myReqsBody">
-                            <div class="empty">
-                                <div class="empty-icon">📭</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- PAGE: Gerenciar cardápio (nutri) -->
+<div class="page" id="pageMenu">
+<div class="page-header">
+<h1>📅 Gerenciar cardápio</h1>
+<p>Cadastre as refeições e opções disponíveis</p>
+</div>
+<div class="alert alert-error" id="menuError"></div>
+<div class="alert alert-success" id="menuSuccess"></div>
 
-                <!-- PAGE: Gerenciar cardápio (nutri) -->
-                <div class="page" id="pageMenu">
-                    <div class="page-header">
-                        <h1>📅 Gerenciar cardápio</h1>
-                        <p>Cadastre as refeições e opções disponíveis</p>
-                    </div>
-                    <div class="alert alert-error" id="menuError"></div>
-                    <div class="alert alert-success" id="menuSuccess"></div>
+<div class="section">
+<div class="section-header">
+<h2>Nova refeição</h2>
+</div>
+<div class="section-body">
+<div class="form-row">
+<div class="form-group"><label>Data</label>
+<input type="date" id="newMenuDate">
+</div>
+<div class="form-group"><label>Tipo de refeição</label>
+<select id="newMenuType">
+<option value="">Selecione...</option>
+<option value="cafe_manha">☕ Café da manhã</option>
+<option value="almoco">🍛 Almoço</option>
+<option value="lanche_tarde">🥪 Lanche da tarde</option>
+<option value="janta">🍽️ Jantar</option>
+<option value="lanche_noite">🌙 Lanche da noite</option>
+</select>
+</div>
+<div class="form-group"><label>Horário</label>
+<input type="time" id="newMenuTime">
+</div>
+</div>
+<div class="form-group">
+<label>Opções disponíveis <span style="color:#a0aec0;font-weight:400">(adicione pelo
+menos 1)</span></label>
+<div id="optionInputs" class="options-input-list">
+<div class="option-input-row">
+<input type="text" placeholder="Ex: Frango grelhado">
+<button class="btn btn-danger btn-sm"
+onclick="removeOptionInput(this)">✕</button>
+</div>
+</div>
+<button class="btn btn-secondary btn-sm" style="margin-top:8px"
+onclick="addOptionInput()">+ Adicionar opção</button>
+</div>
+<button class="btn btn-success" onclick="saveMenu()">Salvar refeição</button>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Nova refeição</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="form-row">
-                                <div class="form-group"><label>Data</label>
-                                    <input type="date" id="newMenuDate">
-                                </div>
-                                <div class="form-group"><label>Tipo de refeição</label>
-                                    <select id="newMenuType">
-                                        <option value="">Selecione...</option>
-                                        <option value="cafe_manha">☕ Café da manhã</option>
-                                        <option value="almoco">🍛 Almoço</option>
-                                        <option value="lanche_tarde">🥪 Lanche da tarde</option>
-                                        <option value="janta">🍽️ Jantar</option>
-                                        <option value="lanche_noite">🌙 Lanche da noite</option>
-                                    </select>
-                                </div>
-                                <div class="form-group"><label>Horário</label>
-                                    <input type="time" id="newMenuTime">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Opções disponíveis <span style="color:#a0aec0;font-weight:400">(adicione pelo
-                                        menos 1)</span></label>
-                                <div id="optionInputs" class="options-input-list">
-                                    <div class="option-input-row">
-                                        <input type="text" placeholder="Ex: Frango grelhado">
-                                        <button class="btn btn-danger btn-sm"
-                                            onclick="removeOptionInput(this)">✕</button>
-                                    </div>
-                                </div>
-                                <button class="btn btn-secondary btn-sm" style="margin-top:8px"
-                                    onclick="addOptionInput()">+ Adicionar opção</button>
-                            </div>
-                            <button class="btn btn-success" onclick="saveMenu()">Salvar refeição</button>
-                        </div>
-                    </div>
+<div class="section">
+<div class="section-header">
+<h2>Cardápio cadastrado</h2>
+<div style="display:flex;gap:8px;align-items:center">
+<input type="date" id="menuFilterDate" onchange="loadMenuNutri()">
+<button class="btn btn-secondary btn-sm"
+onclick="document.getElementById('menuFilterDate').value='';loadMenuNutri()">Limpar</button>
+</div>
+</div>
+<div class="section-body" id="menuListBody">
+<div class="empty">
+<div class="empty-icon">📋</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Cardápio cadastrado</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="menuFilterDate" onchange="loadMenuNutri()">
-                                <button class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('menuFilterDate').value='';loadMenuNutri()">Limpar</button>
-                            </div>
-                        </div>
-                        <div class="section-body" id="menuListBody">
-                            <div class="empty">
-                                <div class="empty-icon">📋</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- PAGE: Painel de solicitações (nutri) -->
+<div class="page" id="pageRequests">
+<div class="page-header">
+<h1>📊 Solicitações recebidas</h1>
+<p>Veja quantas e quais refeições foram pedidas</p>
+</div>
+<div class="section">
+<div class="section-header">
+<h2>Filtrar por data</h2>
+<div style="display:flex;gap:8px;align-items:center">
+<input type="date" id="reqFilterDate" onchange="loadAllRequests()">
+<button class="btn btn-secondary btn-sm"
+onclick="document.getElementById('reqFilterDate').value='';loadAllRequests()">Limpar</button>
+</div>
+</div>
+<div class="section-body" id="allReqsBody">
+<div class="empty">
+<div class="empty-icon">📭</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                <!-- PAGE: Painel de solicitações (nutri) -->
-                <div class="page" id="pageRequests">
-                    <div class="page-header">
-                        <h1>📊 Solicitações recebidas</h1>
-                        <p>Veja quantas e quais refeições foram pedidas</p>
-                    </div>
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Filtrar por data</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="reqFilterDate" onchange="loadAllRequests()">
-                                <button class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('reqFilterDate').value='';loadAllRequests()">Limpar</button>
-                            </div>
-                        </div>
-                        <div class="section-body" id="allReqsBody">
-                            <div class="empty">
-                                <div class="empty-icon">📭</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- PAGE: Estatísticas (nutri) -->
+<div class="page" id="pageStats">
+<div class="page-header">
+<h1>📈 Estatísticas</h1>
+<p>Resumo de refeições por opção</p>
+</div>
+<div class="section">
+<div class="section-header">
+<h2>Filtrar por data</h2>
+<div style="display:flex;gap:8px;align-items:center">
+<input type="date" id="statsDate" onchange="loadStats()">
+<button class="btn btn-secondary btn-sm"
+onclick="document.getElementById('statsDate').value='';loadStats()">Todas</button>
+</div>
+</div>
+<div class="section-body" id="statsBody">
+<div class="empty">
+<div class="empty-icon">📊</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                <!-- PAGE: Estatísticas (nutri) -->
-                <div class="page" id="pageStats">
-                    <div class="page-header">
-                        <h1>📈 Estatísticas</h1>
-                        <p>Resumo de refeições por opção</p>
-                    </div>
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Filtrar por data</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="statsDate" onchange="loadStats()">
-                                <button class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('statsDate').value='';loadStats()">Todas</button>
-                            </div>
-                        </div>
-                        <div class="section-body" id="statsBody">
-                            <div class="empty">
-                                <div class="empty-icon">📊</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- PAGE: Usuários (admin) -->
+<div class="page" id="pageUsers">
+<div class="page-header">
+<h1>👥 Usuários</h1>
+<p>Gerencie os usuários do sistema</p>
+</div>
+<div class="alert alert-error" id="usersError"></div>
+<div class="alert alert-success" id="usersSuccess"></div>
 
-                <!-- PAGE: Usuários (admin) -->
-                <div class="page" id="pageUsers">
-                    <div class="page-header">
-                        <h1>👥 Usuários</h1>
-                        <p>Gerencie os usuários do sistema</p>
-                    </div>
-                    <div class="alert alert-error" id="usersError"></div>
-                    <div class="alert alert-success" id="usersSuccess"></div>
+<div class="section">
+<div class="section-header">
+<h2>Novo usuário</h2>
+</div>
+<div class="section-body">
+<div class="form-row">
+<div class="form-group"><label>Nome</label><input type="text" id="nuName"
+placeholder="João Silva"></div>
+<div class="form-group"><label>Email</label><input type="email" id="nuEmail"
+placeholder="joao@hospital.com"></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Senha</label><input type="password" id="nuPass"
+placeholder="Senha segura"></div>
+<div class="form-group"><label>Tipo de acesso</label>
+<select id="nuRole">
+<option value="colaborador">Colaborador</option>
+<option value="nutricionista">Nutricionista</option>
+<option value="admin">Administrador</option>
+</select>
+</div>
+</div>
+<div class="form-group">
+<label>Empresas vinculadas</label>
+<select id="nuCompanySelect" onchange="addCompanyChip()">
+<option value="">Selecione para adicionar...</option>
+</select>
+<div class="chip-list" id="nuCompanyChips"></div>
+</div>
+<button class="btn btn-success" onclick="createUser()">Criar usuário</button>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Novo usuário</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="form-row">
-                                <div class="form-group"><label>Nome</label><input type="text" id="nuName"
-                                        placeholder="João Silva"></div>
-                                <div class="form-group"><label>Email</label><input type="email" id="nuEmail"
-                                        placeholder="joao@hospital.com"></div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group"><label>Senha</label><input type="password" id="nuPass"
-                                        placeholder="Senha segura"></div>
-                                <div class="form-group"><label>Tipo de acesso</label>
-                                    <select id="nuRole">
-                                        <option value="colaborador">Colaborador</option>
-                                        <option value="nutricionista">Nutricionista</option>
-                                        <option value="admin">Administrador</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Empresas vinculadas</label>
-                                <select id="nuCompanySelect" onchange="addCompanyChip()">
-                                    <option value="">Selecione para adicionar...</option>
-                                </select>
-                                <div class="chip-list" id="nuCompanyChips"></div>
-                            </div>
-                            <button class="btn btn-success" onclick="createUser()">Criar usuário</button>
-                        </div>
-                    </div>
+<div class="section">
+<div class="section-header">
+<h2>Usuários cadastrados</h2>
+</div>
+<div class="section-body" id="usersBody">
+<div class="empty">
+<div class="empty-icon">👥</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Usuários cadastrados</h2>
-                        </div>
-                        <div class="section-body" id="usersBody">
-                            <div class="empty">
-                                <div class="empty-icon">👥</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- PAGE: Empresas (admin) -->
+<div class="page" id="pageCompanies">
+<div class="page-header">
+<h1>🏢 Empresas</h1>
+<p>Gerencie as empresas do sistema</p>
+</div>
+<div class="alert alert-error" id="compError"></div>
+<div class="alert alert-success" id="compSuccess"></div>
 
-                <!-- PAGE: Empresas (admin) -->
-                <div class="page" id="pageCompanies">
-                    <div class="page-header">
-                        <h1>🏢 Empresas</h1>
-                        <p>Gerencie as empresas do sistema</p>
-                    </div>
-                    <div class="alert alert-error" id="compError"></div>
-                    <div class="alert alert-success" id="compSuccess"></div>
+<div class="section">
+<div class="section-header">
+<h2>Nova empresa</h2>
+</div>
+<div class="section-body">
+<div class="form-row">
+<div class="form-group"><label>Nome da empresa</label><input type="text" id="ncName"
+placeholder="Hospital São Lucas"></div>
+<div class="form-group"><label>CNPJ <span
+style="color:#a0aec0;font-weight:400">(opcional)</span></label>
+<input type="text" id="ncCnpj" placeholder="00.000.000/0001-00">
+</div>
+</div>
+<button class="btn btn-success" onclick="createCompany()">Criar empresa</button>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Nova empresa</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="form-row">
-                                <div class="form-group"><label>Nome da empresa</label><input type="text" id="ncName"
-                                        placeholder="Hospital São Lucas"></div>
-                                <div class="form-group"><label>CNPJ <span
-                                            style="color:#a0aec0;font-weight:400">(opcional)</span></label>
-                                    <input type="text" id="ncCnpj" placeholder="00.000.000/0001-00">
-                                </div>
-                            </div>
-                            <button class="btn btn-success" onclick="createCompany()">Criar empresa</button>
-                        </div>
-                    </div>
+<div class="section">
+<div class="section-header">
+<h2>Empresas cadastradas</h2>
+</div>
+<div class="section-body" id="companiesBody">
+<div class="empty">
+<div class="empty-icon">🏢</div>
+<p>Carregando...</p>
+</div>
+</div>
+</div>
+</div>
 
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Empresas cadastradas</h2>
-                        </div>
-                        <div class="section-body" id="companiesBody">
-                            <div class="empty">
-                                <div class="empty-icon">🏢</div>
-                                <p>Carregando...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+</div><!-- /main -->
+</div><!-- /layout -->
+</div><!-- /screenApp -->
 
-            </div><!-- /main -->
-        </div><!-- /layout -->
-    </div><!-- /screenApp -->
+<script src="config.js"></script>
+<script>
+// ══════════════════════════════════════════════
+//  1. CONFIGURAÇÃO DO SUPABASE
+// ══════════════════════════════════════════════
+const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
 
-    <script src="config.js"></script>
-    <script>
-        // ══════════════════════════════════════════════
-        //  1. CONFIGURAÇÃO DO SUPABASE
-        // ══════════════════════════════════════════════
-        const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
+// Inicializa o cliente do Supabase
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Inicializa o cliente do Supabase
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ══════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ══════════════════════════════════════════════
+let state = {
+token: null,
+user: null,
+company: null,
+pendingUser: null,
+pendingCompanies: []
+};
 
-        // ══════════════════════════════════════════════
-        //  ESTADO GLOBAL
-        // ══════════════════════════════════════════════
-        let state = {
-            token: null,
-            user: null,
-            company: null,
-            pendingUser: null,
-            pendingCompanies: []
-        };
+const MEAL_LABELS = {
+cafe_manha: '☕ Café da manhã',
+almoco: '🍛 Almoço',
+lanche_tarde: '🥪 Lanche da tarde',
+janta: '🍽️ Jantar',
+lanche_noite: '🌙 Lanche da noite'
+};
 
-        const MEAL_LABELS = {
-            cafe_manha: '☕ Café da manhã',
-            almoco: '🍛 Almoço',
-            lanche_tarde: '🥪 Lanche da tarde',
-            janta: '🍽️ Jantar',
-            lanche_noite: '🌙 Lanche da noite'
-        };
+// ══════════════════════════════════════════════
+//  FUNÇÕES AUXILIARES DE TELA
+// ══════════════════════════════════════════════
+function showScreen(id) {
+// 1. Esconde TODAS as telas e força display: none
+document.querySelectorAll('.screen').forEach(s => {
+s.classList.remove('active');
+s.style.setProperty('display', 'none', 'important');
+});
 
-        // ══════════════════════════════════════════════
-        //  FUNÇÕES AUXILIARES DE TELA
-        // ══════════════════════════════════════════════
-        function showScreen(id) {
-            // 1. Esconde TODAS as telas e força display: none
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active');
-                s.style.setProperty('display', 'none', 'important');
-            });
+// 2. Exibe APENAS a tela solicitada
+const target = document.getElementById(id);
+if (target) {
+target.classList.add('active');
+if (target.classList.contains('auth-wrap')) {
+target.style.setProperty('display', 'flex', 'important');
+} else {
+target.style.setProperty('display', 'block', 'important');
+}
+}
 
-            // 2. Exibe APENAS a tela solicitada
-            const target = document.getElementById(id);
-            if (target) {
-                target.classList.add('active');
-                if (target.classList.contains('auth-wrap')) {
-                    target.style.setProperty('display', 'flex', 'important');
-                } else {
-                    target.style.setProperty('display', 'block', 'important');
-                }
-            }
-
-            // 3. Rola a página para o topo
-            window.scrollTo(0, 0);
-        }
+// 3. Rola a página para o topo
+window.scrollTo(0, 0);
+}
 
 
 
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const el = document.getElementById(id);
-            if (el) el.classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.toggle('active', n.dataset.page === id);
-            });
-        }
+function showPage(id) {
+document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+const el = document.getElementById(id);
+if (el) el.classList.add('active');
+document.querySelectorAll('.nav-item').forEach(n => {
+n.classList.toggle('active', n.dataset.page === id);
+});
+}
 
-        function alert_(elId, msg, type = 'error') {
-            const el = document.getElementById(elId);
-            if (!el) return;
-            el.className = `alert alert-${type}`;
-            el.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 5000);
-        }
+function alert_(elId, msg, type = 'error') {
+const el = document.getElementById(elId);
+if (!el) return;
+el.className = `alert alert-${type}`;
+el.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
+el.style.display = 'block';
+setTimeout(() => el.style.display = 'none', 5000);
+}
 
-        function fmtDate(d) {
-            if (!d) return '-';
-            return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        }
+function fmtDate(d) {
+if (!d) return '-';
+return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+}
 
-        function hoursUntil(dateStr, timeStr) {
-            return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
-        }
+function hoursUntil(dateStr, timeStr) {
+return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
+}
 
-        // ══════════════════════════════════════════════
-        //  AUTENTICAÇÃO COM SUPABASE
-        // ══════════════════════════════════════════════
-                // ══════════════════════════════════════════════
-        //  AUTENTICAÇÃO COM SUPABASE
-        // ══════════════════════════════════════════════
-        async function doLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
+// ══════════════════════════════════════════════
+//  AUTENTICAÇÃO COM SUPABASE
+// ══════════════════════════════════════════════
+// ══════════════════════════════════════════════
+//  AUTENTICAÇÃO COM SUPABASE
+// ══════════════════════════════════════════════
+async function doLogin() {
+const email = document.getElementById('loginEmail').value.trim();
+const password = document.getElementById('loginPassword').value;
+if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
 
-            try {
-                // 1. Autentica no Supabase
-                const { data, error } = await sb.auth.signInWithPassword({ email, password });
-                if (error) throw error;
+try {
+// 1. Autentica no Supabase
+const { data, error } = await sb.auth.signInWithPassword({ email, password });
+if (error) throw error;
 
-                // 2. Busca perfil do usuário
-                const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-                const role = profile?.role || 'colaborador';
+// 2. Busca perfil do usuário
+const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+const role = profile?.role || 'colaborador';
 
-                state.user = {
-                    id: data.user.id,
-                    email: data.user.email,
-                    name: profile?.name || data.user.email.split('@')[0],
-                    role: role
-                };
-                state.token = data.session.access_token;
+state.user = {
+id: data.user.id,
+email: data.user.email,
+name: profile?.name || data.user.email.split('@')[0],
+role: role
+};
+state.token = data.session.access_token;
 
-                // 3. Regra de Empresas:
-                let companies = [];
+// 3. Regra de Empresas:
+let companies = [];
 
-                if (role === 'admin') {
-                    // Administrador tem acesso a TODAS as empresas ativas
-                    const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
-                    companies = allComps || [];
-                } else {
-                    // Colaboradores e Nutricionistas veem apenas as empresas vinculadas a eles
-                    const { data: userComps } = await sb.from('company_users')
-                        .select('companies(*)')
-                        .eq('user_id', data.user.id);
+if (role === 'admin') {
+// Administrador tem acesso a TODAS as empresas ativas
+const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
+companies = allComps || [];
+} else {
+// Colaboradores e Nutricionistas veem apenas as empresas vinculadas a eles
+const { data: userComps } = await sb.from('company_users')
+.select('companies(*)')
+.eq('user_id', data.user.id);
 
-                    companies = (userComps || [])
-                        .map(uc => uc.companies)
-                        .filter(c => c && c.active);
-                }
+companies = (userComps || [])
+.map(uc => uc.companies)
+.filter(c => c && c.active);
+}
 
-                // 4. Remove qualquer duplicidade de empresas pelo ID
+// 4. Remove qualquer duplicidade de empresas pelo ID
+                const seen = new Set();
+                companies = companies.filter(c => {
+                    const key = (c.name || '').trim().toLowerCase();
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
                 companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
-                state.pendingCompanies = companies;
+state.pendingCompanies = companies;
 
-                if (companies.length === 0) {
-                    return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
-                }
+if (companies.length === 0) {
+return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+}
 
-                // Se tiver apenas 1 empresa, entra direto sem perguntar
-                if (companies.length === 1) {
-                    state.company = companies[0];
-                    buildApp();
-                    showScreen('screenApp');
-                } else {
-                    // Se tiver mais de 1 empresa, abre a tela de seleção limpa e sem duplicatas
-                    document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
-                    const list = document.getElementById('companyList');
-                    list.innerHTML = '';
-                    companies.forEach(c => {
-                        const btn = document.createElement('button');
-                        btn.className = 'company-btn';
-                        btn.textContent = '🏢 ' + c.name;
-                        btn.onclick = () => {
-                            state.company = c;
-                            buildApp();
-                            showScreen('screenApp');
-                        };
-                        list.appendChild(btn);
-                    });
-                    showScreen('screenCompany');
-                }
-            } catch (e) {
-                alert_('loginError', e.message || 'Erro ao realizar login');
-            }
-        }
+// Se tiver apenas 1 empresa, entra direto sem perguntar
+if (companies.length === 1) {
+state.company = companies[0];
+buildApp();
+showScreen('screenApp');
+} else {
+// Se tiver mais de 1 empresa, abre a tela de seleção limpa e sem duplicatas
+document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
+const list = document.getElementById('companyList');
+list.innerHTML = '';
+companies.forEach(c => {
+const btn = document.createElement('button');
+btn.className = 'company-btn';
+btn.textContent = '🏢 ' + c.name;
+btn.onclick = () => {
+state.company = c;
+buildApp();
+showScreen('screenApp');
+};
+list.appendChild(btn);
+});
+showScreen('screenCompany');
+}
+} catch (e) {
+alert_('loginError', e.message || 'Erro ao realizar login');
+}
+}
 
-        async function doLogout() {
-            await sb.auth.signOut();
-            state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
-            showScreen('screenLogin');
-        }
 
-        function goToLogin() {
-            doLogout();
-        }
+async function doLogout() {
+await sb.auth.signOut();
+state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
+showScreen('screenLogin');
+}
 
-        // ══════════════════════════════════════════════
-        //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
-        // ══════════════════════════════════════════════
-        function buildApp() {
-            const role = state.user.role;
-            document.getElementById('sbUser').textContent = state.user.name;
-            document.getElementById('sbCompany').textContent = state.company.name;
-            document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
-            document.getElementById('homeSubtitle').textContent =
-                `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
+function goToLogin() {
+doLogout();
+}
 
-            const nav = document.getElementById('sidebarNav');
-            nav.innerHTML = '';
+// ══════════════════════════════════════════════
+//  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
+// ══════════════════════════════════════════════
+function buildApp() {
+const role = state.user.role;
+document.getElementById('sbUser').textContent = state.user.name;
+document.getElementById('sbCompany').textContent = state.company.name;
+document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
+document.getElementById('homeSubtitle').textContent =
+`${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
 
-            const items = [
-                { page: 'pageHome', icon: '🏠', label: 'Início' },
-                { page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
-                { page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
-            ];
+const nav = document.getElementById('sidebarNav');
+nav.innerHTML = '';
 
-            if (role === 'nutricionista' || role === 'admin') {
-                items.push(
-                    { sep: 'Nutrição' },
-                    { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
-                    { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
-                    { page: 'pageStats', icon: '📈', label: 'Estatísticas' }
-                );
-            }
-            if (role === 'admin') {
-                items.push(
-                    { sep: 'Administração' },
-                    { page: 'pageUsers', icon: '👥', label: 'Usuários' },
-                    { page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
-                );
-            }
+const items = [
+{ page: 'pageHome', icon: '🏠', label: 'Início' },
+{ page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
+{ page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
+];
 
-            items.forEach(item => {
-                if (item.sep) {
-                    const s = document.createElement('div');
-                    s.className = 'nav-sep'; s.textContent = item.sep;
-                    nav.appendChild(s);
-                } else {
-                    const a = document.createElement('div');
-                    a.className = 'nav-item'; a.dataset.page = item.page;
-                    a.innerHTML = `<span class="nav-icon">${item.icon}</span>${item.label}`;
-                    a.onclick = () => navigateTo(item.page);
-                    nav.appendChild(a);
-                }
-            });
+if (role === 'nutricionista' || role === 'admin') {
+items.push(
+{ sep: 'Nutrição' },
+{ page: 'pageMenu', icon: '📅', label: 'Cardápio' },
+{ page: 'pageRequests', icon: '📊', label: 'Solicitações' },
+{ page: 'pageStats', icon: '📈', label: 'Estatísticas' }
+);
+}
+if (role === 'admin') {
+items.push(
+{ sep: 'Administração' },
+{ page: 'pageUsers', icon: '👥', label: 'Usuários' },
+{ page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
+);
+}
 
-            navigateTo('pageHome');
-        }
+items.forEach(item => {
+if (item.sep) {
+const s = document.createElement('div');
+s.className = 'nav-sep'; s.textContent = item.sep;
+nav.appendChild(s);
+} else {
+const a = document.createElement('div');
+a.className = 'nav-item'; a.dataset.page = item.page;
+a.innerHTML = `<span class="nav-icon">${item.icon}</span>${item.label}`;
+a.onclick = () => navigateTo(item.page);
+nav.appendChild(a);
+}
+});
 
-        function navigateTo(pageId) {
-            showPage(pageId);
-            if (pageId === 'pageHome') loadHome();
-            if (pageId === 'pageRequest') loadRequestPage();
-            if (pageId === 'pageMyReqs') loadMyReqs();
-            if (pageId === 'pageMenu') loadMenuNutri();
-            if (pageId === 'pageRequests') loadAllRequests();
-            if (pageId === 'pageStats') loadStats();
-            if (pageId === 'pageUsers') loadUsers();
-            if (pageId === 'pageCompanies') loadCompanies();
-        }
+navigateTo('pageHome');
+}
 
-        // ══════════════════════════════════════════════
-        //  PÁGINA INICIAL (HOME)
-        // ══════════════════════════════════════════════
-        async function loadHome() {
-            const statsEl = document.getElementById('homeStats');
-            const contentEl = document.getElementById('homeContent');
+function navigateTo(pageId) {
+showPage(pageId);
+if (pageId === 'pageHome') loadHome();
+if (pageId === 'pageRequest') loadRequestPage();
+if (pageId === 'pageMyReqs') loadMyReqs();
+if (pageId === 'pageMenu') loadMenuNutri();
+if (pageId === 'pageRequests') loadAllRequests();
+if (pageId === 'pageStats') loadStats();
+if (pageId === 'pageUsers') loadUsers();
+if (pageId === 'pageCompanies') loadCompanies();
+}
 
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-                const { data: menu } = await sb.from('menus')
-                    .select('*, options:menu_options(*)')
-                    .eq('company_id', state.company.id)
-                    .gte('meal_date', today);
+// ══════════════════════════════════════════════
+//  PÁGINA INICIAL (HOME)
+// ══════════════════════════════════════════════
+async function loadHome() {
+const statsEl = document.getElementById('homeStats');
+const contentEl = document.getElementById('homeContent');
 
-                const { data: myReqs } = await sb.from('meal_requests')
-                    .select('id')
-                    .eq('user_id', state.user.id);
+try {
+const today = new Date().toISOString().slice(0, 10);
+const { data: menu } = await sb.from('menus')
+.select('*, options:menu_options(*)')
+.eq('company_id', state.company.id)
+.gte('meal_date', today);
 
-                statsEl.innerHTML = `
-                    <div class="stat-card"><div class="val">${menu?.length || 0}</div><div class="lbl">Cardápios ativos</div></div>
-                    <div class="stat-card"><div class="val">${myReqs?.length || 0}</div><div class="lbl">Minhas solicitações</div></div>
-                `;
+const { data: myReqs } = await sb.from('meal_requests')
+.select('id')
+.eq('user_id', state.user.id);
 
-                if (menu && menu.length > 0) {
-                    contentEl.innerHTML = `
-                        <div class="section">
-                            <div class="section-header"><h2>Próximas Refeições Disponíveis</h2></div>
-                            <div class="section-body">
-                                ${menu.map(m => `
-                                    <div class="menu-card">
-                                        <div class="menu-card-header">
-                                            <div class="menu-card-title">
-                                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
-                                            </div>
-                                        </div>
-                                        <div class="option-tags">
-                                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    contentEl.innerHTML = `<div class="section"><div class="section-body">
-                        <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível no momento</p></div>
-                    </div></div>`;
-                }
-            } catch (e) {
-                contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${e.message}</div>`;
-            }
-        }
+statsEl.innerHTML = `
+                   <div class="stat-card"><div class="val">${menu?.length || 0}</div><div class="lbl">Cardápios ativos</div></div>
+                   <div class="stat-card"><div class="val">${myReqs?.length || 0}</div><div class="lbl">Minhas solicitações</div></div>
+               `;
 
-        // ══════════════════════════════════════════════
-        //  SOLICITAR REFEIÇÃO (COLABORADOR)
-        // ══════════════════════════════════════════════
-        let selectedOptions = {};
+if (menu && menu.length > 0) {
+contentEl.innerHTML = `
+                       <div class="section">
+                           <div class="section-header"><h2>Próximas Refeições Disponíveis</h2></div>
+                           <div class="section-body">
+                               ${menu.map(m => `
+                                   <div class="menu-card">
+                                       <div class="menu-card-header">
+                                           <div class="menu-card-title">
+                                               <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                                               <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                                           </div>
+                                       </div>
+                                       <div class="option-tags">
+                                           ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                                       </div>
+                                   </div>
+                               `).join('')}
+                           </div>
+                       </div>
+                   `;
+} else {
+contentEl.innerHTML = `<div class="section"><div class="section-body">
+                       <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível no momento</p></div>
+                   </div></div>`;
+}
+} catch (e) {
+contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${e.message}</div>`;
+}
+}
 
-        async function loadRequestPage() {
-            const el = document.getElementById('requestMenuList');
-            el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-                const { data: menu } = await sb.from('menus')
-                    .select('*, options:menu_options(*)')
-                    .eq('company_id', state.company.id)
-                    .gte('meal_date', today);
+// ══════════════════════════════════════════════
+//  SOLICITAR REFEIÇÃO (COLABORADOR)
+// ══════════════════════════════════════════════
+let selectedOptions = {};
 
-                const { data: myReqs } = await sb.from('meal_requests')
-                    .select('menu_id')
-                    .eq('user_id', state.user.id);
+async function loadRequestPage() {
+const el = document.getElementById('requestMenuList');
+el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
+try {
+const today = new Date().toISOString().slice(0, 10);
+const { data: menu } = await sb.from('menus')
+.select('*, options:menu_options(*)')
+.eq('company_id', state.company.id)
+.gte('meal_date', today);
 
-                const requestedMenuIds = new Set((myReqs || []).map(r => r.menu_id));
-                const available = (menu || []).filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
+const { data: myReqs } = await sb.from('meal_requests')
+.select('menu_id')
+.eq('user_id', state.user.id);
 
-                if (!available.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (necessário antecedência mínima de 24h)</p></div>';
-                    return;
-                }
+const requestedMenuIds = new Set((myReqs || []).map(r => r.menu_id));
+const available = (menu || []).filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
 
-                el.innerHTML = available.map(m => {
-                    const already = requestedMenuIds.has(m.id);
-                    return `
-                        <div class="section" id="menuSection${m.id}">
-                            <div class="section-header">
-                                <div>
-                                    <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                    <strong style="margin-left:8px">${fmtDate(m.meal_date)} às ${m.meal_time}</strong>
-                                </div>
-                                ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
-                            </div>
-                            <div class="section-body">
-                                ${already ? '<p style="color:#718096;font-size:13px">Você já solicitou esta refeição. Acesse "Minhas solicitações" para acompanhar.</p>' : `
-                                    <p style="font-size:13px;color:#718096;margin-bottom:8px">Escolha uma opção:</p>
-                                    <div class="options-grid">
-                                        ${(m.options || []).map(o => `
-                                            <div class="option-card" id="opt_${m.id}_${o.id}" onclick="selectOption(${m.id}, ${o.id})">
-                                                ${o.description}
-                                            </div>
-                                        `).join('')}
-                                    </div>
-                                    <button class="btn btn-primary btn-sm" onclick="submitRequest(${m.id})">Confirmar solicitação</button>
-                                `}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+if (!available.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (necessário antecedência mínima de 24h)</p></div>';
+return;
+}
 
-        function selectOption(menuId, optionId) {
-            selectedOptions[menuId] = optionId;
-            document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
-            const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
-            if (optEl) optEl.classList.add('selected');
-        }
+el.innerHTML = available.map(m => {
+const already = requestedMenuIds.has(m.id);
+return `
+                       <div class="section" id="menuSection${m.id}">
+                           <div class="section-header">
+                               <div>
+                                   <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                                   <strong style="margin-left:8px">${fmtDate(m.meal_date)} às ${m.meal_time}</strong>
+                               </div>
+                               ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
+                           </div>
+                           <div class="section-body">
+                               ${already ? '<p style="color:#718096;font-size:13px">Você já solicitou esta refeição. Acesse "Minhas solicitações" para acompanhar.</p>' : `
+                                   <p style="font-size:13px;color:#718096;margin-bottom:8px">Escolha uma opção:</p>
+                                   <div class="options-grid">
+                                       ${(m.options || []).map(o => `
+                                           <div class="option-card" id="opt_${m.id}_${o.id}" onclick="selectOption(${m.id}, ${o.id})">
+                                               ${o.description}
+                                           </div>
+                                       `).join('')}
+                                   </div>
+                                   <button class="btn btn-primary btn-sm" onclick="submitRequest(${m.id})">Confirmar solicitação</button>
+                               `}
+                           </div>
+                       </div>
+                   `;
+}).join('');
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-        async function submitRequest(menuId) {
-            const optionId = selectedOptions[menuId];
-            if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
-            try {
-                const { error } = await sb.from('meal_requests').insert({
-                    user_id: state.user.id,
-                    menu_id: menuId,
-                    option_id: optionId
-                });
-                if (error) throw error;
-                alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
-                delete selectedOptions[menuId];
-                setTimeout(() => loadRequestPage(), 1200);
-            } catch (e) {
-                alert_('reqError', e.message);
-            }
-        }
+function selectOption(menuId, optionId) {
+selectedOptions[menuId] = optionId;
+document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
+const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
+if (optEl) optEl.classList.add('selected');
+}
 
-        // ══════════════════════════════════════════════
-        //  MINHAS SOLICITAÇÕES
-        // ══════════════════════════════════════════════
-        async function loadMyReqs() {
-            const el = document.getElementById('myReqsBody');
-            try {
-                const { data, error } = await sb.from('meal_requests')
-                    .select('id, menu:menus(*), option:menu_options(*)')
-                    .eq('user_id', state.user.id)
-                    .order('id', { ascending: false });
+async function submitRequest(menuId) {
+const optionId = selectedOptions[menuId];
+if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
+try {
+const { error } = await sb.from('meal_requests').insert({
+user_id: state.user.id,
+menu_id: menuId,
+option_id: optionId
+});
+if (error) throw error;
+alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
+delete selectedOptions[menuId];
+setTimeout(() => loadRequestPage(), 1200);
+} catch (e) {
+alert_('reqError', e.message);
+}
+}
 
-                if (error) throw error;
+// ══════════════════════════════════════════════
+//  MINHAS SOLICITAÇÕES
+// ══════════════════════════════════════════════
+async function loadMyReqs() {
+const el = document.getElementById('myReqsBody');
+try {
+const { data, error } = await sb.from('meal_requests')
+.select('id, menu:menus(*), option:menu_options(*)')
+.eq('user_id', state.user.id)
+.order('id', { ascending: false });
 
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação ainda</p></div>';
-                    return;
-                }
+if (error) throw error;
 
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
-                    <tbody>
-                        ${data.map(r => {
-                            const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
-                            const canCancel = hrs >= 24;
-                            return `<tr>
-                                <td><strong>${r.menu ? fmtDate(r.menu.meal_date) : '-'}</strong></td>
-                                <td><span class="meal-pill ${r.menu?.meal_type}">${MEAL_LABELS[r.menu?.meal_type] || '-'}</span></td>
-                                <td>${r.menu?.meal_time || '-'}</td>
-                                <td>${r.option?.description || '-'}</td>
-                                <td>${canCancel 
-                                    ? `<button class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
-                                    : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado</span>`}
-                                </td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+if (!data || !data.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação ainda</p></div>';
+return;
+}
 
-        async function cancelMyReq(id) {
-            if (!confirm('Deseja cancelar esta solicitação?')) return;
-            try {
-                const { error } = await sb.from('meal_requests').delete().eq('id', id);
-                if (error) throw error;
-                alert_('myReqSuccess', 'Solicitação cancelada.', 'success');
-                loadMyReqs();
-            } catch (e) {
-                alert_('myReqError', e.message);
-            }
-        }
+el.innerHTML = `<div class="tbl-wrap"><table>
+                   <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
+                   <tbody>
+                       ${data.map(r => {
+                           const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
+                           const canCancel = hrs >= 24;
+                           return `<tr>
+                               <td><strong>${r.menu ? fmtDate(r.menu.meal_date) : '-'}</strong></td>
+                               <td><span class="meal-pill ${r.menu?.meal_type}">${MEAL_LABELS[r.menu?.meal_type] || '-'}</span></td>
+                               <td>${r.menu?.meal_time || '-'}</td>
+                               <td>${r.option?.description || '-'}</td>
+                               <td>${canCancel 
+                                   ? `<button class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
+                                   : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado</span>`}
+                               </td>
+                           </tr>`;
+                       }).join('')}
+                   </tbody></table></div>`;
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-        // ══════════════════════════════════════════════
-        //  GERENCIAR CARDÁPIO (NUTRI)
-        // ══════════════════════════════════════════════
-        function addOptionInput() {
-            const list = document.getElementById('optionInputs');
-            const row = document.createElement('div');
-            row.className = 'option-input-row';
-            row.innerHTML = `<input type="text" placeholder="Ex: Salada vegana">
-                <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>`;
-            list.appendChild(row);
-        }
+async function cancelMyReq(id) {
+if (!confirm('Deseja cancelar esta solicitação?')) return;
+try {
+const { error } = await sb.from('meal_requests').delete().eq('id', id);
+if (error) throw error;
+alert_('myReqSuccess', 'Solicitação cancelada.', 'success');
+loadMyReqs();
+} catch (e) {
+alert_('myReqError', e.message);
+}
+}
 
-        function removeOptionInput(btn) {
-            const list = document.getElementById('optionInputs');
-            if (list.children.length <= 1) return;
-            btn.parentElement.remove();
-        }
+// ══════════════════════════════════════════════
+//  GERENCIAR CARDÁPIO (NUTRI)
+// ══════════════════════════════════════════════
+function addOptionInput() {
+const list = document.getElementById('optionInputs');
+const row = document.createElement('div');
+row.className = 'option-input-row';
+row.innerHTML = `<input type="text" placeholder="Ex: Salada vegana">
+               <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>`;
+list.appendChild(row);
+}
 
-        async function saveMenu() {
-            const meal_date = document.getElementById('newMenuDate').value;
-            const meal_type = document.getElementById('newMenuType').value;
-            const meal_time = document.getElementById('newMenuTime').value;
-            const inputs = [...document.querySelectorAll('#optionInputs input')];
-            const options = inputs.map(i => i.value.trim()).filter(Boolean);
+function removeOptionInput(btn) {
+const list = document.getElementById('optionInputs');
+if (list.children.length <= 1) return;
+btn.parentElement.remove();
+}
 
-            if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
-            if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
+async function saveMenu() {
+const meal_date = document.getElementById('newMenuDate').value;
+const meal_type = document.getElementById('newMenuType').value;
+const meal_time = document.getElementById('newMenuTime').value;
+const inputs = [...document.querySelectorAll('#optionInputs input')];
+const options = inputs.map(i => i.value.trim()).filter(Boolean);
 
-            try {
-                const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
-                    company_id: state.company.id,
-                    meal_date,
-                    meal_type,
-                    meal_time
-                }).select().single();
+if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
+if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
 
-                if (menuErr) throw menuErr;
+try {
+const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
+company_id: state.company.id,
+meal_date,
+meal_type,
+meal_time
+}).select().single();
 
-                const optionsToInsert = options.map(desc => ({ menu_id: newMenu.id, description: desc }));
-                const { error: optErr } = await sb.from('menu_options').insert(optionsToInsert);
-                if (optErr) throw optErr;
+if (menuErr) throw menuErr;
 
-                alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
-                document.getElementById('newMenuDate').value = '';
-                document.getElementById('newMenuType').value = '';
-                document.getElementById('newMenuTime').value = '';
-                document.getElementById('optionInputs').innerHTML = `
-                    <div class="option-input-row">
-                        <input type="text" placeholder="Ex: Frango grelhado">
-                        <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
-                    </div>
-                `;
-                loadMenuNutri();
-            } catch (e) {
-                alert_('menuError', e.message);
-            }
-        }
+const optionsToInsert = options.map(desc => ({ menu_id: newMenu.id, description: desc }));
+const { error: optErr } = await sb.from('menu_options').insert(optionsToInsert);
+if (optErr) throw optErr;
 
-        async function loadMenuNutri() {
-            const el = document.getElementById('menuListBody');
-            const date = document.getElementById('menuFilterDate').value;
-            try {
-                let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
-                if (date) query = query.eq('meal_date', date);
+alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
+document.getElementById('newMenuDate').value = '';
+document.getElementById('newMenuType').value = '';
+document.getElementById('newMenuTime').value = '';
+document.getElementById('optionInputs').innerHTML = `
+                   <div class="option-input-row">
+                       <input type="text" placeholder="Ex: Frango grelhado">
+                       <button class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
+                   </div>
+               `;
+loadMenuNutri();
+} catch (e) {
+alert_('menuError', e.message);
+}
+}
 
-                const { data, error } = await query;
-                if (error) throw error;
+async function loadMenuNutri() {
+const el = document.getElementById('menuListBody');
+const date = document.getElementById('menuFilterDate').value;
+try {
+let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
+if (date) query = query.eq('meal_date', date);
 
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
-                    return;
-                }
+const { data, error } = await query;
+if (error) throw error;
 
-                el.innerHTML = data.map(m => `
-                    <div class="menu-card">
-                        <div class="menu-card-header">
-                            <div class="menu-card-title">
-                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
-                            </div>
-                            <button class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Excluir</button>
-                        </div>
-                        <div class="option-tags">
-                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+if (!data || !data.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
+return;
+}
 
-        async function deleteMenu(id) {
-            if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
-            try {
-                const { error } = await sb.from('menus').delete().eq('id', id);
-                if (error) throw error;
-                alert_('menuSuccess', 'Refeição removida.', 'success');
-                loadMenuNutri();
-            } catch (e) {
-                alert_('menuError', e.message);
-            }
-        }
+el.innerHTML = data.map(m => `
+                   <div class="menu-card">
+                       <div class="menu-card-header">
+                           <div class="menu-card-title">
+                               <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
+                               <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                           </div>
+                           <button class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Excluir</button>
+                       </div>
+                       <div class="option-tags">
+                           ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                       </div>
+                   </div>
+               `).join('');
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-        // ══════════════════════════════════════════════
-        //  SOLICITAÇÕES RECEBIDAS (NUTRI)
-        // ══════════════════════════════════════════════
-        async function loadAllRequests() {
-            const el = document.getElementById('allReqsBody');
-            const date = document.getElementById('reqFilterDate').value;
-            try {
-                let query = sb.from('meal_requests')
-                    .select('id, profiles(name), menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
-                    .eq('menus.company_id', state.company.id)
-                    .order('id', { ascending: false });
+async function deleteMenu(id) {
+if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
+try {
+const { error } = await sb.from('menus').delete().eq('id', id);
+if (error) throw error;
+alert_('menuSuccess', 'Refeição removida.', 'success');
+loadMenuNutri();
+} catch (e) {
+alert_('menuError', e.message);
+}
+}
 
-                if (date) query = query.eq('menus.meal_date', date);
+// ══════════════════════════════════════════════
+//  SOLICITAÇÕES RECEBIDAS (NUTRI)
+// ══════════════════════════════════════════════
+async function loadAllRequests() {
+const el = document.getElementById('allReqsBody');
+const date = document.getElementById('reqFilterDate').value;
+try {
+let query = sb.from('meal_requests')
+.select('id, profiles(name), menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+.eq('menus.company_id', state.company.id)
+.order('id', { ascending: false });
 
-                const { data, error } = await query;
-                if (error) throw error;
+if (date) query = query.eq('menus.meal_date', date);
 
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
-                    return;
-                }
+const { data, error } = await query;
+if (error) throw error;
 
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
-                    <tbody>
-                        ${data.map(r => `<tr>
-                            <td><strong>${r.profiles?.name || 'Colaborador'}</strong></td>
-                            <td>${fmtDate(r.menus?.meal_date)}</td>
-                            <td><span class="meal-pill ${r.menus?.meal_type}">${MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type}</span></td>
-                            <td>${r.menus?.meal_time || '-'}</td>
-                            <td>${r.menu_options?.description || '-'}</td>
-                        </tr>`).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+if (!data || !data.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
+return;
+}
 
-        // ══════════════════════════════════════════════
-        //  ESTATÍSTICAS (NUTRI)
-        // ══════════════════════════════════════════════
-        async function loadStats() {
-            const el = document.getElementById('statsBody');
-            const date = document.getElementById('statsDate').value;
-            try {
-                let query = sb.from('meal_requests')
-                    .select('menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
-                    .eq('menus.company_id', state.company.id);
+el.innerHTML = `<div class="tbl-wrap"><table>
+                   <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
+                   <tbody>
+                       ${data.map(r => `<tr>
+                           <td><strong>${r.profiles?.name || 'Colaborador'}</strong></td>
+                           <td>${fmtDate(r.menus?.meal_date)}</td>
+                           <td><span class="meal-pill ${r.menus?.meal_type}">${MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type}</span></td>
+                           <td>${r.menus?.meal_time || '-'}</td>
+                           <td>${r.menu_options?.description || '-'}</td>
+                       </tr>`).join('')}
+                   </tbody></table></div>`;
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-                if (date) query = query.eq('menus.meal_date', date);
+// ══════════════════════════════════════════════
+//  ESTATÍSTICAS (NUTRI)
+// ══════════════════════════════════════════════
+async function loadStats() {
+const el = document.getElementById('statsBody');
+const date = document.getElementById('statsDate').value;
+try {
+let query = sb.from('meal_requests')
+.select('menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+.eq('menus.company_id', state.company.id);
 
-                const { data, error } = await query;
-                if (error) throw error;
+if (date) query = query.eq('menus.meal_date', date);
 
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado disponível</p></div>';
-                    return;
-                }
+const { data, error } = await query;
+if (error) throw error;
 
-                const groups = {};
-                data.forEach(r => {
-                    const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
-                    if (!groups[key]) groups[key] = { meal_date: r.menus.meal_date, meal_type: r.menus.meal_type, meal_time: r.menus.meal_time, counts: {} };
-                    const opt = r.menu_options?.description || 'Opção';
-                    groups[key].counts[opt] = (groups[key].counts[opt] || 0) + 1;
-                });
+if (!data || !data.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado disponível</p></div>';
+return;
+}
 
-                el.innerHTML = Object.values(groups).map(g => {
-                    const total = Object.values(g.counts).reduce((a, b) => a + b, 0);
-                    return `
-                        <div class="menu-card">
-                            <div class="menu-card-header">
-                                <div class="menu-card-title">
-                                    <span class="meal-pill ${g.meal_type}">${MEAL_LABELS[g.meal_type] || g.meal_type}</span>
-                                    <span>${fmtDate(g.meal_date)} (${g.meal_time})</span>
-                                </div>
-                                <strong>Total: ${total} refeição(ões)</strong>
-                            </div>
-                            <div style="margin-top:10px">
-                                ${Object.entries(g.counts).map(([opt, count]) => {
-                                    const pct = total ? Math.round((count / total) * 100) : 0;
-                                    return `
-                                        <div style="margin-bottom:8px">
-                                            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
-                                                <span>${opt}</span>
-                                                <strong>${count} (${pct}%)</strong>
-                                            </div>
-                                            <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
-                                                <div style="background:#1e5f9e;width:${pct}%;height:8px;border-radius:4px;transition:.4s"></div>
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+const groups = {};
+data.forEach(r => {
+const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
+if (!groups[key]) groups[key] = { meal_date: r.menus.meal_date, meal_type: r.menus.meal_type, meal_time: r.menus.meal_time, counts: {} };
+const opt = r.menu_options?.description || 'Opção';
+groups[key].counts[opt] = (groups[key].counts[opt] || 0) + 1;
+});
 
-        // ══════════════════════════════════════════════
-        //  USUÁRIOS (ADMIN)
-        // ══════════════════════════════════════════════
-        let nuCompanyIds = [];
-        let allCompanies = [];
+el.innerHTML = Object.values(groups).map(g => {
+const total = Object.values(g.counts).reduce((a, b) => a + b, 0);
+return `
+                       <div class="menu-card">
+                           <div class="menu-card-header">
+                               <div class="menu-card-title">
+                                   <span class="meal-pill ${g.meal_type}">${MEAL_LABELS[g.meal_type] || g.meal_type}</span>
+                                   <span>${fmtDate(g.meal_date)} (${g.meal_time})</span>
+                               </div>
+                               <strong>Total: ${total} refeição(ões)</strong>
+                           </div>
+                           <div style="margin-top:10px">
+                               ${Object.entries(g.counts).map(([opt, count]) => {
+                                   const pct = total ? Math.round((count / total) * 100) : 0;
+                                   return `
+                                       <div style="margin-bottom:8px">
+                                           <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
+                                               <span>${opt}</span>
+                                               <strong>${count} (${pct}%)</strong>
+                                           </div>
+                                           <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
+                                               <div style="background:#1e5f9e;width:${pct}%;height:8px;border-radius:4px;transition:.4s"></div>
+                                           </div>
+                                       </div>
+                                   `;
+                               }).join('')}
+                           </div>
+                       </div>
+                   `;
+}).join('');
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
+// ══════════════════════════════════════════════
+//  USUÁRIOS (ADMIN)
+// ══════════════════════════════════════════════
+let nuCompanyIds = [];
+let allCompanies = [];
+
+                async function loadUsers() {
         async function loadUsers() {
-            try {
+try {
+                // 1. Carregar empresas para o select
+                const { data: comps } = await sb.from('companies').select('*').eq('active', true);
                 const { data: comps } = await sb.from('companies').select('*');
-                allCompanies = comps || [];
-                const sel = document.getElementById('nuCompanySelect');
+allCompanies = comps || [];
+const sel = document.getElementById('nuCompanySelect');
+                if (sel) {
+                    sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+                    allCompanies.forEach(c => {
+                        const o = document.createElement('option');
+                        o.value = c.id; 
+                        o.textContent = c.name;
+                        sel.appendChild(o);
+                    });
+                }
+
+                // 2. Carregar todos os perfis
+                const { data: users, error: usersErr } = await sb.from('profiles').select('*').order('name');
+                if (usersErr) throw usersErr;
                 sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
                 allCompanies.forEach(c => {
                     const o = document.createElement('option');
@@ -1679,165 +1684,176 @@
                     sel.appendChild(o);
                 });
 
+                // 3. Carregar os vínculos de empresas
+                const { data: allUserComps } = await sb.from('company_users').select('user_id, companies(id, name)');
                 const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*))');
                 if (error) throw error;
 
-                const el = document.getElementById('usersBody');
-                if (!users || !users.length) {
+const el = document.getElementById('usersBody');
+if (!users || !users.length) {
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
                     el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
-                    return;
-                }
+return;
+}
 
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
-                    <tbody>
-                        ${users.map(u => {
+                // Mapear empresas por usuário
+                const userCompanyMap = {};
+                (allUserComps || []).forEach(uc => {
+                    if (!userCompanyMap[uc.user_id]) userCompanyMap[uc.user_id] = [];
+                    if (uc.companies?.name) userCompanyMap[uc.user_id].push(uc.companies.name);
+                });
+
+el.innerHTML = `<div class="tbl-wrap"><table>
+                   <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
+                   <tbody>
+                       ${users.map(u => {
+                            const compsList = (userCompanyMap[u.id] || []).join(', ') || 'Nenhuma';
                             const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
-                            return `<tr>
-                                <td><strong>${u.name}</strong></td>
-                                <td>${u.email}</td>
-                                <td><span class="badge badge-${u.role}">${u.role}</span></td>
-                                <td>${compsList}</td>
-                                <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
-                                <td>
-                                    ${u.email !== 'admin@hospital.com'
-                                        ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`
-                                        : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
-                                </td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+                           return `<tr>
+                               <td><strong>${u.name}</strong></td>
+                               <td>${u.email}</td>
+                               <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                               <td>${compsList}</td>
+                               <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
+                               <td>
+                                   ${u.email !== 'admin@hospital.com'
+                                       ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`
+                                       : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                               </td>
+                           </tr>`;
+                       }).join('')}
+                   </tbody></table></div>`;
+} catch (e) {
+document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-        function addCompanyChip() {
-            const sel = document.getElementById('nuCompanySelect');
-            const id = parseInt(sel.value);
-            if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
-            nuCompanyIds.push(id);
-            sel.value = '';
-            renderChips();
-        }
 
-        function removeChip(id) {
-            nuCompanyIds = nuCompanyIds.filter(c => c !== id);
-            renderChips();
-        }
+function addCompanyChip() {
+const sel = document.getElementById('nuCompanySelect');
+const id = parseInt(sel.value);
+if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
+nuCompanyIds.push(id);
+sel.value = '';
+renderChips();
+}
 
-        function renderChips() {
-            const el = document.getElementById('nuCompanyChips');
-            el.innerHTML = nuCompanyIds.map(id => {
-                const c = allCompanies.find(comp => comp.id === id);
-                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip(${id})">×</span></div>`;
-            }).join('');
-        }
+function removeChip(id) {
+nuCompanyIds = nuCompanyIds.filter(c => c !== id);
+renderChips();
+}
 
-        async function createUser() {
-            const name = document.getElementById('nuName').value.trim();
-            const email = document.getElementById('nuEmail').value.trim();
-            const password = document.getElementById('nuPass').value;
-            const role = document.getElementById('nuRole').value;
-            if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
+function renderChips() {
+const el = document.getElementById('nuCompanyChips');
+el.innerHTML = nuCompanyIds.map(id => {
+const c = allCompanies.find(comp => comp.id === id);
+return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip(${id})">×</span></div>`;
+}).join('');
+}
 
-            try {
-                const { data, error } = await sb.auth.signUp({ email, password });
-                if (error) throw error;
+async function createUser() {
+const name = document.getElementById('nuName').value.trim();
+const email = document.getElementById('nuEmail').value.trim();
+const password = document.getElementById('nuPass').value;
+const role = document.getElementById('nuRole').value;
+if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
 
-                if (data.user) {
-                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
-                    if (nuCompanyIds.length > 0) {
-                        await sb.from('company_users').insert(
-                            nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
-                        );
-                    }
-                }
+try {
+const { data, error } = await sb.auth.signUp({ email, password });
+if (error) throw error;
 
-                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
-                document.getElementById('nuName').value = '';
-                document.getElementById('nuEmail').value = '';
-                document.getElementById('nuPass').value = '';
-                nuCompanyIds = [];
-                renderChips();
-                loadUsers();
-            } catch (e) {
-                alert_('usersError', e.message);
-            }
-        }
+if (data.user) {
+await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
+if (nuCompanyIds.length > 0) {
+await sb.from('company_users').insert(
+nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
+);
+}
+}
 
-        async function deleteUser(id) {
-            if (!confirm('Excluir este usuário?')) return;
-            try {
-                await sb.from('profiles').delete().eq('id', id);
-                alert_('usersSuccess', 'Usuário excluído.', 'success');
-                loadUsers();
-            } catch (e) {
-                alert_('usersError', e.message);
-            }
-        }
+alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
+document.getElementById('nuName').value = '';
+document.getElementById('nuEmail').value = '';
+document.getElementById('nuPass').value = '';
+nuCompanyIds = [];
+renderChips();
+loadUsers();
+} catch (e) {
+alert_('usersError', e.message);
+}
+}
 
-        // ══════════════════════════════════════════════
-        //  EMPRESAS (ADMIN)
-        // ══════════════════════════════════════════════
-        async function loadCompanies() {
-            const el = document.getElementById('companiesBody');
-            try {
-                const { data, error } = await sb.from('companies').select('*').order('id', { ascending: false });
-                if (error) throw error;
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div><p>Nenhuma empresa cadastrada</p></div>';
-                    return;
-                }
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
-                    <tbody>
-                        ${data.map(c => `<tr>
-                            <td><strong>${c.name}</strong></td>
-                            <td>${c.cnpj || '-'}</td>
-                            <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button>
-                            </td>
-                        </tr>`).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
-            }
-        }
+async function deleteUser(id) {
+if (!confirm('Excluir este usuário?')) return;
+try {
+await sb.from('profiles').delete().eq('id', id);
+alert_('usersSuccess', 'Usuário excluído.', 'success');
+loadUsers();
+} catch (e) {
+alert_('usersError', e.message);
+}
+}
 
-        async function createCompany() {
-            const name = document.getElementById('ncName').value.trim();
-            const cnpj = document.getElementById('ncCnpj').value.trim();
-            if (!name) return alert_('compError', 'Nome da empresa é obrigatório');
-            try {
-                const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
-                if (error) throw error;
-                alert_('compSuccess', `Empresa "${name}" criada!`, 'success');
-                document.getElementById('ncName').value = '';
-                document.getElementById('ncCnpj').value = '';
-                loadCompanies();
-            } catch (e) {
-                alert_('compError', e.message);
-            }
-        }
+// ══════════════════════════════════════════════
+//  EMPRESAS (ADMIN)
+// ══════════════════════════════════════════════
+async function loadCompanies() {
+const el = document.getElementById('companiesBody');
+try {
+const { data, error } = await sb.from('companies').select('*').order('id', { ascending: false });
+if (error) throw error;
+if (!data || !data.length) {
+el.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div><p>Nenhuma empresa cadastrada</p></div>';
+return;
+}
+el.innerHTML = `<div class="tbl-wrap"><table>
+                   <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
+                   <tbody>
+                       ${data.map(c => `<tr>
+                           <td><strong>${c.name}</strong></td>
+                           <td>${c.cnpj || '-'}</td>
+                           <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
+                           <td>
+                               <button class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button>
+                           </td>
+                       </tr>`).join('')}
+                   </tbody></table></div>`;
+} catch (e) {
+el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+}
+}
 
-        async function deleteCompany(id) {
-            if (!confirm('Excluir esta empresa?')) return;
-            try {
-                const { error } = await sb.from('companies').delete().eq('id', id);
-                if (error) throw error;
-                alert_('compSuccess', 'Empresa excluída.', 'success');
-                loadCompanies();
-            } catch (e) {
-                alert_('compError', e.message);
-            }
-        }
-            // Inicializa mostrando apenas a tela de Login
-        showScreen('screenLogin');
-    </script>
+async function createCompany() {
+const name = document.getElementById('ncName').value.trim();
+const cnpj = document.getElementById('ncCnpj').value.trim();
+if (!name) return alert_('compError', 'Nome da empresa é obrigatório');
+try {
+const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
+if (error) throw error;
+alert_('compSuccess', `Empresa "${name}" criada!`, 'success');
+document.getElementById('ncName').value = '';
+document.getElementById('ncCnpj').value = '';
+loadCompanies();
+} catch (e) {
+alert_('compError', e.message);
+}
+}
+
+async function deleteCompany(id) {
+if (!confirm('Excluir esta empresa?')) return;
+try {
+const { error } = await sb.from('companies').delete().eq('id', id);
+if (error) throw error;
+alert_('compSuccess', 'Empresa excluída.', 'success');
+loadCompanies();
+} catch (e) {
+alert_('compError', e.message);
+}
+}
+// Inicializa mostrando apenas a tela de Login
+showScreen('screenLogin');
+</script>
 
 </body>
 
 </html>
-
