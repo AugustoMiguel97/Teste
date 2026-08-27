@@ -743,15 +743,15 @@
 }
 
 @keyframes menuDropdown {
-    from {
-        opacity: 0;
-        transform: translateY(-6px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
+
+/* ── MODAL ── */
+#modalEditUser { animation: fadeIn .2s ease }
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+#modalEditUser > div { animation: slideUp .25s ease }
+@keyframes slideUp { from { transform:translateY(20px);opacity:0 } to { transform:translateY(0);opacity:1 } }
 
     
     </style>
@@ -1030,6 +1030,19 @@
                                 </select>
                                 <div class="chip-list" id="nuCompanyChips"></div>
                             </div>
+                            <div class="form-group">
+                                <label>Permissões extras <span style="color:#a0aec0;font-weight:400">(opcional)</span></label>
+                                <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+                                    <label style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;transition:.2s"
+                                           onmouseover="this.style.borderColor='#1e5f9e'" onmouseout="this.style.borderColor='#e2e8f0'">
+                                        <input type="checkbox" id="permCriarUsuario" style="width:16px;height:16px;accent-color:#1e5f9e">
+                                        <div>
+                                            <div style="font-size:13px;font-weight:600;color:#2d3748">👤 Criar usuário</div>
+                                            <div style="font-size:11px;color:#a0aec0">Permite criar e gerenciar outros usuários no sistema</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
                             <button class="btn btn-success" onclick="createUser()">Criar usuário</button>
                         </div>
                     </div>
@@ -1089,6 +1102,76 @@
             </div><!-- /main -->
         </div><!-- /layout -->
     </div><!-- /screenApp -->
+
+    <!-- ══ MODAL: EDITAR USUÁRIO ══ -->
+    <div id="modalEditUser" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
+        <div style="background:#fff;border-radius:14px;padding:32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+                <h2 style="font-size:18px;color:#1a202c">✏️ Editar usuário</h2>
+                <button onclick="closeEditUser()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#a0aec0;line-height:1">×</button>
+            </div>
+
+            <input type="hidden" id="editUserId">
+
+            <div class="form-row" style="margin-bottom:14px">
+                <div class="form-group">
+                    <label>Nome</label>
+                    <input type="text" id="editUserName" placeholder="Nome completo">
+                </div>
+                <div class="form-group">
+                    <label>Email <span style="color:#a0aec0;font-size:11px">(não editável)</span></label>
+                    <input type="email" id="editUserEmail" disabled style="background:#f7fafc;color:#a0aec0;cursor:not-allowed">
+                </div>
+            </div>
+
+            <div class="form-row" style="margin-bottom:14px">
+                <div class="form-group">
+                    <label>Tipo de acesso</label>
+                    <select id="editUserRole">
+                        <option value="colaborador">Colaborador</option>
+                        <option value="nutricionista">Nutricionista</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="editUserActive">
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:14px">
+                <label>Empresas vinculadas</label>
+                <select id="editCompanySelect" onchange="addEditCompanyChip()">
+                    <option value="">Selecione para adicionar...</option>
+                </select>
+                <div class="chip-list" id="editCompanyChips"></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:24px">
+                <label>Permissões extras</label>
+                <div style="margin-top:8px">
+                    <label style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px">
+                        <input type="checkbox" id="editPermCriarUsuario" style="width:16px;height:16px;accent-color:#1e5f9e">
+                        <div>
+                            <div style="font-size:13px;font-weight:600;color:#2d3748">👤 Criar usuário</div>
+                            <div style="font-size:11px;color:#a0aec0">Permite criar e gerenciar outros usuários</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:12px">
+                <button class="btn btn-success" style="flex:1" onclick="saveEditUser()">💾 Salvar alterações</button>
+                <button class="btn btn-secondary" onclick="closeEditUser()">Cancelar</button>
+            </div>
+
+            <div class="alert alert-error" id="editUserError" style="margin-top:14px"></div>
+            <div class="alert alert-success" id="editUserSuccess" style="margin-top:14px"></div>
+        </div>
+    </div>
 
     <script src="config.js"></script>
     <script>
@@ -1198,7 +1281,8 @@
                     id: data.user.id,
                     email: data.user.email,
                     name: profile?.name || data.user.email.split('@')[0],
-                    role: role
+                    role: role,
+                    extra_permissions: profile?.extra_permissions || []
                 };
                 state.token = data.session.access_token;
 
@@ -1294,10 +1378,15 @@
                     { page: 'pageStats', icon: '📈', label: 'Estatísticas' }
                 );
             }
-            if (role === 'admin') {
+            const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
+            if (canManageUsers) {
                 items.push(
                     { sep: 'Administração' },
-                    { page: 'pageUsers', icon: '👥', label: 'Usuários' },
+                    { page: 'pageUsers', icon: '👥', label: 'Usuários' }
+                );
+            }
+            if (role === 'admin') {
+                items.push(
                     { page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
                 );
             }
@@ -1746,7 +1835,7 @@
                     sel.appendChild(o);
                 });
 
-                const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*))');
+                const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*)), extra_permissions');
                 if (error) throw error;
 
                 const el = document.getElementById('usersBody');
@@ -1756,20 +1845,27 @@
                 }
 
                 el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Empresas</th><th>Status</th><th>Ação</th></tr></thead>
+                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
                     <tbody>
                         ${users.map(u => {
                             const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
+                            const perms = u.extra_permissions || [];
+                            const permBadges = perms.length
+                                ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
+                                : '<span style="color:#a0aec0;font-size:11px">—</span>';
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
-                                <td>${u.email}</td>
+                                <td style="color:#718096;font-size:12px">${u.email}</td>
                                 <td><span class="badge badge-${u.role}">${u.role}</span></td>
-                                <td>${compsList}</td>
+                                <td>${permBadges}</td>
+                                <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
-                                    ${u.email !== 'admin@hospital.com'
-                                        ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`
-                                        : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                    ${u.email !== 'admin@hospital.com' ? `
+                                        <div style="display:flex;gap:6px">
+                                            <button class="btn btn-secondary btn-sm" onclick='openEditUser(${JSON.stringify(u)})'>✏️ Editar</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>
+                                        </div>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
                                 </td>
                             </tr>`;
                         }).join('')}
@@ -1813,7 +1909,9 @@
                 if (error) throw error;
 
                 if (data.user) {
-                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true });
+                    const extraPerms = [];
+                    if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
+                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true, extra_permissions: extraPerms });
                     if (nuCompanyIds.length > 0) {
                         await sb.from('company_users').insert(
                             nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
@@ -1825,6 +1923,7 @@
                 document.getElementById('nuName').value = '';
                 document.getElementById('nuEmail').value = '';
                 document.getElementById('nuPass').value = '';
+                if (document.getElementById('permCriarUsuario')) document.getElementById('permCriarUsuario').checked = false;
                 nuCompanyIds = [];
                 renderChips();
                 loadUsers();
@@ -1900,7 +1999,116 @@
                 alert_('compError', e.message);
             }
         }
-            // Inicializa mostrando apenas a tela de Login
+            // ══════════════════════════════════════════════
+        //  EDITAR USUÁRIO
+        // ══════════════════════════════════════════════
+        let editCompanyIds = [];
+
+        function openEditUser(u) {
+            // Preencher campos
+            document.getElementById('editUserId').value = u.id;
+            document.getElementById('editUserName').value = u.name || '';
+            document.getElementById('editUserEmail').value = u.email || '';
+            document.getElementById('editUserRole').value = u.role || 'colaborador';
+            document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
+
+            // Permissões extras
+            const perms = u.extra_permissions || [];
+            document.getElementById('editPermCriarUsuario').checked = perms.includes('criar_usuario');
+
+            // Empresas vinculadas
+            editCompanyIds = (u.company_users || []).map(cu => cu.companies?.id).filter(Boolean);
+
+            // Popular select de empresas
+            const sel = document.getElementById('editCompanySelect');
+            sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+            allCompanies.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.id; o.textContent = c.name;
+                sel.appendChild(o);
+            });
+
+            renderEditChips();
+
+            // Esconder alertas anteriores
+            document.getElementById('editUserError').style.display = 'none';
+            document.getElementById('editUserSuccess').style.display = 'none';
+
+            // Abrir modal
+            const modal = document.getElementById('modalEditUser');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditUser() {
+            document.getElementById('modalEditUser').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        // Fechar modal clicando fora
+        document.getElementById('modalEditUser').addEventListener('click', function(e) {
+            if (e.target === this) closeEditUser();
+        });
+
+        function addEditCompanyChip() {
+            const sel = document.getElementById('editCompanySelect');
+            const id = parseInt(sel.value);
+            if (!id || editCompanyIds.includes(id)) { sel.value = ''; return; }
+            editCompanyIds.push(id);
+            sel.value = '';
+            renderEditChips();
+        }
+
+        function removeEditChip(id) {
+            editCompanyIds = editCompanyIds.filter(c => c !== id);
+            renderEditChips();
+        }
+
+        function renderEditChips() {
+            const el = document.getElementById('editCompanyChips');
+            el.innerHTML = editCompanyIds.map(id => {
+                const c = allCompanies.find(comp => comp.id === id);
+                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeEditChip(${id})">×</span></div>`;
+            }).join('');
+        }
+
+        async function saveEditUser() {
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value.trim();
+            const role = document.getElementById('editUserRole').value;
+            const active = document.getElementById('editUserActive').value === 'true';
+            const extraPerms = [];
+            if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
+
+            if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
+
+            try {
+                // Atualizar perfil
+                const { error: profErr } = await sb.from('profiles')
+                    .update({ name, role, active, extra_permissions: extraPerms })
+                    .eq('id', id);
+                if (profErr) throw profErr;
+
+                // Atualizar empresas: apagar vínculos antigos e inserir os novos
+                await sb.from('company_users').delete().eq('user_id', id);
+                if (editCompanyIds.length > 0) {
+                    const { error: compErr } = await sb.from('company_users').insert(
+                        editCompanyIds.map(cid => ({ user_id: id, company_id: cid }))
+                    );
+                    if (compErr) throw compErr;
+                }
+
+                alert_('editUserSuccess', 'Usuário atualizado com sucesso!', 'success');
+                setTimeout(() => {
+                    closeEditUser();
+                    loadUsers();
+                }, 1200);
+            } catch (e) {
+                alert_('editUserError', e.message);
+            }
+        }
+
+        // Inicializa mostrando apenas a tela de Login
         showScreen('screenLogin');
 
         // ══ CONTROLE DO MENU HAMBÚRGUER (CELULAR) ══
