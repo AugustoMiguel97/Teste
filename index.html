@@ -753,24 +753,6 @@
 #modalEditUser > div { animation: slideUp .25s ease }
 @keyframes slideUp { from { transform:translateY(20px);opacity:0 } to { transform:translateY(0);opacity:1 } }
 
-/* ── CHANGE PASSWORD PAGE ── */
-.change-pass-card {
-    max-width: 480px;
-}
-.pass-strength-bar {
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    margin-top: 6px;
-    overflow: hidden;
-}
-.pass-strength-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 4px;
-    transition: width .3s, background-color .3s;
-}
-
     
     </style>
 </head>
@@ -778,16 +760,14 @@
 <body>
 
     <!-- ══ TELA 1: LOGIN ══ -->
-    <!-- [ALTERADO] Label e type do campo de identificação: aceita e-mail OU nome de usuário -->
+
     <div id="screenLogin" class="screen auth-wrap active">
         <div class="auth-card" style="width: 100%; max-width: 420px; margin: 0 auto;">
             <h1>🏥 NutriFlow</h1>
             <p>Sistema de refeições hospitalares</p>
             <div class="alert alert-error" id="loginError"></div>
-            <div class="form-group">
-                <label>Email ou Usuário</label>
-                <!-- [ALTERADO] type="text" para aceitar tanto email quanto username -->
-                <input type="text" id="loginEmail" placeholder="seu@email.com ou seu_usuario">
+            <div class="form-group"><label>Email</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
             </div>
             <div class="form-group"><label>Senha</label>
                 <input type="password" id="loginPassword" placeholder="••••••••"
@@ -798,6 +778,23 @@
                 Admin padrão: admin@hospital.com / Admin@2024</p>
         </div>
     </div>
+    <!--<div id="screenLogin" class="screen auth-wrap active">
+            <div class="auth-card">
+                <h1>🏥 NutriFlow</h1>
+                <p>Sistema de refeições hospitalares</p>
+                <div class="alert alert-error" id="loginError"></div>
+                <div class="form-group"><label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group"><label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••"
+                        onkeydown="if(event.key==='Enter')doLogin()">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+                <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
+                    Admin padrão: admin@hospital.com / Admin@2024</p>
+            </div>
+        </div> -->
 
     <!-- ══ TELA 2: SELECIONAR EMPRESA ══ -->
     <div id="screenCompany" class="screen auth-wrap">
@@ -876,42 +873,6 @@
                                 <div class="empty-icon">📭</div>
                                 <p>Carregando...</p>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- [NOVO] PAGE: Alterar Senha — disponível para QUALQUER usuário logado -->
-                <div class="page" id="pageChangePassword">
-                    <div class="page-header">
-                        <h1>🔑 Alterar Senha</h1>
-                        <p>Atualize sua senha de acesso ao sistema</p>
-                    </div>
-                    <div class="alert alert-error" id="changePassError"></div>
-                    <div class="alert alert-success" id="changePassSuccess"></div>
-
-                    <div class="section change-pass-card">
-                        <div class="section-header">
-                            <h2>Dados da nova senha</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="form-group">
-                                <label>Senha atual</label>
-                                <input type="password" id="changeCurrentPass" placeholder="••••••••">
-                            </div>
-                            <div class="form-group">
-                                <label>Nova senha</label>
-                                <input type="password" id="changeNewPass" placeholder="Mínimo 6 caracteres"
-                                    oninput="updatePassStrength(this.value)">
-                                <div class="pass-strength-bar">
-                                    <div class="pass-strength-fill" id="passStrengthFill"></div>
-                                </div>
-                                <span id="passStrengthLabel" style="font-size:11px;color:#a0aec0;margin-top:3px;display:block"></span>
-                            </div>
-                            <div class="form-group">
-                                <label>Confirmar nova senha</label>
-                                <input type="password" id="changeConfirmPass" placeholder="Repita a nova senha">
-                            </div>
-                            <button class="btn btn-primary" onclick="changePassword()">💾 Salvar nova senha</button>
                         </div>
                     </div>
                 </div>
@@ -1051,19 +1012,9 @@
                                 <div class="form-group"><label>Email</label><input type="email" id="nuEmail"
                                         placeholder="joao@hospital.com"></div>
                             </div>
-                            <!-- [NOVO] Campo de Usuário (username) adicionado ao cadastro -->
                             <div class="form-row">
-                                <div class="form-group">
-                                    <label>Usuário <span style="color:#a0aec0;font-weight:400">(para login alternativo)</span></label>
-                                    <input type="text" id="nuUsername" placeholder="joao_silva" 
-                                        style="font-family:monospace"
-                                        oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_.]/g,'')">
-                                    <span style="font-size:11px;color:#a0aec0;display:block;margin-top:3px">Apenas letras minúsculas, números, ponto e underscore. Sem espaços.</span>
-                                </div>
                                 <div class="form-group"><label>Senha</label><input type="password" id="nuPass"
                                         placeholder="Senha segura"></div>
-                            </div>
-                            <div class="form-row">
                                 <div class="form-group"><label>Tipo de acesso</label>
                                     <select id="nuRole">
                                         <option value="colaborador">Colaborador</option>
@@ -1173,14 +1124,6 @@
                 </div>
             </div>
 
-            <!-- [NOVO] Campo username no modal de edição -->
-            <div class="form-group" style="margin-bottom:14px">
-                <label>Usuário (login alternativo)</label>
-                <input type="text" id="editUserUsername" placeholder="usuario_exemplo"
-                    style="font-family:monospace"
-                    oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_.]/g,'')">
-            </div>
-
             <div class="form-row" style="margin-bottom:14px">
                 <div class="form-group">
                     <label>Tipo de acesso</label>
@@ -1264,11 +1207,13 @@
         //  FUNÇÕES AUXILIARES DE TELA
         // ══════════════════════════════════════════════
         function showScreen(id) {
+            // 1. Esconde TODAS as telas e força display: none
             document.querySelectorAll('.screen').forEach(s => {
                 s.classList.remove('active');
                 s.style.setProperty('display', 'none', 'important');
             });
 
+            // 2. Exibe APENAS a tela solicitada
             const target = document.getElementById(id);
             if (target) {
                 target.classList.add('active');
@@ -1279,8 +1224,11 @@
                 }
             }
 
+            // 3. Rola a página para o topo
             window.scrollTo(0, 0);
         }
+
+
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1311,33 +1259,18 @@
 
         // ══════════════════════════════════════════════
         //  AUTENTICAÇÃO COM SUPABASE
-        //  [ALTERADO] Login aceita e-mail OU nome de usuário
+        // ══════════════════════════════════════════════
+                // ══════════════════════════════════════════════
+        //  AUTENTICAÇÃO COM SUPABASE
         // ══════════════════════════════════════════════
         async function doLogin() {
-            const rawInput = document.getElementById('loginEmail').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            if (!rawInput || !password) return alert_('loginError', 'Preencha o identificador e a senha');
+            if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
 
             try {
-                let emailToUse = rawInput;
-
-                // [NOVO] Se o input não contiver '@', trata como username e busca o e-mail na tabela profiles
-                if (!rawInput.includes('@')) {
-                    const { data: profileByUsername, error: usernameErr } = await sb
-                        .from('profiles')
-                        .select('email')
-                        .eq('username', rawInput.toLowerCase())
-                        .maybeSingle();
-
-                    if (usernameErr) throw usernameErr;
-                    if (!profileByUsername) {
-                        return alert_('loginError', 'Usuário "' + rawInput + '" não encontrado. Verifique o nome de usuário ou use seu e-mail.');
-                    }
-                    emailToUse = profileByUsername.email;
-                }
-
-                // 1. Autentica no Supabase com o e-mail (original ou obtido pelo username)
-                const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
+                // 1. Autentica no Supabase
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
 
                 // 2. Busca perfil do usuário
@@ -1348,19 +1281,20 @@
                     id: data.user.id,
                     email: data.user.email,
                     name: profile?.name || data.user.email.split('@')[0],
-                    username: profile?.username || '',
                     role: role,
                     extra_permissions: profile?.extra_permissions || []
                 };
                 state.token = data.session.access_token;
 
-                // 3. Regra de Empresas
+                // 3. Regra de Empresas:
                 let companies = [];
 
                 if (role === 'admin') {
+                    // Administrador tem acesso a TODAS as empresas ativas
                     const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
                     companies = allComps || [];
                 } else {
+                    // Colaboradores e Nutricionistas veem apenas as empresas vinculadas a eles
                     const { data: userComps } = await sb.from('company_users')
                         .select('companies(*)')
                         .eq('user_id', data.user.id);
@@ -1370,6 +1304,7 @@
                         .filter(c => c && c.active);
                 }
 
+                // 4. Remove qualquer duplicidade de empresas pelo ID
                 companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
                 state.pendingCompanies = companies;
 
@@ -1377,11 +1312,13 @@
                     return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
                 }
 
+                // Se tiver apenas 1 empresa, entra direto sem perguntar
                 if (companies.length === 1) {
                     state.company = companies[0];
                     buildApp();
                     showScreen('screenApp');
                 } else {
+                    // Se tiver mais de 1 empresa, abre a tela de seleção limpa e sem duplicatas
                     document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
                     const list = document.getElementById('companyList');
                     list.innerHTML = '';
@@ -1415,7 +1352,6 @@
 
         // ══════════════════════════════════════════════
         //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
-        //  [ALTERADO] "Alterar Senha" aparece para TODOS os usuários logados
         // ══════════════════════════════════════════════
         function buildApp() {
             const role = state.user.role;
@@ -1432,9 +1368,6 @@
                 { page: 'pageHome', icon: '🏠', label: 'Início' },
                 { page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
                 { page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
-                // [NOVO] "Alterar Senha" disponível para qualquer usuário logado
-                { sep: 'Minha Conta' },
-                { page: 'pageChangePassword', icon: '🔑', label: 'Alterar Senha' },
             ];
 
             if (role === 'nutricionista' || role === 'admin') {
@@ -1485,81 +1418,6 @@
             if (pageId === 'pageStats') loadStats();
             if (pageId === 'pageUsers') loadUsers();
             if (pageId === 'pageCompanies') loadCompanies();
-            // pageChangePassword não precisa de loadXxx — apenas limpa os campos
-            if (pageId === 'pageChangePassword') resetChangePasswordForm();
-        }
-
-        // ══════════════════════════════════════════════
-        //  [NOVO] ALTERAR SENHA PÓS-LOGIN
-        //  Disponível para qualquer usuário logado
-        // ══════════════════════════════════════════════
-        function resetChangePasswordForm() {
-            document.getElementById('changeCurrentPass').value = '';
-            document.getElementById('changeNewPass').value = '';
-            document.getElementById('changeConfirmPass').value = '';
-            updatePassStrength('');
-        }
-
-        function updatePassStrength(value) {
-            const fill = document.getElementById('passStrengthFill');
-            const label = document.getElementById('passStrengthLabel');
-            if (!value) {
-                fill.style.width = '0%';
-                label.textContent = '';
-                return;
-            }
-            let score = 0;
-            if (value.length >= 6) score++;
-            if (value.length >= 10) score++;
-            if (/[A-Z]/.test(value)) score++;
-            if (/[0-9]/.test(value)) score++;
-            if (/[^A-Za-z0-9]/.test(value)) score++;
-
-            if (score <= 2) {
-                fill.style.width = '33%';
-                fill.style.backgroundColor = '#dc2626';
-                label.textContent = 'Força: Fraca';
-                label.style.color = '#dc2626';
-            } else if (score <= 4) {
-                fill.style.width = '66%';
-                fill.style.backgroundColor = '#d97706';
-                label.textContent = 'Força: Média';
-                label.style.color = '#d97706';
-            } else {
-                fill.style.width = '100%';
-                fill.style.backgroundColor = '#16a34a';
-                label.textContent = 'Força: Forte 🔒';
-                label.style.color = '#16a34a';
-            }
-        }
-
-        async function changePassword() {
-            const currentPass  = document.getElementById('changeCurrentPass').value;
-            const newPass      = document.getElementById('changeNewPass').value;
-            const confirmPass  = document.getElementById('changeConfirmPass').value;
-
-            if (!currentPass) return alert_('changePassError', 'Informe sua senha atual');
-            if (!newPass || newPass.length < 6) return alert_('changePassError', 'A nova senha deve ter pelo menos 6 caracteres');
-            if (newPass !== confirmPass) return alert_('changePassError', 'A confirmação não coincide com a nova senha');
-            if (newPass === currentPass) return alert_('changePassError', 'A nova senha deve ser diferente da senha atual');
-
-            try {
-                // Re-autentica para validar a senha atual antes de trocar
-                const { error: signInError } = await sb.auth.signInWithPassword({
-                    email: state.user.email,
-                    password: currentPass
-                });
-                if (signInError) throw new Error('Senha atual incorreta. Verifique e tente novamente.');
-
-                // Atualiza a senha via Supabase Auth
-                const { error: updateError } = await sb.auth.updateUser({ password: newPass });
-                if (updateError) throw updateError;
-
-                alert_('changePassSuccess', 'Senha alterada com sucesso! Use a nova senha no próximo acesso.', 'success');
-                resetChangePasswordForm();
-            } catch (e) {
-                alert_('changePassError', e.message);
-            }
         }
 
         // ══════════════════════════════════════════════
@@ -1961,11 +1819,9 @@
 
         // ══════════════════════════════════════════════
         //  USUÁRIOS (ADMIN)
-        //  [ALTERADO] Exibe e salva o campo username
         // ══════════════════════════════════════════════
         let nuCompanyIds = [];
         let allCompanies = [];
-        let usersMap = {}; // mapa id -> objeto usuario (evita JSON.stringify inline no onclick)
 
         async function loadUsers() {
             try {
@@ -1982,10 +1838,6 @@
                 const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*)), extra_permissions');
                 if (error) throw error;
 
-                // Preenche o mapa global para uso seguro no openEditUser
-                usersMap = {};
-                users.forEach(u => usersMap[u.id] = u);
-
                 const el = document.getElementById('usersBody');
                 if (!users || !users.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
@@ -1993,7 +1845,7 @@
                 }
 
                 el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
+                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
                     <tbody>
                         ${users.map(u => {
                             const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
@@ -2001,21 +1853,19 @@
                             const permBadges = perms.length
                                 ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
                                 : '<span style="color:#a0aec0;font-size:11px">—</span>';
-                            // [CORRIGIDO] Passa só o ID para evitar quebra por JSON inline
-                            // [ALTERADO] Admin também pode editar a si mesmo
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
-                                <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + u.username : '<span style="color:#a0aec0">—</span>'}</td>
                                 <td style="color:#718096;font-size:12px">${u.email}</td>
                                 <td><span class="badge badge-${u.role}">${u.role}</span></td>
                                 <td>${permBadges}</td>
                                 <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
-                                    <div style="display:flex;gap:6px">
-                                        <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
-                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : ''}
-                                    </div>
+                                    ${u.email !== 'admin@hospital.com' ? `
+                                        <div style="display:flex;gap:6px">
+                                            <button class="btn btn-secondary btn-sm" onclick='openEditUser(${JSON.stringify(u)})'>✏️ Editar</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>
+                                        </div>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
                                 </td>
                             </tr>`;
                         }).join('')}
@@ -2048,37 +1898,20 @@
         }
 
         async function createUser() {
-            const name     = document.getElementById('nuName').value.trim();
-            const email    = document.getElementById('nuEmail').value.trim();
-            // [NOVO] Lê o campo username
-            const username = document.getElementById('nuUsername').value.trim().toLowerCase();
+            const name = document.getElementById('nuName').value.trim();
+            const email = document.getElementById('nuEmail').value.trim();
             const password = document.getElementById('nuPass').value;
-            const role     = document.getElementById('nuRole').value;
+            const role = document.getElementById('nuRole').value;
             if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
 
             try {
-                // [NOVO] Verifica unicidade do username antes de criar
-                if (username) {
-                    const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
-                    if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso. Escolha outro.`);
-                }
-
                 const { data, error } = await sb.auth.signUp({ email, password });
                 if (error) throw error;
 
                 if (data.user) {
                     const extraPerms = [];
                     if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
-                    // [ALTERADO] Inclui username no insert do perfil
-                    await sb.from('profiles').insert({
-                        id: data.user.id,
-                        name,
-                        email,
-                        username: username || null,
-                        role,
-                        active: true,
-                        extra_permissions: extraPerms
-                    });
+                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true, extra_permissions: extraPerms });
                     if (nuCompanyIds.length > 0) {
                         await sb.from('company_users').insert(
                             nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
@@ -2086,10 +1919,9 @@
                     }
                 }
 
-                alert_('usersSuccess', `Usuário ${name} criado com sucesso!${username ? ' Login: @' + username + ' ou ' + email : ''}`, 'success');
+                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
                 document.getElementById('nuName').value = '';
                 document.getElementById('nuEmail').value = '';
-                document.getElementById('nuUsername').value = '';
                 document.getElementById('nuPass').value = '';
                 if (document.getElementById('permCriarUsuario')) document.getElementById('permCriarUsuario').checked = false;
                 nuCompanyIds = [];
@@ -2167,29 +1999,27 @@
                 alert_('compError', e.message);
             }
         }
-
-        // ══════════════════════════════════════════════
+            // ══════════════════════════════════════════════
         //  EDITAR USUÁRIO
-        //  [ALTERADO] Carrega e salva o campo username
         // ══════════════════════════════════════════════
         let editCompanyIds = [];
 
-        // [CORRIGIDO] Recebe o ID (string) e busca o objeto no mapa global
-        function openEditUser(userId) {
-            const u = usersMap[userId];
-            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
+        function openEditUser(u) {
+            // Preencher campos
             document.getElementById('editUserId').value = u.id;
             document.getElementById('editUserName').value = u.name || '';
             document.getElementById('editUserEmail').value = u.email || '';
             document.getElementById('editUserRole').value = u.role || 'colaborador';
             document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
-            document.getElementById('editUserUsername').value = u.username || '';
 
+            // Permissões extras
             const perms = u.extra_permissions || [];
             document.getElementById('editPermCriarUsuario').checked = perms.includes('criar_usuario');
 
+            // Empresas vinculadas
             editCompanyIds = (u.company_users || []).map(cu => cu.companies?.id).filter(Boolean);
 
+            // Popular select de empresas
             const sel = document.getElementById('editCompanySelect');
             sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
             allCompanies.forEach(c => {
@@ -2200,9 +2030,11 @@
 
             renderEditChips();
 
+            // Esconder alertas anteriores
             document.getElementById('editUserError').style.display = 'none';
             document.getElementById('editUserSuccess').style.display = 'none';
 
+            // Abrir modal
             const modal = document.getElementById('modalEditUser');
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -2213,6 +2045,7 @@
             document.body.style.overflow = '';
         }
 
+        // Fechar modal clicando fora
         document.getElementById('modalEditUser').addEventListener('click', function(e) {
             if (e.target === this) closeEditUser();
         });
@@ -2240,31 +2073,23 @@
         }
 
         async function saveEditUser() {
-            const id       = document.getElementById('editUserId').value;
-            const name     = document.getElementById('editUserName').value.trim();
-            const role     = document.getElementById('editUserRole').value;
-            const active   = document.getElementById('editUserActive').value === 'true';
-            // [NOVO] Lê e salva o username editado
-            const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value.trim();
+            const role = document.getElementById('editUserRole').value;
+            const active = document.getElementById('editUserActive').value === 'true';
             const extraPerms = [];
             if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
 
             if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
 
             try {
-                // [NOVO] Verifica unicidade do username (ignora o próprio usuário)
-                if (username) {
-                    const { data: existingUser } = await sb.from('profiles')
-                        .select('id').eq('username', username).neq('id', id).maybeSingle();
-                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso. Escolha outro.`);
-                }
-
-                // [ALTERADO] Atualiza perfil incluindo username
+                // Atualizar perfil
                 const { error: profErr } = await sb.from('profiles')
-                    .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
+                    .update({ name, role, active, extra_permissions: extraPerms })
                     .eq('id', id);
                 if (profErr) throw profErr;
 
+                // Atualizar empresas: apagar vínculos antigos e inserir os novos
                 await sb.from('company_users').delete().eq('user_id', id);
                 if (editCompanyIds.length > 0) {
                     const { error: compErr } = await sb.from('company_users').insert(
@@ -2287,27 +2112,27 @@
         showScreen('screenLogin');
 
         // ══ CONTROLE DO MENU HAMBÚRGUER (CELULAR) ══
-        function toggleMobileMenu() {
-            const sidebar = document.querySelector('.sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            if (sidebar) sidebar.classList.toggle('open');
-            if (menuToggle) menuToggle.classList.toggle('active');
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (menuToggle) menuToggle.classList.toggle('active');
+}
+
+// Fecha o menu automaticamente quando o usuário clicar em uma opção
+document.addEventListener('click', function(event) {
+    const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
+    const isToggleClick = event.target.closest('#menuToggle');
+
+    if (isNavClick && !isToggleClick) {
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (menuToggle) menuToggle.classList.remove('active');
         }
-
-        // Fecha o menu automaticamente quando o usuário clicar em uma opção
-        document.addEventListener('click', function(event) {
-            const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
-            const isToggleClick = event.target.closest('#menuToggle');
-
-            if (isNavClick && !isToggleClick) {
-                const sidebar = document.querySelector('.sidebar');
-                const menuToggle = document.getElementById('menuToggle');
-                if (sidebar && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    if (menuToggle) menuToggle.classList.remove('active');
-                }
-            }
-        });
+    }
+});
 
     </script>
 
