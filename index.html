@@ -1965,6 +1965,7 @@
         // ══════════════════════════════════════════════
         let nuCompanyIds = [];
         let allCompanies = [];
+        let usersMap = {}; // mapa id -> objeto usuario (evita JSON.stringify inline no onclick)
 
         async function loadUsers() {
             try {
@@ -1981,6 +1982,10 @@
                 const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*)), extra_permissions');
                 if (error) throw error;
 
+                // Preenche o mapa global para uso seguro no openEditUser
+                usersMap = {};
+                users.forEach(u => usersMap[u.id] = u);
+
                 const el = document.getElementById('usersBody');
                 if (!users || !users.length) {
                     el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
@@ -1996,6 +2001,8 @@
                             const permBadges = perms.length
                                 ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
                                 : '<span style="color:#a0aec0;font-size:11px">—</span>';
+                            // [CORRIGIDO] Passa só o ID para evitar quebra por JSON inline
+                            // [ALTERADO] Admin também pode editar a si mesmo
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
                                 <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + u.username : '<span style="color:#a0aec0">—</span>'}</td>
@@ -2005,11 +2012,10 @@
                                 <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
-                                    ${u.email !== 'admin@hospital.com' ? `
-                                        <div style="display:flex;gap:6px">
-                                            <button class="btn btn-secondary btn-sm" onclick='openEditUser(${JSON.stringify(u)})'>✏️ Editar</button>
-                                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>
-                                        </div>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                    <div style="display:flex;gap:6px">
+                                        <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
+                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : ''}
+                                    </div>
                                 </td>
                             </tr>`;
                         }).join('')}
@@ -2168,13 +2174,15 @@
         // ══════════════════════════════════════════════
         let editCompanyIds = [];
 
-        function openEditUser(u) {
+        // [CORRIGIDO] Recebe o ID (string) e busca o objeto no mapa global
+        function openEditUser(userId) {
+            const u = usersMap[userId];
+            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
             document.getElementById('editUserId').value = u.id;
             document.getElementById('editUserName').value = u.name || '';
             document.getElementById('editUserEmail').value = u.email || '';
             document.getElementById('editUserRole').value = u.role || 'colaborador';
             document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
-            // [NOVO] Preenche o campo username no modal de edição
             document.getElementById('editUserUsername').value = u.username || '';
 
             const perms = u.extra_permissions || [];
