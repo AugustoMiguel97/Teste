@@ -675,6 +675,85 @@
                 grid-template-columns: 1fr 1fr
             }
         }
+        
+
+        /* ══ ESTILOS DO MENU HAMBÚRGUER MOBILE ══ */
+.menu-toggle {
+    display: none; /* No desktop fica oculto */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 28px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.menu-toggle .bar {
+    width: 100%;
+    height: 3px;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Animação para virar "X" quando aberto */
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+}
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
+}
+
+/* Ajustes no Mobile (telas até 768px) */
+@media (max-width: 768px) {
+    .sidebar-brand {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+    }
+
+    .menu-toggle {
+        display: flex !important; /* Exibe o botão no celular */
+    }
+
+    /* Esconde as opções e o rodapé da sidebar por padrão no celular */
+    .sidebar .sidebar-nav,
+    .sidebar .sidebar-footer {
+        display: none !important;
+    }
+
+    /* Mostra as opções quando clicar no botão (quando tiver a classe 'open') */
+    .sidebar.open .sidebar-nav {
+        display: flex !important;
+        flex-direction: column;
+        animation: menuDropdown 0.25s ease forwards;
+    }
+
+    .sidebar.open .sidebar-footer {
+        display: flex !important;
+        flex-direction: column;
+        animation: menuDropdown 0.25s ease forwards;
+    }
+}
+
+@keyframes menuDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    
     </style>
 </head>
 
@@ -732,12 +811,20 @@
     <div id="screenApp" class="screen">
         <div class="layout">
 
-            <!-- SIDEBAR -->
+         <!-- SIDEBAR -->
             <div class="sidebar">
                 <div class="sidebar-brand">
-                    <h2>🏥 NutriFlow</h2>
-                    <p id="sbUser" style="font-weight:600"></p>
-                    <small id="sbCompany"></small>
+                    <div class="sidebar-brand-text">
+                        <h2>🏥 NutriFlow</h2>
+                        <p id="sbUser" style="font-weight:600"></p>
+                        <small id="sbCompany"></small>
+                    </div>
+                    <!-- BOTÃO DOS 3 TRACINHOS -->
+                    <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </button>
                 </div>
                 <nav class="sidebar-nav" id="sidebarNav"></nav>
                 <div class="sidebar-footer">
@@ -1815,9 +1902,32 @@
         }
             // Inicializa mostrando apenas a tela de Login
         showScreen('screenLogin');
+
+        // ══ CONTROLE DO MENU HAMBÚRGUER (CELULAR) ══
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (menuToggle) menuToggle.classList.toggle('active');
+}
+
+// Fecha o menu automaticamente quando o usuário clicar em uma opção
+document.addEventListener('click', function(event) {
+    const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
+    const isToggleClick = event.target.closest('#menuToggle');
+
+    if (isNavClick && !isToggleClick) {
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (menuToggle) menuToggle.classList.remove('active');
+        }
+    }
+});
+
     </script>
 
 </body>
 
 </html>
-
