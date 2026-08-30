@@ -1386,6 +1386,10 @@
                 const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
                 if (error) throw error;
 
+                // Limpa o input de senha
+                const passEl = document.getElementById('loginPassword');
+                if (passEl) passEl.value = '';
+
                 const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
                 const role = profile?.role || 'colaborador';
 
@@ -1477,9 +1481,26 @@
             showScreen('screenCompany');
         }
 
+        function clearLoginForm() {
+            const emailInput = document.getElementById('loginEmail');
+            const passInput = document.getElementById('loginPassword');
+            const errorAlert = document.getElementById('loginError');
+            if (emailInput) emailInput.value = '';
+            if (passInput) passInput.value = '';
+            if (errorAlert) {
+                errorAlert.textContent = '';
+                errorAlert.style.display = 'none';
+            }
+        }
+
         async function doLogout() {
-            await sb.auth.signOut();
+            try {
+                await sb.auth.signOut();
+            } catch (e) {
+                console.error(e);
+            }
             state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
+            clearLoginForm();
             showScreen('screenLogin');
         }
 
