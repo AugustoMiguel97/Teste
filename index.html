@@ -862,7 +862,7 @@
             <p id="companyGreeting">Escolha em qual empresa deseja entrar</p>
             <div class="alert alert-error" id="companyError"></div>
             <div class="company-list" id="companyList"></div>
-            <button type="button" class="btn btn-secondary btn-full" onclick="goToLogin()">← Voltar</button>
+            <button type="button" id="btnCompanyBack" class="btn btn-secondary btn-full" onclick="handleCompanyBack()">← Voltar</button>
         </div>
     </div>
 
@@ -887,7 +887,7 @@
                 </div>
                 <nav class="sidebar-nav" id="sidebarNav"></nav>
                 <div class="sidebar-footer">
-                    <button type="button" onclick="goToLogin()">↩ Trocar empresa</button>
+                    <button type="button" id="btnSwitchCompany" onclick="goToSelectCompany()">↩ Trocar empresa</button>
                     <button type="button" onclick="doLogout()"
                         style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕
                         Sair</button>
@@ -1426,25 +1426,55 @@
                     buildApp();
                     showScreen('screenApp');
                 } else {
-                    document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
-                    const list = document.getElementById('companyList');
-                    list.innerHTML = '';
-                    companies.forEach(c => {
-                        const btn = document.createElement('button');
-                        btn.className = 'company-btn';
-                        btn.textContent = '🏢 ' + c.name;
-                        btn.onclick = () => {
-                            state.company = c;
-                            buildApp();
-                            showScreen('screenApp');
-                        };
-                        list.appendChild(btn);
-                    });
+                    renderCompanySelectionScreen();
                     showScreen('screenCompany');
                 }
             } catch (e) {
                 alert_('loginError', e.message || 'Erro ao realizar login');
             }
+        }
+
+        function renderCompanySelectionScreen() {
+            document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
+            const list = document.getElementById('companyList');
+            list.innerHTML = '';
+
+            (state.pendingCompanies || []).forEach(c => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'company-btn';
+                const isCurrent = state.company && state.company.id === c.id;
+                btn.innerHTML = `<span>🏢 ${c.name}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
+                btn.onclick = () => {
+                    state.company = c;
+                    buildApp();
+                    showScreen('screenApp');
+                };
+                list.appendChild(btn);
+            });
+
+            const backBtn = document.getElementById('btnCompanyBack');
+            if (backBtn) {
+                if (state.company) {
+                    backBtn.textContent = '← Voltar ao sistema';
+                } else {
+                    backBtn.textContent = '← Voltar ao login';
+                }
+            }
+        }
+
+        function handleCompanyBack() {
+            if (state.company) {
+                showScreen('screenApp');
+            } else {
+                doLogout();
+            }
+        }
+
+        function goToSelectCompany() {
+            if (!state.pendingCompanies || state.pendingCompanies.length <= 1) return;
+            renderCompanySelectionScreen();
+            showScreen('screenCompany');
         }
 
         async function doLogout() {
@@ -1467,6 +1497,16 @@
             document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
             document.getElementById('homeSubtitle').textContent =
                 `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
+
+            // Controle do botão "Trocar empresa": exibe apenas se houver mais de 1 empresa vinculada
+            const switchBtn = document.getElementById('btnSwitchCompany');
+            if (switchBtn) {
+                if (state.pendingCompanies && state.pendingCompanies.length > 1) {
+                    switchBtn.style.display = 'block';
+                } else {
+                    switchBtn.style.display = 'none';
+                }
+            }
 
             const nav = document.getElementById('sidebarNav');
             nav.innerHTML = '';
