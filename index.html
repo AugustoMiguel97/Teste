@@ -849,6 +849,12 @@
                 <input type="password" id="loginPassword" placeholder="••••••••"
                     onkeydown="if(event.key==='Enter')doLogin()">
             </div>
+            <div style="display:flex;align-items:center;margin-top:-8px;margin-bottom:18px">
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#4a5568;cursor:pointer;user-select:none;font-weight:400">
+                    <input type="checkbox" id="chkShowLoginPass" onchange="toggleLoginPassword(this.checked)" style="width:15px;height:15px;accent-color:#1e5f9e;cursor:pointer">
+                    <span>Mostrar senha</span>
+                </label>
+            </div>
             <button type="button" class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
             <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
                 Admin padrão: admin@hospital.com / Admin@2024</p>
@@ -1481,12 +1487,24 @@
             showScreen('screenCompany');
         }
 
+        function toggleLoginPassword(show) {
+            const passInput = document.getElementById('loginPassword');
+            if (passInput) {
+                passInput.type = show ? 'text' : 'password';
+            }
+        }
+
         function clearLoginForm() {
             const emailInput = document.getElementById('loginEmail');
             const passInput = document.getElementById('loginPassword');
             const errorAlert = document.getElementById('loginError');
+            const showPassChk = document.getElementById('chkShowLoginPass');
             if (emailInput) emailInput.value = '';
-            if (passInput) passInput.value = '';
+            if (passInput) {
+                passInput.value = '';
+                passInput.type = 'password';
+            }
+            if (showPassChk) showPassChk.checked = false;
             if (errorAlert) {
                 errorAlert.textContent = '';
                 errorAlert.style.display = 'none';
