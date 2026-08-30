@@ -2001,7 +2001,8 @@
                             const permBadges = perms.length
                                 ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
                                 : '<span style="color:#a0aec0;font-size:11px">—</span>';
-                            // [CORRIGIDO] Passa só o ID (string) para evitar quebra por JSON inline no onclick
+                            // [CORRIGIDO] Passa só o ID para evitar quebra por JSON inline
+                            // [ALTERADO] Admin também pode editar a si mesmo
                             return `<tr>
                                 <td><strong>${u.name}</strong></td>
                                 <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + u.username : '<span style="color:#a0aec0">—</span>'}</td>
@@ -2011,9 +2012,14 @@
                                 <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
+                                    ${u.email !== 'admin@hospital.com' ? `
+                                        <div style="display:flex;gap:6px">
+                                            <button class="btn btn-secondary btn-sm" onclick='openEditUser(${JSON.stringify(u)})'>✏️ Editar</button>
+                                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>
+                                        </div>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
                                     <div style="display:flex;gap:6px">
                                         <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
-                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : ''}
                                     </div>
                                 </td>
                             </tr>`;
@@ -2170,13 +2176,11 @@
         // ══════════════════════════════════════════════
         //  EDITAR USUÁRIO
         //  [ALTERADO] Carrega e salva o campo username
-        //  [CORRIGIDO] Removida a declaração duplicada/aninhada de openEditUser
-        //              que quebrava o parsing de todo o <script> (SyntaxError
-        //              "Unexpected end of input"), fazendo com que NENHUMA
-        //              função global — inclusive doLogin — ficasse definida.
         // ══════════════════════════════════════════════
         let editCompanyIds = [];
 
+        function openEditUser(u) {
+        // [CORRIGIDO] Recebe o ID (string) e busca o objeto no mapa global
         function openEditUser(userId) {
             const u = usersMap[userId];
             if (!u) return alert('Usuário não encontrado. Recarregue a página.');
