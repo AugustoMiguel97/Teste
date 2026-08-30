@@ -236,17 +236,18 @@
             padding: 16px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, .1);
             flex-shrink: 0;
+            display: block;
         }
 
         .sidebar-logo {
             display: block;
             width: auto;
-            max-width: 140px;
-            height: 36px;
+            max-width: 145px;
+            height: 34px;
             object-fit: contain;
             object-position: left center;
             filter: brightness(0) invert(1);
-            margin-bottom: 6px;
+            margin: 0 0 6px 0;
         }
 
         .sidebar-brand p {
@@ -851,16 +852,16 @@
             }
 
             .sidebar-brand {
-                display: flex !important;
-                justify-content: space-between !important;
-                align-items: center !important;
+                display: block !important;
+                position: relative !important;
                 width: 100% !important;
                 padding: 14px 18px !important;
                 background: #1a365d !important;
             }
 
-            .sidebar-brand h2 {
-                font-size: 16px !important;
+            .sidebar-brand .sidebar-logo {
+                max-width: 130px !important;
+                height: 30px !important;
             }
 
             .menu-toggle {
@@ -994,13 +995,11 @@
             <!-- SIDEBAR -->
             <div class="sidebar">
                 <div class="sidebar-brand">
-                    <div class="sidebar-brand-text">
-                        <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true" alt="NutriStaff" class="sidebar-logo">
-                        <p id="sbUser" style="font-weight:600;font-size:12px;color:#90cdf4;margin-bottom:1px"></p>
-                        <small id="sbCompany"></small>
-                    </div>
+                    <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true" alt="NutriStaff" class="sidebar-logo">
+                    <p id="sbUser" style="font-weight:600;font-size:12px;color:#90cdf4;margin:0 0 1px 0"></p>
+                    <small id="sbCompany" style="font-size:10px;color:#63b3ed;font-style:italic"></small>
                     <!-- BOTÃO HAMBÚRGUER MOBILE -->
-                    <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+                    <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menu" style="position:absolute;right:16px;top:50%;transform:translateY(-50%)">
                         <span class="bar"></span>
                         <span class="bar"></span>
                         <span class="bar"></span>
