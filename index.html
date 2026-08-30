@@ -796,6 +796,39 @@
             transition: width .3s, background-color .3s;
         }
 
+        /* ── PULL TO REFRESH ── */
+        #pullToRefreshIndicator {
+            position: fixed;
+            top: -70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #1a365d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,.25);
+            transition: top 0.2s ease, opacity 0.2s ease;
+            z-index: 999999;
+            opacity: 0;
+            font-size: 20px;
+        }
+
+        #pullToRefreshIndicator.visible {
+            opacity: 1;
+        }
+
+        #pullToRefreshIndicator.releasing {
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: translateX(-50%) rotate(0deg); }
+            to   { transform: translateX(-50%) rotate(360deg); }
+        }
+
         /* ── RESPONSIVE & MOBILE MENU ── */
         .menu-toggle {
             display: none;
@@ -2807,6 +2840,72 @@
                 }
             }
         });
+        // ══ PULL TO REFRESH (MOBILE) ══
+        (function () {
+            let touchStartY = 0;
+            let pulling = false;
+            const THRESHOLD = 80; // px necessários para disparar o refresh
+
+            // Cria o indicador visual
+            const indicator = document.createElement('div');
+            indicator.id = 'pullToRefreshIndicator';
+            indicator.textContent = '↓';
+            document.body.appendChild(indicator);
+
+            function getScrollTop() {
+                const main = document.querySelector('.main');
+                return main ? main.scrollTop : window.scrollY;
+            }
+
+            document.addEventListener('touchstart', function (e) {
+                // Só ativa se estiver no topo do scroll E na tela do app
+                if (getScrollTop() === 0 && document.getElementById('screenApp')?.classList.contains('active')) {
+                    touchStartY = e.touches[0].clientY;
+                    pulling = true;
+                }
+            }, { passive: true });
+
+            document.addEventListener('touchmove', function (e) {
+                if (!pulling) return;
+                const delta = e.touches[0].clientY - touchStartY;
+                if (delta <= 0) { pulling = false; indicator.style.top = '-70px'; indicator.classList.remove('visible'); return; }
+
+                const progress = Math.min(delta, THRESHOLD * 1.5);
+                const topPos = Math.min(progress - 70, 24);
+                indicator.style.top = topPos + 'px';
+                indicator.classList.add('visible');
+                indicator.classList.remove('releasing');
+                indicator.textContent = delta >= THRESHOLD ? '↺' : '↓';
+            }, { passive: true });
+
+            document.addEventListener('touchend', function (e) {
+                if (!pulling) return;
+                pulling = false;
+                const delta = e.changedTouches[0].clientY - touchStartY;
+
+                if (delta >= THRESHOLD) {
+                    // Dispara o refresh
+                    indicator.textContent = '↺';
+                    indicator.classList.add('releasing');
+                    indicator.style.top = '16px';
+
+                    setTimeout(() => {
+                        // Recarrega os dados da aba atual
+                        const activePage = document.querySelector('.page.active');
+                        if (activePage) navigateTo(activePage.id);
+
+                        // Esconde o indicador
+                        indicator.style.top = '-70px';
+                        indicator.classList.remove('visible', 'releasing');
+                        indicator.textContent = '↓';
+                    }, 600);
+                } else {
+                    indicator.style.top = '-70px';
+                    indicator.classList.remove('visible');
+                }
+            }, { passive: true });
+        })();
+
     </script>
 
 </body>
