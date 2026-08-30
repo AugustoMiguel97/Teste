@@ -1582,6 +1582,7 @@
         const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutos
         const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
         const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
+        const STORAGE_KEY_ACTIVE_PAGE = 'nutriflow_active_page';
         let inactivityTimerInterval = null;
 
         function recordActivity() {
@@ -1703,6 +1704,7 @@
             stopInactivityMonitor();
             localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
             localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
+            localStorage.removeItem(STORAGE_KEY_ACTIVE_PAGE);
             try {
                 await sb.auth.signOut();
             } catch (e) {
@@ -1784,11 +1786,18 @@
                 }
             });
 
-            navigateTo('pageHome');
+            // Restaura a última página visitada (F5), ou vai para Home
+            const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
+            // Verifica se a página salva existe e o usuário tem acesso
+            const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
+            const targetPage = (savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome';
+            navigateTo(targetPage);
         }
 
         function navigateTo(pageId) {
             showPage(pageId);
+            // Persiste a página ativa para restaurar no F5
+            localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
             if (pageId === 'pageHome') loadHome();
             if (pageId === 'pageRequest') loadRequestPage();
             if (pageId === 'pageMyReqs') loadMyReqs();
