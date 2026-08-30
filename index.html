@@ -1490,6 +1490,8 @@
 
                 if (companies.length === 1) {
                     state.company = companies[0];
+                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
+                    startInactivityMonitor();
                     buildApp();
                     showScreen('screenApp');
                 } else {
@@ -1499,6 +1501,60 @@
             } catch (e) {
                 alert_('loginError', e.message || 'Erro ao realizar login');
             }
+        }
+
+        // ══════════════════════════════════════════════
+        //  TEMPORIZADOR DE INATIVIDADE (3 MINUTOS)
+        // ══════════════════════════════════════════════
+        const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutos
+        const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
+        const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
+        let inactivityTimerInterval = null;
+
+        function recordActivity() {
+            if (state.user) {
+                localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
+            }
+        }
+
+        function startInactivityMonitor() {
+            stopInactivityMonitor();
+            recordActivity();
+
+            const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
+            events.forEach(evt => {
+                window.addEventListener(evt, recordActivity, { passive: true });
+            });
+
+            inactivityTimerInterval = setInterval(checkInactivity, 4000);
+        }
+
+        function stopInactivityMonitor() {
+            if (inactivityTimerInterval) {
+                clearInterval(inactivityTimerInterval);
+                inactivityTimerInterval = null;
+            }
+            const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
+            events.forEach(evt => {
+                window.removeEventListener(evt, recordActivity);
+            });
+        }
+
+        function checkInactivity() {
+            if (!state.user) {
+                stopInactivityMonitor();
+                return;
+            }
+            const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
+            if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
+                handleInactivityTimeout();
+            }
+        }
+
+        async function handleInactivityTimeout() {
+            stopInactivityMonitor();
+            await doLogout();
+            alert_('loginError', 'Sua sessão foi encerrada por inatividade (3 minutos). Faça login novamente.', 'error');
         }
 
         function renderCompanySelectionScreen() {
@@ -1514,6 +1570,8 @@
                 btn.innerHTML = `<span>🏢 ${c.name}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
                 btn.onclick = () => {
                     state.company = c;
+                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, c.id.toString());
+                    startInactivityMonitor();
                     buildApp();
                     showScreen('screenApp');
                 };
@@ -1569,6 +1627,9 @@
         }
 
         async function doLogout() {
+            stopInactivityMonitor();
+            localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
+            localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
             try {
                 await sb.auth.signOut();
             } catch (e) {
@@ -2542,8 +2603,99 @@
             }
         }
 
-        // Inicializa na tela de Login
-        showScreen('screenLogin');
+        // ══════════════════════════════════════════════
+        //  INICIALIZAÇÃO DA SESSÃO (PERSISTÊNCIA NO F5)
+        // ══════════════════════════════════════════════
+        async function initApp() {
+            try {
+                const { data: { session }, error: sessErr } = await sb.auth.getSession();
+                if (sessErr || !session || !session.user) {
+                    showScreen('screenLogin');
+                    return;
+                }
+
+                // Verifica se a inatividade anterior não ultrapassou 3 minutos
+                const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
+                if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
+                    await sb.auth.signOut();
+                    localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
+                    localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
+                    showScreen('screenLogin');
+                    alert_('loginError', 'Sua sessão expirou por inatividade (3 minutos). Faça login novamente.', 'error');
+                    return;
+                }
+
+                // Busca dados do perfil
+                const { data: profile, error: profErr } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+                if (profErr || !profile) {
+                    await sb.auth.signOut();
+                    showScreen('screenLogin');
+                    return;
+                }
+
+                const role = profile.role || 'colaborador';
+                state.user = {
+                    id: session.user.id,
+                    email: session.user.email,
+                    name: profile.name || session.user.email.split('@')[0],
+                    username: profile.username || '',
+                    role: role,
+                    extra_permissions: profile.extra_permissions || []
+                };
+                state.token = session.access_token;
+
+                // Busca empresas vinculadas
+                let companies = [];
+                if (role === 'admin') {
+                    const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
+                    companies = allComps || [];
+                } else {
+                    const { data: userComps } = await sb.from('company_users')
+                        .select('companies(*)')
+                        .eq('user_id', session.user.id);
+
+                    companies = (userComps || [])
+                        .map(uc => uc.companies)
+                        .filter(c => c && c.active);
+                }
+
+                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
+                state.pendingCompanies = companies;
+
+                if (companies.length === 0) {
+                    await sb.auth.signOut();
+                    showScreen('screenLogin');
+                    alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+                    return;
+                }
+
+                // Restaura a empresa previamente selecionada ou seleciona a única empresa
+                const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
+                const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
+
+                if (companies.length === 1) {
+                    state.company = companies[0];
+                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
+                    startInactivityMonitor();
+                    buildApp();
+                    showScreen('screenApp');
+                } else if (matchedCompany) {
+                    state.company = matchedCompany;
+                    startInactivityMonitor();
+                    buildApp();
+                    showScreen('screenApp');
+                } else {
+                    renderCompanySelectionScreen();
+                    showScreen('screenCompany');
+                }
+            } catch (e) {
+                console.error('Erro na inicialização da sessão:', e);
+                showScreen('screenLogin');
+            }
+        }
+
+        // Inicializa o app restaurando a sessão no F5 ou exibindo o login
+        initApp();
 
         // ══ CONTROLE DO MENU MOBILE ══
         function toggleMobileMenu() {
