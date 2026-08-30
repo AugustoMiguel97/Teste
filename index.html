@@ -2173,7 +2173,7 @@
             const date = document.getElementById('reqFilterDate').value;
             try {
                 let query = sb.from('meal_requests')
-                    .select('id, profiles(name), menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                    .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
                     .eq('menus.company_id', state.company.id)
                     .order('id', { ascending: false });
 
@@ -2187,11 +2187,18 @@
                     return;
                 }
 
+                // Busca nomes dos usuários separadamente
+                const userIds = [...new Set(data.map(r => r.user_id))];
+                const { data: profilesData } = await sb.from('profiles')
+                    .select('id, name')
+                    .in('id', userIds);
+                const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p.name]));
+
                 el.innerHTML = `<div class="tbl-wrap"><table>
                     <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
                     <tbody>
                         ${data.map(r => `<tr>
-                            <td><strong>${r.profiles?.name || 'Colaborador'}</strong></td>
+                            <td><strong>${profilesMap[r.user_id] || 'Colaborador'}</strong></td>
                             <td>${fmtDate(r.menus?.meal_date)}</td>
                             <td><span class="meal-pill ${r.menus?.meal_type}">${MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type}</span></td>
                             <td>${r.menus?.meal_time || '-'}</td>
