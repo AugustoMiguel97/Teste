@@ -779,6 +779,7 @@
 
     <!-- ══ TELA 1: LOGIN ══ -->
     <!-- [ALTERADO] Label e type do campo de identificação: aceita e-mail OU nome de usuário -->
+
     <div id="screenLogin" class="screen auth-wrap active">
         <div class="auth-card" style="width: 100%; max-width: 420px; margin: 0 auto;">
             <h1>🏥 NutriFlow</h1>
@@ -788,6 +789,8 @@
                 <label>Email ou Usuário</label>
                 <!-- [ALTERADO] type="text" para aceitar tanto email quanto username -->
                 <input type="text" id="loginEmail" placeholder="seu@email.com ou seu_usuario">
+            <div class="form-group"><label>Email</label>
+                <input type="email" id="loginEmail" placeholder="seu@email.com">
             </div>
             <div class="form-group"><label>Senha</label>
                 <input type="password" id="loginPassword" placeholder="••••••••"
@@ -798,6 +801,23 @@
                 Admin padrão: admin@hospital.com / Admin@2024</p>
         </div>
     </div>
+    <!--<div id="screenLogin" class="screen auth-wrap active">
+            <div class="auth-card">
+                <h1>🏥 NutriFlow</h1>
+                <p>Sistema de refeições hospitalares</p>
+                <div class="alert alert-error" id="loginError"></div>
+                <div class="form-group"><label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com">
+                </div>
+                <div class="form-group"><label>Senha</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••"
+                        onkeydown="if(event.key==='Enter')doLogin()">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+                <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
+                    Admin padrão: admin@hospital.com / Admin@2024</p>
+            </div>
+        </div> -->
 
     <!-- ══ TELA 2: SELECIONAR EMPRESA ══ -->
     <div id="screenCompany" class="screen auth-wrap">
@@ -1264,11 +1284,13 @@
         //  FUNÇÕES AUXILIARES DE TELA
         // ══════════════════════════════════════════════
         function showScreen(id) {
+            // 1. Esconde TODAS as telas e força display: none
             document.querySelectorAll('.screen').forEach(s => {
                 s.classList.remove('active');
                 s.style.setProperty('display', 'none', 'important');
             });
 
+            // 2. Exibe APENAS a tela solicitada
             const target = document.getElementById(id);
             if (target) {
                 target.classList.add('active');
@@ -1279,8 +1301,11 @@
                 }
             }
 
+            // 3. Rola a página para o topo
             window.scrollTo(0, 0);
         }
+
+
 
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1313,10 +1338,15 @@
         //  AUTENTICAÇÃO COM SUPABASE
         //  [ALTERADO] Login aceita e-mail OU nome de usuário
         // ══════════════════════════════════════════════
+                // ══════════════════════════════════════════════
+        //  AUTENTICAÇÃO COM SUPABASE
+        // ══════════════════════════════════════════════
         async function doLogin() {
             const rawInput = document.getElementById('loginEmail').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             if (!rawInput || !password) return alert_('loginError', 'Preencha o identificador e a senha');
+            if (!email || !password) return alert_('loginError', 'Email e senha obrigatórios');
 
             try {
                 let emailToUse = rawInput;
@@ -1338,6 +1368,8 @@
 
                 // 1. Autentica no Supabase com o e-mail (original ou obtido pelo username)
                 const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
+                // 1. Autentica no Supabase
+                const { data, error } = await sb.auth.signInWithPassword({ email, password });
                 if (error) throw error;
 
                 // 2. Busca perfil do usuário
@@ -1355,12 +1387,15 @@
                 state.token = data.session.access_token;
 
                 // 3. Regra de Empresas
+                // 3. Regra de Empresas:
                 let companies = [];
 
                 if (role === 'admin') {
+                    // Administrador tem acesso a TODAS as empresas ativas
                     const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
                     companies = allComps || [];
                 } else {
+                    // Colaboradores e Nutricionistas veem apenas as empresas vinculadas a eles
                     const { data: userComps } = await sb.from('company_users')
                         .select('companies(*)')
                         .eq('user_id', data.user.id);
@@ -1370,6 +1405,7 @@
                         .filter(c => c && c.active);
                 }
 
+                // 4. Remove qualquer duplicidade de empresas pelo ID
                 companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
                 state.pendingCompanies = companies;
 
@@ -1377,11 +1413,13 @@
                     return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
                 }
 
+                // Se tiver apenas 1 empresa, entra direto sem perguntar
                 if (companies.length === 1) {
                     state.company = companies[0];
                     buildApp();
                     showScreen('screenApp');
                 } else {
+                    // Se tiver mais de 1 empresa, abre a tela de seleção limpa e sem duplicatas
                     document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
                     const list = document.getElementById('companyList');
                     list.innerHTML = '';
@@ -1994,6 +2032,7 @@
 
                 el.innerHTML = `<div class="tbl-wrap"><table>
                     <thead><tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
+                    <thead><tr><th>Nome</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
                     <tbody>
                         ${users.map(u => {
                             const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
@@ -2012,15 +2051,15 @@
                                 <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
+                                    <div style="display:flex;gap:6px">
+                                        <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
+                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : ''}
+                                    </div>
                                     ${u.email !== 'admin@hospital.com' ? `
                                         <div style="display:flex;gap:6px">
                                             <button class="btn btn-secondary btn-sm" onclick='openEditUser(${JSON.stringify(u)})'>✏️ Editar</button>
                                             <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>
                                         </div>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
-                                    <div style="display:flex;gap:6px">
-                                        <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
-                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : ''}
-                                    </div>
                                 </td>
                             </tr>`;
                         }).join('')}
@@ -2057,8 +2096,11 @@
             const email    = document.getElementById('nuEmail').value.trim();
             // [NOVO] Lê o campo username
             const username = document.getElementById('nuUsername').value.trim().toLowerCase();
+            const name = document.getElementById('nuName').value.trim();
+            const email = document.getElementById('nuEmail').value.trim();
             const password = document.getElementById('nuPass').value;
             const role     = document.getElementById('nuRole').value;
+            const role = document.getElementById('nuRole').value;
             if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
 
             try {
@@ -2084,6 +2126,7 @@
                         active: true,
                         extra_permissions: extraPerms
                     });
+                    await sb.from('profiles').insert({ id: data.user.id, name, email, role, active: true, extra_permissions: extraPerms });
                     if (nuCompanyIds.length > 0) {
                         await sb.from('company_users').insert(
                             nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
@@ -2092,6 +2135,7 @@
                 }
 
                 alert_('usersSuccess', `Usuário ${name} criado com sucesso!${username ? ' Login: @' + username + ' ou ' + email : ''}`, 'success');
+                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
                 document.getElementById('nuName').value = '';
                 document.getElementById('nuEmail').value = '';
                 document.getElementById('nuUsername').value = '';
@@ -2174,29 +2218,33 @@
         }
 
         // ══════════════════════════════════════════════
+            // ══════════════════════════════════════════════
         //  EDITAR USUÁRIO
         //  [ALTERADO] Carrega e salva o campo username
         // ══════════════════════════════════════════════
         let editCompanyIds = [];
 
-        function openEditUser(u) {
         // [CORRIGIDO] Recebe o ID (string) e busca o objeto no mapa global
         function openEditUser(userId) {
             const u = usersMap[userId];
             if (!u) return alert('Usuário não encontrado. Recarregue a página.');
+        function openEditUser(u) {
+            // Preencher campos
             document.getElementById('editUserId').value = u.id;
             document.getElementById('editUserName').value = u.name || '';
             document.getElementById('editUserEmail').value = u.email || '';
             document.getElementById('editUserRole').value = u.role || 'colaborador';
             document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
-            // [NOVO] Preenche o campo username no modal de edição
             document.getElementById('editUserUsername').value = u.username || '';
 
+            // Permissões extras
             const perms = u.extra_permissions || [];
             document.getElementById('editPermCriarUsuario').checked = perms.includes('criar_usuario');
 
+            // Empresas vinculadas
             editCompanyIds = (u.company_users || []).map(cu => cu.companies?.id).filter(Boolean);
 
+            // Popular select de empresas
             const sel = document.getElementById('editCompanySelect');
             sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
             allCompanies.forEach(c => {
@@ -2207,9 +2255,11 @@
 
             renderEditChips();
 
+            // Esconder alertas anteriores
             document.getElementById('editUserError').style.display = 'none';
             document.getElementById('editUserSuccess').style.display = 'none';
 
+            // Abrir modal
             const modal = document.getElementById('modalEditUser');
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -2220,6 +2270,7 @@
             document.body.style.overflow = '';
         }
 
+        // Fechar modal clicando fora
         document.getElementById('modalEditUser').addEventListener('click', function(e) {
             if (e.target === this) closeEditUser();
         });
@@ -2253,6 +2304,10 @@
             const active   = document.getElementById('editUserActive').value === 'true';
             // [NOVO] Lê e salva o username editado
             const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
+            const id = document.getElementById('editUserId').value;
+            const name = document.getElementById('editUserName').value.trim();
+            const role = document.getElementById('editUserRole').value;
+            const active = document.getElementById('editUserActive').value === 'true';
             const extraPerms = [];
             if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
 
@@ -2267,11 +2322,14 @@
                 }
 
                 // [ALTERADO] Atualiza perfil incluindo username
+                // Atualizar perfil
                 const { error: profErr } = await sb.from('profiles')
                     .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
+                    .update({ name, role, active, extra_permissions: extraPerms })
                     .eq('id', id);
                 if (profErr) throw profErr;
 
+                // Atualizar empresas: apagar vínculos antigos e inserir os novos
                 await sb.from('company_users').delete().eq('user_id', id);
                 if (editCompanyIds.length > 0) {
                     const { error: compErr } = await sb.from('company_users').insert(
@@ -2315,6 +2373,27 @@
                 }
             }
         });
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.getElementById('menuToggle');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (menuToggle) menuToggle.classList.toggle('active');
+}
+
+// Fecha o menu automaticamente quando o usuário clicar em uma opção
+document.addEventListener('click', function(event) {
+    const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
+    const isToggleClick = event.target.closest('#menuToggle');
+
+    if (isNavClick && !isToggleClick) {
+        const sidebar = document.querySelector('.sidebar');
+        const menuToggle = document.getElementById('menuToggle');
+        if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            if (menuToggle) menuToggle.classList.remove('active');
+        }
+    }
+});
 
     </script>
 
