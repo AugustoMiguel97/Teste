@@ -3,8 +3,7 @@
 
 <head>
     <!-- Importa o SDK do Supabase direto pela internet (CDN) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,9 +37,8 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
         /* ── LOGIN / SELECT-COMPANY ── */
-
-
         .auth-card {
             background: #fff;
             padding: 40px;
@@ -676,109 +674,101 @@
             }
         }
 
-
         /* ══ ESTILOS DO MENU HAMBÚRGUER MOBILE ══ */
-.menu-toggle {
-    display: none; /* No desktop fica oculto */
-    flex-direction: column;
-    justify-content: space-between;
-    width: 28px;
-    height: 20px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-}
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 28px;
+            height: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
 
-.menu-toggle .bar {
-    width: 100%;
-    height: 3px;
-    background-color: #ffffff;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
+        .menu-toggle .bar {
+            width: 100%;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
 
-/* Animação para virar "X" quando aberto */
-.menu-toggle.active .bar:nth-child(1) {
-    transform: translateY(8.5px) rotate(45deg);
-}
-.menu-toggle.active .bar:nth-child(2) {
-    opacity: 0;
-}
-.menu-toggle.active .bar:nth-child(3) {
-    transform: translateY(-8.5px) rotate(-45deg);
-}
+        .menu-toggle.active .bar:nth-child(1) {
+            transform: translateY(8.5px) rotate(45deg);
+        }
+        .menu-toggle.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active .bar:nth-child(3) {
+            transform: translateY(-8.5px) rotate(-45deg);
+        }
 
-/* Ajustes no Mobile (telas até 768px) */
-@media (max-width: 768px) {
-    .sidebar-brand {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        width: 100% !important;
-    }
+        @media (max-width: 768px) {
+            .sidebar-brand {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                width: 100% !important;
+            }
 
-    .menu-toggle {
-        display: flex !important; /* Exibe o botão no celular */
-    }
+            .menu-toggle {
+                display: flex !important;
+            }
 
-    /* Esconde as opções e o rodapé da sidebar por padrão no celular */
-    .sidebar .sidebar-nav,
-    .sidebar .sidebar-footer {
-        display: none !important;
-    }
+            .sidebar .sidebar-nav,
+            .sidebar .sidebar-footer {
+                display: none !important;
+            }
 
-    /* Mostra as opções quando clicar no botão (quando tiver a classe 'open') */
-    .sidebar.open .sidebar-nav {
-        display: flex !important;
-        flex-direction: column;
-        animation: menuDropdown 0.25s ease forwards;
-    }
+            .sidebar.open .sidebar-nav {
+                display: flex !important;
+                flex-direction: column;
+                animation: menuDropdown 0.25s ease forwards;
+            }
 
-    .sidebar.open .sidebar-footer {
-        display: flex !important;
-        flex-direction: column;
-        animation: menuDropdown 0.25s ease forwards;
-    }
-}
+            .sidebar.open .sidebar-footer {
+                display: flex !important;
+                flex-direction: column;
+                animation: menuDropdown 0.25s ease forwards;
+            }
+        }
 
-@keyframes menuDropdown {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
+        @keyframes menuDropdown {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
 
-/* ── MODAL ── */
-#modalEditUser { animation: fadeIn .2s ease }
-@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
-#modalEditUser > div { animation: slideUp .25s ease }
-@keyframes slideUp { from { transform:translateY(20px);opacity:0 } to { transform:translateY(0);opacity:1 } }
+        /* ── MODAL ── */
+        #modalEditUser { animation: fadeIn .2s ease }
+        @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+        #modalEditUser > div { animation: slideUp .25s ease }
+        @keyframes slideUp { from { transform:translateY(20px);opacity:0 } to { transform:translateY(0);opacity:1 } }
 
-/* ── CHANGE PASSWORD PAGE ── */
-.change-pass-card {
-    max-width: 480px;
-}
-.pass-strength-bar {
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    margin-top: 6px;
-    overflow: hidden;
-}
-.pass-strength-fill {
-    height: 100%;
-    width: 0%;
-    border-radius: 4px;
-    transition: width .3s, background-color .3s;
-}
-
-
+        /* ── CHANGE PASSWORD PAGE ── */
+        .change-pass-card {
+            max-width: 480px;
+        }
+        .pass-strength-bar {
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        .pass-strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width .3s, background-color .3s;
+        }
     </style>
 </head>
 
 <body>
 
-        <!-- ══ TELA 1: LOGIN ══ -->
-    <!-- [ALTERADO] Label e type do campo de identificação: aceita e-mail OU nome de usuário -->
+    <!-- ══ TELA 1: LOGIN ══ -->
     <div id="screenLogin" class="screen auth-wrap active">
         <div class="auth-card" style="width: 100%; max-width: 420px; margin: 0 auto;">
             <h1>🏥 NutriFlow</h1>
@@ -786,7 +776,6 @@
             <div class="alert alert-error" id="loginError"></div>
             <div class="form-group">
                 <label>Email ou Usuário</label>
-                <!-- [ALTERADO] type="text" para aceitar tanto email quanto username -->
                 <input type="text" id="loginEmail" placeholder="seu@email.com ou seu_usuario">
             </div>
             <div class="form-group"><label>Senha</label>
@@ -814,7 +803,7 @@
     <div id="screenApp" class="screen">
         <div class="layout">
 
-         <!-- SIDEBAR -->
+            <!-- SIDEBAR -->
             <div class="sidebar">
                 <div class="sidebar-brand">
                     <div class="sidebar-brand-text">
@@ -880,7 +869,7 @@
                     </div>
                 </div>
 
-                <!-- [NOVO] PAGE: Alterar Senha — disponível para QUALQUER usuário logado -->
+                <!-- PAGE: Alterar Senha -->
                 <div class="page" id="pageChangePassword">
                     <div class="page-header">
                         <h1>🔑 Alterar Senha</h1>
@@ -949,8 +938,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Opções disponíveis <span style="color:#a0aec0;font-weight:400">(adicione pelo
-                                        menos 1)</span></label>
+                                <label>Opções disponíveis <span style="color:#a0aec0;font-weight:400">(adicione pelo menos 1)</span></label>
                                 <div id="optionInputs" class="options-input-list">
                                     <div class="option-input-row">
                                         <input type="text" placeholder="Ex: Frango grelhado">
@@ -1031,7 +1019,7 @@
                     </div>
                 </div>
 
-                <!-- PAGE: Usuários (admin) -->
+                <!-- PAGE: Usuários (admin ou quem tem permissão criar_usuario) -->
                 <div class="page" id="pageUsers">
                     <div class="page-header">
                         <h1>👥 Usuários</h1>
@@ -1051,7 +1039,6 @@
                                 <div class="form-group"><label>Email</label><input type="email" id="nuEmail"
                                         placeholder="joao@hospital.com"></div>
                             </div>
-                            <!-- [NOVO] Campo de Usuário (username) adicionado ao cadastro -->
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>Usuário <span style="color:#a0aec0;font-weight:400">(para login alternativo)</span></label>
@@ -1068,7 +1055,7 @@
                                     <select id="nuRole">
                                         <option value="colaborador">Colaborador</option>
                                         <option value="nutricionista">Nutricionista</option>
-                                        <option value="admin">Administrador</option>
+                                        <option value="admin" id="optNuRoleAdmin">Administrador</option>
                                     </select>
                                 </div>
                             </div>
@@ -1153,11 +1140,11 @@
     </div><!-- /screenApp -->
 
     <!-- ══ MODAL: EDITAR USUÁRIO ══ -->
-    <div id="modalEditUser" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;padding:20px">
+    <div id="modalEditUser" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;align-items:center;justify-content:center;padding:20px;">
         <div style="background:#fff;border-radius:14px;padding:32px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
                 <h2 style="font-size:18px;color:#1a202c">✏️ Editar usuário</h2>
-                <button onclick="closeEditUser()" style="background:none;border:none;font-size:22px;cursor:pointer;color:#a0aec0;line-height:1">×</button>
+                <button onclick="closeEditUser()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#a0aec0;line-height:1">×</button>
             </div>
 
             <input type="hidden" id="editUserId">
@@ -1173,7 +1160,6 @@
                 </div>
             </div>
 
-            <!-- [NOVO] Campo username no modal de edição -->
             <div class="form-group" style="margin-bottom:14px">
                 <label>Usuário (login alternativo)</label>
                 <input type="text" id="editUserUsername" placeholder="usuario_exemplo"
@@ -1187,7 +1173,7 @@
                     <select id="editUserRole">
                         <option value="colaborador">Colaborador</option>
                         <option value="nutricionista">Nutricionista</option>
-                        <option value="admin">Administrador</option>
+                        <option value="admin" id="optEditRoleAdmin">Administrador</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1238,7 +1224,6 @@
         const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
 
-        // Inicializa o cliente do Supabase
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ══════════════════════════════════════════════
@@ -1311,7 +1296,6 @@
 
         // ══════════════════════════════════════════════
         //  AUTENTICAÇÃO COM SUPABASE
-        //  [ALTERADO] Login aceita e-mail OU nome de usuário
         // ══════════════════════════════════════════════
         async function doLogin() {
             const rawInput = document.getElementById('loginEmail').value.trim();
@@ -1321,7 +1305,7 @@
             try {
                 let emailToUse = rawInput;
 
-                // [NOVO] Se o input não contiver '@', trata como username e busca o e-mail na tabela profiles
+                // Se o input não contiver '@', busca por username
                 if (!rawInput.includes('@')) {
                     const { data: profileByUsername, error: usernameErr } = await sb
                         .from('profiles')
@@ -1336,11 +1320,11 @@
                     emailToUse = profileByUsername.email;
                 }
 
-                // 1. Autentica no Supabase com o e-mail (original ou obtido pelo username)
+                // 1. Autentica no Supabase
                 const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
                 if (error) throw error;
 
-                // 2. Busca perfil do usuário
+                // 2. Busca perfil
                 const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
                 const role = profile?.role || 'colaborador';
 
@@ -1415,7 +1399,6 @@
 
         // ══════════════════════════════════════════════
         //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
-        //  [ALTERADO] "Alterar Senha" aparece para TODOS os usuários logados
         // ══════════════════════════════════════════════
         function buildApp() {
             const role = state.user.role;
@@ -1432,7 +1415,6 @@
                 { page: 'pageHome', icon: '🏠', label: 'Início' },
                 { page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
                 { page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
-                // [NOVO] "Alterar Senha" disponível para qualquer usuário logado
                 { sep: 'Minha Conta' },
                 { page: 'pageChangePassword', icon: '🔑', label: 'Alterar Senha' },
             ];
@@ -1485,13 +1467,11 @@
             if (pageId === 'pageStats') loadStats();
             if (pageId === 'pageUsers') loadUsers();
             if (pageId === 'pageCompanies') loadCompanies();
-            // pageChangePassword não precisa de loadXxx — apenas limpa os campos
             if (pageId === 'pageChangePassword') resetChangePasswordForm();
         }
 
         // ══════════════════════════════════════════════
-        //  [NOVO] ALTERAR SENHA PÓS-LOGIN
-        //  Disponível para qualquer usuário logado
+        //  ALTERAR SENHA
         // ══════════════════════════════════════════════
         function resetChangePasswordForm() {
             document.getElementById('changeCurrentPass').value = '';
@@ -1544,14 +1524,12 @@
             if (newPass === currentPass) return alert_('changePassError', 'A nova senha deve ser diferente da senha atual');
 
             try {
-                // Re-autentica para validar a senha atual antes de trocar
                 const { error: signInError } = await sb.auth.signInWithPassword({
                     email: state.user.email,
                     password: currentPass
                 });
                 if (signInError) throw new Error('Senha atual incorreta. Verifique e tente novamente.');
 
-                // Atualiza a senha via Supabase Auth
                 const { error: updateError } = await sb.auth.updateUser({ password: newPass });
                 if (updateError) throw updateError;
 
@@ -1617,7 +1595,7 @@
         }
 
         // ══════════════════════════════════════════════
-        //  SOLICITAR REFEIÇÃO (COLABORADOR)
+        //  SOLICITAR REFEIÇÃO
         // ══════════════════════════════════════════════
         let selectedOptions = {};
 
@@ -1960,35 +1938,61 @@
         }
 
         // ══════════════════════════════════════════════
-        //  USUÁRIOS (ADMIN)
-        //  [ALTERADO] Exibe e salva o campo username
+        //  USUÁRIOS (ADMIN E USUÁRIOS COM PERMISSÃO)
         // ══════════════════════════════════════════════
         let nuCompanyIds = [];
         let allCompanies = [];
-        let usersMap = {}; // mapa id -> objeto usuario (evita JSON.stringify inline no onclick)
+        let usersMap = {}; 
 
         async function loadUsers() {
             try {
-                const { data: comps } = await sb.from('companies').select('*');
+                // 1. Carrega empresas
+                const { data: comps } = await sb.from('companies').select('*').order('id');
                 allCompanies = comps || [];
                 const sel = document.getElementById('nuCompanySelect');
-                sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
-                allCompanies.forEach(c => {
-                    const o = document.createElement('option');
-                    o.value = c.id; o.textContent = c.name;
-                    sel.appendChild(o);
+                if (sel) {
+                    sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+                    allCompanies.forEach(c => {
+                        const o = document.createElement('option');
+                        o.value = c.id; o.textContent = c.name;
+                        sel.appendChild(o);
+                    });
+                }
+
+                // Ajusta permissão de selecionar papel Admin se quem está logado não for Admin
+                const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+                const optNuAdmin = document.getElementById('optNuRoleAdmin');
+                if (optNuAdmin) {
+                    optNuAdmin.disabled = !isCurrentSuperAdmin;
+                }
+
+                // 2. Busca perfis e vínculos de empresas de forma independente e segura
+                const { data: users, error: uErr } = await sb.from('profiles').select('*').order('name');
+                if (uErr) throw uErr;
+
+                const { data: compUsers, error: cuErr } = await sb.from('company_users').select('user_id, company_id');
+                
+                // Mapeia as empresas de cada usuário
+                const userCompsMap = {};
+                (compUsers || []).forEach(cu => {
+                    if (!userCompsMap[cu.user_id]) userCompsMap[cu.user_id] = [];
+                    const foundComp = allCompanies.find(c => String(c.id) === String(cu.company_id));
+                    userCompsMap[cu.user_id].push({
+                        company_id: cu.company_id,
+                        companies: foundComp || { id: cu.company_id, name: 'Empresa ' + cu.company_id }
+                    });
                 });
 
-                const { data: users, error } = await sb.from('profiles').select('*, company_users(companies(*)), extra_permissions');
-                if (error) throw error;
-
-                // Preenche o mapa global para uso seguro no openEditUser
+                // Preenche o mapa global de usuários
                 usersMap = {};
-                users.forEach(u => usersMap[u.id] = u);
+                (users || []).forEach(u => {
+                    u.company_users = userCompsMap[u.id] || [];
+                    usersMap[u.id] = u;
+                });
 
                 const el = document.getElementById('usersBody');
                 if (!users || !users.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário</p></div>';
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
                     return;
                 }
 
@@ -2001,32 +2005,53 @@
                             const permBadges = perms.length
                                 ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
                                 : '<span style="color:#a0aec0;font-size:11px">—</span>';
-                            // [CORRIGIDO] Passa só o ID (string) para evitar quebra por JSON inline no onclick
+                            
+                            // Regra de Permissão:
+                            // O Admin pode editar qualquer usuário.
+                            // Um não-admin NÃO pode editar nem excluir o Admin.
+                            const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
+                            const canEdit = isCurrentSuperAdmin || !isTargetAdmin;
+                            const isMainAdmin = (u.email === 'admin@hospital.com');
+
+                            let actionButtons = '';
+                            if (canEdit) {
+                                actionButtons += `<button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>`;
+                            } else {
+                                actionButtons += `<span class="badge" style="background:#edf2f7;color:#718096" title="Apenas o Administrador pode editar esta conta">🔒 Protegido</span>`;
+                            }
+
+                            if (!isMainAdmin) {
+                                if (canEdit) {
+                                    actionButtons += `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`;
+                                }
+                            } else {
+                                actionButtons += `<span style="font-size:11px;color:#a0aec0;align-self:center">Admin padrão</span>`;
+                            }
+
                             return `<tr>
-                                <td><strong>${u.name}</strong></td>
+                                <td><strong>${u.name || '-'}</strong></td>
                                 <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + u.username : '<span style="color:#a0aec0">—</span>'}</td>
-                                <td style="color:#718096;font-size:12px">${u.email}</td>
+                                <td style="color:#718096;font-size:12px">${u.email || '-'}</td>
                                 <td><span class="badge badge-${u.role}">${u.role}</span></td>
                                 <td>${permBadges}</td>
                                 <td style="font-size:12px">${compsList}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
                                 <td>
-                                    <div style="display:flex;gap:6px">
-                                        <button class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>
-                                        ${u.email !== 'admin@hospital.com' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>` : '<span style="font-size:11px;color:#a0aec0">Admin principal</span>'}
+                                    <div style="display:flex;gap:6px;align-items:center">
+                                        ${actionButtons}
                                     </div>
                                 </td>
                             </tr>`;
                         }).join('')}
                     </tbody></table></div>`;
             } catch (e) {
-                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar usuários: ${e.message}</div>`;
             }
         }
 
         function addCompanyChip() {
             const sel = document.getElementById('nuCompanySelect');
-            const id = parseInt(sel.value);
+            const id = sel.value;
             if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
             nuCompanyIds.push(id);
             sel.value = '';
@@ -2034,29 +2059,32 @@
         }
 
         function removeChip(id) {
-            nuCompanyIds = nuCompanyIds.filter(c => c !== id);
+            nuCompanyIds = nuCompanyIds.filter(c => String(c) !== String(id));
             renderChips();
         }
 
         function renderChips() {
             const el = document.getElementById('nuCompanyChips');
             el.innerHTML = nuCompanyIds.map(id => {
-                const c = allCompanies.find(comp => comp.id === id);
-                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip(${id})">×</span></div>`;
+                const c = allCompanies.find(comp => String(comp.id) === String(id));
+                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip('${id}')">×</span></div>`;
             }).join('');
         }
 
         async function createUser() {
             const name     = document.getElementById('nuName').value.trim();
             const email    = document.getElementById('nuEmail').value.trim();
-            // [NOVO] Lê o campo username
             const username = document.getElementById('nuUsername').value.trim().toLowerCase();
             const password = document.getElementById('nuPass').value;
             const role     = document.getElementById('nuRole').value;
             if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
 
+            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+            if (role === 'admin' && !isCurrentSuperAdmin) {
+                return alert_('usersError', 'Apenas Administradores podem criar outro usuário Administrador.');
+            }
+
             try {
-                // [NOVO] Verifica unicidade do username antes de criar
                 if (username) {
                     const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
                     if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso. Escolha outro.`);
@@ -2068,7 +2096,7 @@
                 if (data.user) {
                     const extraPerms = [];
                     if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
-                    // [ALTERADO] Inclui username no insert do perfil
+                    
                     await sb.from('profiles').insert({
                         id: data.user.id,
                         name,
@@ -2100,13 +2128,167 @@
         }
 
         async function deleteUser(id) {
-            if (!confirm('Excluir este usuário?')) return;
+            const u = usersMap[id];
+            const isTargetAdmin = u && (u.email === 'admin@hospital.com' || u.role === 'admin');
+            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
+            if (u && u.email === 'admin@hospital.com') {
+                return alert('O Administrador principal não pode ser excluído.');
+            }
+            if (isTargetAdmin && !isCurrentSuperAdmin) {
+                return alert('Você não tem permissão para excluir um Administrador.');
+            }
+
+            if (!confirm(`Excluir o usuário "${u?.name || 'selecionado'}"?`)) return;
             try {
-                await sb.from('profiles').delete().eq('id', id);
-                alert_('usersSuccess', 'Usuário excluído.', 'success');
+                await sb.from('company_users').delete().eq('user_id', id);
+                const { error } = await sb.from('profiles').delete().eq('id', id);
+                if (error) throw error;
+                alert_('usersSuccess', 'Usuário excluído com sucesso.', 'success');
                 loadUsers();
             } catch (e) {
                 alert_('usersError', e.message);
+            }
+        }
+
+        // ══════════════════════════════════════════════
+        //  MODAL: EDITAR USUÁRIO
+        // ══════════════════════════════════════════════
+        let editCompanyIds = [];
+
+        function openEditUser(userId) {
+            const u = usersMap[userId];
+            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
+
+            // Trava de segurança: usuário não-admin não pode editar admin
+            const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
+            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
+            if (isTargetAdmin && !isCurrentSuperAdmin) {
+                alert('Você não possui permissão para editar o usuário Administrador.');
+                return;
+            }
+
+            document.getElementById('editUserId').value = u.id;
+            document.getElementById('editUserName').value = u.name || '';
+            document.getElementById('editUserEmail').value = u.email || '';
+            document.getElementById('editUserRole').value = u.role || 'colaborador';
+            document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
+            document.getElementById('editUserUsername').value = u.username || '';
+
+            // Habilita/desabilita a opção de Administrador no select de cargo
+            const optAdmin = document.getElementById('optEditRoleAdmin');
+            if (optAdmin) {
+                optAdmin.disabled = !isCurrentSuperAdmin;
+            }
+
+            const perms = u.extra_permissions || [];
+            document.getElementById('editPermCriarUsuario').checked = perms.includes('criar_usuario');
+
+            editCompanyIds = (u.company_users || []).map(cu => cu.company_id || cu.companies?.id).filter(Boolean);
+
+            const sel = document.getElementById('editCompanySelect');
+            sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+            allCompanies.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c.id; o.textContent = c.name;
+                sel.appendChild(o);
+            });
+
+            renderEditChips();
+
+            document.getElementById('editUserError').style.display = 'none';
+            document.getElementById('editUserSuccess').style.display = 'none';
+
+            const modal = document.getElementById('modalEditUser');
+            modal.style.setProperty('display', 'flex', 'important');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEditUser() {
+            const modal = document.getElementById('modalEditUser');
+            modal.style.setProperty('display', 'none', 'important');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('modalEditUser').addEventListener('click', function(e) {
+            if (e.target === this) closeEditUser();
+        });
+
+        function addEditCompanyChip() {
+            const sel = document.getElementById('editCompanySelect');
+            const id = sel.value;
+            if (!id || editCompanyIds.some(cid => String(cid) === String(id))) { sel.value = ''; return; }
+            editCompanyIds.push(id);
+            sel.value = '';
+            renderEditChips();
+        }
+
+        function removeEditChip(id) {
+            editCompanyIds = editCompanyIds.filter(c => String(c) !== String(id));
+            renderEditChips();
+        }
+
+        function renderEditChips() {
+            const el = document.getElementById('editCompanyChips');
+            el.innerHTML = editCompanyIds.map(id => {
+                const c = allCompanies.find(comp => String(comp.id) === String(id));
+                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeEditChip('${id}')">×</span></div>`;
+            }).join('');
+        }
+
+        async function saveEditUser() {
+            const id       = document.getElementById('editUserId').value;
+            const name     = document.getElementById('editUserName').value.trim();
+            const role     = document.getElementById('editUserRole').value;
+            const active   = document.getElementById('editUserActive').value === 'true';
+            const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
+            const extraPerms = [];
+            if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
+
+            if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
+
+            const targetUser = usersMap[id];
+            const isTargetAdmin = targetUser && (targetUser.email === 'admin@hospital.com' || targetUser.role === 'admin');
+            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
+            if (isTargetAdmin && !isCurrentSuperAdmin) {
+                return alert_('editUserError', 'Você não tem permissão para alterar o Administrador.');
+            }
+            if (role === 'admin' && !isCurrentSuperAdmin) {
+                return alert_('editUserError', 'Apenas Administradores podem definir o cargo como Administrador.');
+            }
+
+            try {
+                // Valida username único
+                if (username) {
+                    const { data: existingUser } = await sb.from('profiles')
+                        .select('id').eq('username', username).neq('id', id).maybeSingle();
+                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso. Escolha outro.`);
+                }
+
+                // Atualiza perfil
+                const { error: profErr } = await sb.from('profiles')
+                    .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
+                    .eq('id', id);
+                if (profErr) throw profErr;
+
+                // Atualiza empresas vinculadas
+                await sb.from('company_users').delete().eq('user_id', id);
+                if (editCompanyIds.length > 0) {
+                    const { error: compErr } = await sb.from('company_users').insert(
+                        editCompanyIds.map(cid => ({ user_id: id, company_id: cid }))
+                    );
+                    if (compErr) throw compErr;
+                }
+
+                alert_('editUserSuccess', 'Usuário atualizado com sucesso!', 'success');
+                setTimeout(() => {
+                    closeEditUser();
+                    loadUsers();
+                }, 1000);
+            } catch (e) {
+                alert_('editUserError', e.message || 'Erro ao salvar usuário');
             }
         }
 
@@ -2167,126 +2349,7 @@
             }
         }
 
-        // ══════════════════════════════════════════════
-        //  EDITAR USUÁRIO
-        //  [ALTERADO] Carrega e salva o campo username
-        //  [CORRIGIDO] Removida a declaração duplicada/aninhada de openEditUser
-        //              que quebrava o parsing de todo o <script> (SyntaxError
-        //              "Unexpected end of input"), fazendo com que NENHUMA
-        //              função global — inclusive doLogin — ficasse definida.
-        // ══════════════════════════════════════════════
-        let editCompanyIds = [];
-
-        function openEditUser(userId) {
-            const u = usersMap[userId];
-            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
-            document.getElementById('editUserId').value = u.id;
-            document.getElementById('editUserName').value = u.name || '';
-            document.getElementById('editUserEmail').value = u.email || '';
-            document.getElementById('editUserRole').value = u.role || 'colaborador';
-            document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
-            // [NOVO] Preenche o campo username no modal de edição
-            document.getElementById('editUserUsername').value = u.username || '';
-
-            const perms = u.extra_permissions || [];
-            document.getElementById('editPermCriarUsuario').checked = perms.includes('criar_usuario');
-
-            editCompanyIds = (u.company_users || []).map(cu => cu.companies?.id).filter(Boolean);
-
-            const sel = document.getElementById('editCompanySelect');
-            sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
-            allCompanies.forEach(c => {
-                const o = document.createElement('option');
-                o.value = c.id; o.textContent = c.name;
-                sel.appendChild(o);
-            });
-
-            renderEditChips();
-
-            document.getElementById('editUserError').style.display = 'none';
-            document.getElementById('editUserSuccess').style.display = 'none';
-
-            const modal = document.getElementById('modalEditUser');
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeEditUser() {
-            document.getElementById('modalEditUser').style.display = 'none';
-            document.body.style.overflow = '';
-        }
-
-        document.getElementById('modalEditUser').addEventListener('click', function(e) {
-            if (e.target === this) closeEditUser();
-        });
-
-        function addEditCompanyChip() {
-            const sel = document.getElementById('editCompanySelect');
-            const id = parseInt(sel.value);
-            if (!id || editCompanyIds.includes(id)) { sel.value = ''; return; }
-            editCompanyIds.push(id);
-            sel.value = '';
-            renderEditChips();
-        }
-
-        function removeEditChip(id) {
-            editCompanyIds = editCompanyIds.filter(c => c !== id);
-            renderEditChips();
-        }
-
-        function renderEditChips() {
-            const el = document.getElementById('editCompanyChips');
-            el.innerHTML = editCompanyIds.map(id => {
-                const c = allCompanies.find(comp => comp.id === id);
-                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeEditChip(${id})">×</span></div>`;
-            }).join('');
-        }
-
-        async function saveEditUser() {
-            const id       = document.getElementById('editUserId').value;
-            const name     = document.getElementById('editUserName').value.trim();
-            const role     = document.getElementById('editUserRole').value;
-            const active   = document.getElementById('editUserActive').value === 'true';
-            // [NOVO] Lê e salva o username editado
-            const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
-            const extraPerms = [];
-            if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
-
-            if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
-
-            try {
-                // [NOVO] Verifica unicidade do username (ignora o próprio usuário)
-                if (username) {
-                    const { data: existingUser } = await sb.from('profiles')
-                        .select('id').eq('username', username).neq('id', id).maybeSingle();
-                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso. Escolha outro.`);
-                }
-
-                // [ALTERADO] Atualiza perfil incluindo username
-                const { error: profErr } = await sb.from('profiles')
-                    .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
-                    .eq('id', id);
-                if (profErr) throw profErr;
-
-                await sb.from('company_users').delete().eq('user_id', id);
-                if (editCompanyIds.length > 0) {
-                    const { error: compErr } = await sb.from('company_users').insert(
-                        editCompanyIds.map(cid => ({ user_id: id, company_id: cid }))
-                    );
-                    if (compErr) throw compErr;
-                }
-
-                alert_('editUserSuccess', 'Usuário atualizado com sucesso!', 'success');
-                setTimeout(() => {
-                    closeEditUser();
-                    loadUsers();
-                }, 1200);
-            } catch (e) {
-                alert_('editUserError', e.message);
-            }
-        }
-
-        // Inicializa mostrando apenas a tela de Login
+        // Inicializa mostrando a tela de Login
         showScreen('screenLogin');
 
         // ══ CONTROLE DO MENU HAMBÚRGUER (CELULAR) ══
@@ -2297,7 +2360,6 @@
             if (menuToggle) menuToggle.classList.toggle('active');
         }
 
-        // Fecha o menu automaticamente quando o usuário clicar em uma opção
         document.addEventListener('click', function(event) {
             const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
             const isToggleClick = event.target.closest('#menuToggle');
@@ -2311,7 +2373,6 @@
                 }
             }
         });
-
     </script>
 
 </body>
