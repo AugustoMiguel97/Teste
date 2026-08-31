@@ -486,17 +486,6 @@
             .charts-grid { grid-template-columns: 1fr !important; }
             .main { padding: 16px !important; height: calc(100vh - 65px) !important; }
         }
-
-        /* ── ESTILOS DE IMPRESSÃO / PDF ── */
-        @media print {
-            body { background: #ffffff !important; overflow: visible !important; }
-            .sidebar, .menu-toggle, #btnExportPdf, .section-header form, .btn, .nav-item, #statsFiltersRow { display: none !important; }
-            .main { padding: 0 !important; height: auto !important; overflow: visible !important; }
-            .section, .chart-box, .stat-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; page-break-inside: avoid; }
-            .page { display: block !important; max-width: 100% !important; padding: 0 !important; }
-            #screenApp, .layout { height: auto !important; overflow: visible !important; display: block !important; }
-            .charts-grid { grid-template-columns: 1fr 1fr !important; }
-        }
     </style>
 </head>
 
@@ -734,11 +723,11 @@
                 <div class="page" id="pageStats">
                     <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
                         <div>
-                            <h1>📈 Painel Analítico & Gráficos</h1>
-                            <p>Inteligência de dados, consumo de refeições e relatórios da unidade</p>
+                            <h1>📈 Painel Analítico & Dashboards</h1>
+                            <p>Inteligência de consumo de refeições e gráficos visuais</p>
                         </div>
-                        <button type="button" class="btn btn-primary" id="btnExportPdf" onclick="exportStatsPdf()">
-                            📥 Baixar Relatório em PDF
+                        <button type="button" class="btn btn-primary" onclick="exportDashboardPdf()">
+                            📥 Baixar Dashboard em PDF
                         </button>
                     </div>
 
@@ -750,12 +739,12 @@
                             <div class="sub">Pedidos registrados</div>
                         </div>
                         <div class="stat-card">
-                            <div class="val" id="kpiTopMeal" style="font-size:17px;color:#16a34a">—</div>
+                            <div class="val" id="kpiTopMeal" style="font-size:16px;color:#16a34a">—</div>
                             <div class="lbl">Refeição de Maior Pico</div>
                             <div class="sub">Mais demandada</div>
                         </div>
                         <div class="stat-card">
-                            <div class="val" id="kpiTopOption" style="font-size:15px;color:#553c9a">—</div>
+                            <div class="val" id="kpiTopOption" style="font-size:14px;color:#553c9a">—</div>
                             <div class="lbl">Prato Favorito</div>
                             <div class="sub">Opção mais escolhida</div>
                         </div>
@@ -773,8 +762,8 @@
 
                     <!-- Linha de Filtros Dinâmicos -->
                     <div class="section" style="margin-bottom:18px">
-                        <div class="section-header" id="statsFiltersRow">
-                            <h2>Filtros do Painel</h2>
+                        <div class="section-header">
+                            <h2>Filtros dos Gráficos</h2>
                             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                                 <div style="display:flex;align-items:center;gap:6px">
                                     <label style="font-size:12px;color:#718096;font-weight:600">Data:</label>
@@ -817,16 +806,64 @@
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Detalhamento em Cards com Barras -->
+                <!-- PAGE: Central de Relatórios Executivos (nutri/admin) -->
+                <div class="page" id="pageReports">
+                    <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                        <div>
+                            <h1>📑 Central de Relatórios</h1>
+                            <p>Emissão de relatórios operacionais para a cozinha e relatórios nominais</p>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="exportReportsPdf()">
+                            📥 Baixar Relatório em PDF
+                        </button>
+                    </div>
+
+                    <!-- Configuração e Filtros do Relatório -->
                     <div class="section">
                         <div class="section-header">
-                            <h2>Detalhamento das Refeições no Período</h2>
+                            <h2>Configurar Relatório</h2>
                         </div>
-                        <div class="section-body" id="statsBody">
+                        <div class="section-body">
+                            <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap:12px">
+                                <div class="form-group">
+                                    <label>Modelo de Relatório</label>
+                                    <select id="reportModel" onchange="generateReport()">
+                                        <option value="producao">🍳 1. Relatório de Produção (Cozinha)</option>
+                                        <option value="nominal">👥 2. Relatório Nominal de Colaboradores</option>
+                                        <option value="sintetico">📊 3. Relatório Sintético por Refeição</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data Específica</label>
+                                    <input type="date" id="reportDate" onchange="generateReport()">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tipo de Refeição</label>
+                                    <select id="reportMealType" onchange="generateReport()">
+                                        <option value="">Todas</option>
+                                        <option value="cafe_manha">☕ Café da manhã</option>
+                                        <option value="almoco">🍛 Almoço</option>
+                                        <option value="lanche_tarde">🥪 Lanche da tarde</option>
+                                        <option value="janta">🍽️ Jantar</option>
+                                        <option value="lanche_noite">🌙 Lanche da noite</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Área de Visualização do Relatório -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 id="reportTitleDisplay">Visualização do Relatório</h2>
+                            <span class="badge badge-admin" id="reportCountBadge">0 registros</span>
+                        </div>
+                        <div class="section-body" id="reportContentBody">
                             <div class="empty">
-                                <div class="empty-icon">📊</div>
-                                <p>Carregando dados estatísticos...</p>
+                                <div class="empty-icon">📑</div>
+                                <p>Selecione os filtros para gerar o relatório.</p>
                             </div>
                         </div>
                     </div>
@@ -1097,6 +1134,11 @@
             return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
         }
 
+        function fmtFullDate(d) {
+            if (!d) return '-';
+            return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
         function hoursUntil(dateStr, timeStr) {
             return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
         }
@@ -1347,7 +1389,8 @@
                     { sep: 'Nutrição & Relatórios' },
                     { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
                     { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
-                    { page: 'pageStats', icon: '📈', label: 'Dashboards & Gráficos' }
+                    { page: 'pageStats', icon: '📈', label: 'Dashboards' },
+                    { page: 'pageReports', icon: '📑', label: 'Relatórios' }
                 );
             }
             const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
@@ -1392,6 +1435,7 @@
             if (pageId === 'pageMenu') loadMenuNutri();
             if (pageId === 'pageRequests') loadAllRequests();
             if (pageId === 'pageStats') loadStats();
+            if (pageId === 'pageReports') generateReport();
             if (pageId === 'pageUsers') loadUsers();
             if (pageId === 'pageCompanies') loadCompanies();
             if (pageId === 'pageChangePassword') resetChangePasswordForm();
@@ -1807,7 +1851,7 @@
         }
 
         // ══════════════════════════════════════════════
-        //  DASHBOARD AVANÇADO COM CHART.JS
+        //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
         // ══════════════════════════════════════════════
         let currentStatsData = [];
         let chartInstanceMealDist = null;
@@ -1821,7 +1865,6 @@
         }
 
         async function loadStats() {
-            const el = document.getElementById('statsBody');
             const date = document.getElementById('statsDate').value;
             const mealType = document.getElementById('statsMealType').value;
 
@@ -1845,19 +1888,15 @@
                     document.getElementById('kpiAvgDaily').textContent = '0';
                     document.getElementById('kpiMenusCount').textContent = '0';
                     destroyAllCharts();
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado encontrado para os filtros selecionados.</p></div>';
                     return;
                 }
 
-                // Total de solicitações
                 const totalReqs = data.length;
                 document.getElementById('kpiTotalReqs').textContent = totalReqs;
 
-                // Contadores e Agrupamentos
                 const mealTypeCounts = {};
                 const optionCounts = {};
                 const dailyTrendCounts = {};
-                const groups = {};
                 const distinctMenuIds = new Set();
 
                 data.forEach(r => {
@@ -1866,84 +1905,28 @@
                     const optDesc = r.menu_options?.description || 'Opção Geral';
 
                     distinctMenuIds.add(r.menus.id);
-
-                    // Refeição
                     mealTypeCounts[mType] = (mealTypeCounts[mType] || 0) + 1;
-                    // Opção
                     optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
-                    // Tendência diária
                     dailyTrendCounts[mDate] = (dailyTrendCounts[mDate] || 0) + 1;
-
-                    // Agrupamento por Cardápio (Data + Refeição)
-                    const key = `${mDate}_${mType}`;
-                    if (!groups[key]) {
-                        groups[key] = {
-                            meal_date: mDate,
-                            meal_type: mType,
-                            meal_time: r.menus.meal_time,
-                            counts: {}
-                        };
-                    }
-                    groups[key].counts[optDesc] = (groups[key].counts[optDesc] || 0) + 1;
                 });
 
-                // Top Meal Type
                 const topMeal = Object.entries(mealTypeCounts).sort((a, b) => b[1] - a[1])[0];
                 document.getElementById('kpiTopMeal').textContent = topMeal ? `${MEAL_LABELS[topMeal[0]] || topMeal[0]} (${topMeal[1]})` : '—';
 
-                // Top Option
                 const topOption = Object.entries(optionCounts).sort((a, b) => b[1] - a[1])[0];
                 document.getElementById('kpiTopOption').textContent = topOption ? `${topOption[0]} (${topOption[1]})` : '—';
 
-                // Média diária
                 const totalDias = Object.keys(dailyTrendCounts).length || 1;
                 document.getElementById('kpiAvgDaily').textContent = Math.round(totalReqs / totalDias);
-
-                // Total de Cardápios Ofertados
                 document.getElementById('kpiMenusCount').textContent = distinctMenuIds.size;
 
-                // ══ RENDERIZAR OS GRÁFICOS CHART.JS ══
                 renderCharts({
                     mealTypeCounts,
                     dailyTrendCounts,
                     optionCounts
                 });
-
-                // ══ RENDERIZAR TABELA DETALHADA ══
-                el.innerHTML = Object.values(groups).map(g => {
-                    const totalCardapio = Object.values(g.counts).reduce((a, b) => a + b, 0);
-                    return `
-                        <div class="menu-card" style="background:#fafbfc;border:1px solid #e2e8f0;margin-bottom:18px;padding:20px;border-radius:12px">
-                            <div class="menu-card-header" style="border-bottom:1px solid #e2e8f0;padding-bottom:12px;margin-bottom:14px">
-                                <div class="menu-card-title">
-                                    <span class="meal-pill ${escapeHtml(g.meal_type)}">${escapeHtml(MEAL_LABELS[g.meal_type] || g.meal_type)}</span>
-                                    <span style="font-size:14px;font-weight:700;color:#2d3748">${escapeHtml(fmtDate(g.meal_date))} às ${escapeHtml(g.meal_time)}</span>
-                                </div>
-                                <span class="badge" style="background:#ebf4ff;color:#1e5f9e;font-size:13px;padding:5px 12px">
-                                    Total: <strong>${totalCardapio}</strong> pedido(s)
-                                </span>
-                            </div>
-                            <div>
-                                ${Object.entries(g.counts).map(([opt, count]) => {
-                        const pct = totalCardapio ? Math.round((count / totalCardapio) * 100) : 0;
-                        return `
-                                        <div style="margin-bottom:12px">
-                                            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px">
-                                                <span style="color:#4a5568">🍽️ ${escapeHtml(opt)}</span>
-                                                <span style="color:#1e5f9e">${count} pedidos (${pct}%)</span>
-                                            </div>
-                                            <div style="background:#e2e8f0;border-radius:6px;height:9px;overflow:hidden">
-                                                <div style="background:linear-gradient(90deg, #1e5f9e, #3b82f6);width:${pct}%;height:9px;border-radius:6px;transition:width .4s ease"></div>
-                                            </div>
-                                        </div>
-                                    `;
-                    }).join('')}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar estatísticas: ${escapeHtml(e.message)}</div>`;
+                console.error('Erro ao carregar estatísticas:', e);
             }
         }
 
@@ -1956,7 +1939,7 @@
         function renderCharts({ mealTypeCounts, dailyTrendCounts, optionCounts }) {
             destroyAllCharts();
 
-            // 1. Gráfico de Rosca (Donut) - Tipos de Refeição
+            // 1. Donut
             const mealLabels = Object.keys(mealTypeCounts).map(k => MEAL_LABELS[k] ? MEAL_LABELS[k].replace(/^[^\s]+\s/, '') : k);
             const mealValues = Object.values(mealTypeCounts);
             const ctxDonut = document.getElementById('chartMealDistribution');
@@ -1976,14 +1959,13 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } }
-                        }
+                        animation: false, // Para permitir captura instantânea de imagem se necessário
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } } }
                     }
                 });
             }
 
-            // 2. Gráfico de Linha / Área - Tendência Diária
+            // 2. Line
             const sortedDates = Object.keys(dailyTrendCounts).sort();
             const dateLabels = sortedDates.map(d => fmtDate(d));
             const dateValues = sortedDates.map(d => dailyTrendCounts[d]);
@@ -2009,6 +1991,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: false,
                         plugins: { legend: { display: false } },
                         scales: {
                             y: { beginAtZero: true, ticks: { precision: 0 } },
@@ -2018,7 +2001,7 @@
                 });
             }
 
-            // 3. Gráfico de Barras Horizontais - Top Pratos
+            // 3. Horizontal Bar
             const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
             const topOptLabels = sortedOptions.map(o => o[0]);
             const topOptValues = sortedOptions.map(o => o[1]);
@@ -2040,6 +2023,7 @@
                         indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
+                        animation: false,
                         plugins: { legend: { display: false } },
                         scales: {
                             x: { beginAtZero: true, ticks: { precision: 0 } },
@@ -2050,12 +2034,297 @@
             }
         }
 
-        function exportStatsPdf() {
+        // ══════════════════════════════════════════════
+        //  EXPORTAÇÃO EXCLUSIVA DO DASHBOARD EM PDF
+        // ══════════════════════════════════════════════
+        function exportDashboardPdf() {
             if (!currentStatsData || !currentStatsData.length) {
-                alert('Não há dados estatísticos disponíveis para exportar no filtro atual.');
+                alert('Não há dados estatísticos para gerar o PDF.');
                 return;
             }
-            window.print();
+
+            // Converte os canvas em imagens para o print popup
+            const donutImg = document.getElementById('chartMealDistribution')?.toDataURL('image/png') || '';
+            const lineImg = document.getElementById('chartDailyTrend')?.toDataURL('image/png') || '';
+            const barImg = document.getElementById('chartTopOptions')?.toDataURL('image/png') || '';
+
+            const totalReqs = document.getElementById('kpiTotalReqs').textContent;
+            const topMeal = document.getElementById('kpiTopMeal').textContent;
+            const topOption = document.getElementById('kpiTopOption').textContent;
+            const avgDaily = document.getElementById('kpiAvgDaily').textContent;
+            const menusCount = document.getElementById('kpiMenusCount').textContent;
+
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Dashboard Executivo - ${escapeHtml(state.company.name)}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; }
+                        .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 20px; }
+                        .header h1 { font-size: 22px; color: #1e5f9e; margin: 0 0 4px; }
+                        .header p { font-size: 12px; color: #718096; margin: 0; }
+                        .kpis-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 25px; }
+                        .kpi { border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc; text-align: center; }
+                        .kpi .val { font-size: 18px; font-weight: bold; color: #1e5f9e; }
+                        .kpi .lbl { font-size: 10px; color: #718096; text-transform: uppercase; margin-top: 4px; }
+                        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+                        .chart-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+                        .chart-card h4 { font-size: 13px; color: #2d3748; margin: 0 0 10px; }
+                        .chart-card img { width: 100%; height: auto; max-height: 220px; object-fit: contain; }
+                        .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 10px; color: #a0aec0; text-align: right; }
+                        @media print { body { padding: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>📊 Dashboard Analítico de Refeições</h1>
+                        <p><strong>Unidade:</strong> ${escapeHtml(state.company.name)} | <strong>Emitido em:</strong> ${new Date().toLocaleString('pt-BR')} por ${escapeHtml(state.user.name)}</p>
+                    </div>
+
+                    <div class="kpis-grid">
+                        <div class="kpi"><div class="val">${totalReqs}</div><div class="lbl">Total Refeições</div></div>
+                        <div class="kpi"><div class="val" style="font-size:14px;color:#16a34a">${escapeHtml(topMeal)}</div><div class="lbl">Pico de Horário</div></div>
+                        <div class="kpi"><div class="val" style="font-size:13px;color:#553c9a">${escapeHtml(topOption)}</div><div class="lbl">Prato Campeão</div></div>
+                        <div class="kpi"><div class="val">${avgDaily}</div><div class="lbl">Média / Dia</div></div>
+                        <div class="kpi"><div class="val">${menusCount}</div><div class="lbl">Cardápios</div></div>
+                    </div>
+
+                    <div class="charts-row">
+                        <div class="chart-card">
+                            <h4>🍩 Distribuição por Tipo de Refeição</h4>
+                            ${donutImg ? `<img src="${donutImg}">` : '<p>Sem gráfico</p>'}
+                        </div>
+                        <div class="chart-card">
+                            <h4>📈 Evolução Diária de Pedidos</h4>
+                            ${lineImg ? `<img src="${lineImg}">` : '<p>Sem gráfico</p>'}
+                        </div>
+                    </div>
+
+                    <div class="chart-card" style="margin-bottom:20px">
+                        <h4>🏆 Top Pratos / Opções Mais Solicitadas</h4>
+                        ${barImg ? `<img src="${barImg}">` : '<p>Sem gráfico</p>'}
+                    </div>
+
+                    <div class="footer">NutriFlow - Sistema Hospitalar de Gestão de Refeições</div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+            }, 600);
+        }
+
+        // ══════════════════════════════════════════════
+        //  CENTRAL DE RELATÓRIOS & EXPORTAÇÃO EM PDF
+        // ══════════════════════════════════════════════
+        let currentReportData = [];
+        let currentReportHtml = '';
+
+        async function generateReport() {
+            const model = document.getElementById('reportModel').value;
+            const date = document.getElementById('reportDate').value;
+            const mealType = document.getElementById('reportMealType').value;
+            const el = document.getElementById('reportContentBody');
+            const badge = document.getElementById('reportCountBadge');
+            const titleDisplay = document.getElementById('reportTitleDisplay');
+
+            el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Gerando relatório...</p></div>';
+
+            try {
+                let query = sb.from('meal_requests')
+                    .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                    .eq('menus.company_id', state.company.id)
+                    .order('id', { ascending: false });
+
+                if (date) query = query.eq('menus.meal_date', date);
+                if (mealType) query = query.eq('menus.meal_type', mealType);
+
+                const { data, error } = await query;
+                if (error) throw error;
+
+                currentReportData = data || [];
+                badge.textContent = `${currentReportData.length} registros`;
+
+                if (!data || !data.length) {
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para os filtros selecionados.</p></div>';
+                    return;
+                }
+
+                // 1. MODELO: PRODUÇÃO (COZINHA)
+                if (model === 'producao') {
+                    titleDisplay.textContent = '🍳 Relatório de Produção / Cozinha (Totalização por Prato)';
+                    
+                    const prodGroups = {};
+                    data.forEach(r => {
+                        const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
+                        if (!prodGroups[key]) {
+                            prodGroups[key] = {
+                                date: r.menus.meal_date,
+                                type: r.menus.meal_type,
+                                time: r.menus.meal_time,
+                                items: {}
+                            };
+                        }
+                        const opt = r.menu_options?.description || 'Opção Geral';
+                        prodGroups[key].items[opt] = (prodGroups[key].items[opt] || 0) + 1;
+                    });
+
+                    let html = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Prato / Opção</th><th style="text-align:right">Quantidade a Preparar</th></tr></thead>
+                        <tbody>`;
+
+                    Object.values(prodGroups).forEach(g => {
+                        const totalMeal = Object.values(g.items).reduce((a, b) => a + b, 0);
+                        const entries = Object.entries(g.items);
+                        entries.forEach(([opt, count], idx) => {
+                            html += `<tr>
+                                ${idx === 0 ? `<td rowspan="${entries.length}"><strong>${escapeHtml(fmtFullDate(g.date))}</strong></td>
+                                               <td rowspan="${entries.length}"><span class="meal-pill ${escapeHtml(g.type)}">${escapeHtml(MEAL_LABELS[g.type] || g.type)}</span></td>
+                                               <td rowspan="${entries.length}">${escapeHtml(g.time)}</td>` : ''}
+                                <td>${escapeHtml(opt)}</td>
+                                <td style="text-align:right;font-weight:bold;color:#1e5f9e;font-size:14px">${count} un</td>
+                            </tr>`;
+                        });
+                        html += `<tr style="background:#edf2f7"><td colspan="4" style="text-align:right;font-weight:700">Subtotal da Refeição:</td><td style="text-align:right;font-weight:800;color:#16a34a">${totalMeal} porções</td></tr>`;
+                    });
+
+                    html += `</tbody></table></div>`;
+                    currentReportHtml = html;
+                    el.innerHTML = html;
+                }
+
+                // 2. MODELO: NOMINAL DE COLABORADORES
+                else if (model === 'nominal') {
+                    titleDisplay.textContent = '👥 Relatório Nominal de Solicitações por Colaborador';
+
+                    const userIds = [...new Set(data.map(r => r.user_id))];
+                    const { data: profs } = await sb.from('profiles').select('id, name, email, username').in('id', userIds);
+                    const profsMap = Object.fromEntries((profs || []).map(p => [p.id, p]));
+
+                    let html = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Colaborador</th><th>Identificador</th><th>Data Refeição</th><th>Refeição</th><th>Horário</th><th>Opção Escolhida</th></tr></thead>
+                        <tbody>`;
+
+                    data.forEach(r => {
+                        const p = profsMap[r.user_id] || { name: 'Colaborador', email: '-', username: '' };
+                        html += `<tr>
+                            <td><strong>${escapeHtml(p.name)}</strong></td>
+                            <td style="font-size:12px;color:#718096">${p.username ? '@' + escapeHtml(p.username) : escapeHtml(p.email)}</td>
+                            <td>${escapeHtml(fmtFullDate(r.menus?.meal_date))}</td>
+                            <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || '-')}</span></td>
+                            <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                            <td><strong>${escapeHtml(r.menu_options?.description || '-')}</strong></td>
+                        </tr>`;
+                    });
+
+                    html += `</tbody></table></div>`;
+                    currentReportHtml = html;
+                    el.innerHTML = html;
+                }
+
+                // 3. MODELO: SINTÉTICO DIÁRIO
+                else {
+                    titleDisplay.textContent = '📊 Relatório Sintético de Demanda por Refeição';
+
+                    const dateGroups = {};
+                    data.forEach(r => {
+                        const d = r.menus.meal_date;
+                        if (!dateGroups[d]) dateGroups[d] = { date: d, cafe_manha: 0, almoco: 0, lanche_tarde: 0, janta: 0, lanche_noite: 0, total: 0 };
+                        if (dateGroups[d][r.menus.meal_type] !== undefined) {
+                            dateGroups[d][r.menus.meal_type]++;
+                        }
+                        dateGroups[d].total++;
+                    });
+
+                    let html = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Data</th><th>Café da Manhã</th><th>Almoço</th><th>Lanche Tarde</th><th>Jantar</th><th>Lanche Noite</th><th style="text-align:right">Total do Dia</th></tr></thead>
+                        <tbody>`;
+
+                    Object.values(dateGroups).forEach(d => {
+                        html += `<tr>
+                            <td><strong>${escapeHtml(fmtFullDate(d.date))}</strong></td>
+                            <td>${d.cafe_manha}</td>
+                            <td>${d.almoco}</td>
+                            <td>${d.lanche_tarde}</td>
+                            <td>${d.janta}</td>
+                            <td>${d.lanche_noite}</td>
+                            <td style="text-align:right;font-weight:800;color:#1e5f9e;font-size:14px">${d.total}</td>
+                        </tr>`;
+                    });
+
+                    html += `</tbody></table></div>`;
+                    currentReportHtml = html;
+                    el.innerHTML = html;
+                }
+            } catch (e) {
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao gerar relatório: ${escapeHtml(e.message)}</div>`;
+            }
+        }
+
+        // Exportação Exclusiva do Relatório em PDF
+        function exportReportsPdf() {
+            if (!currentReportData || !currentReportData.length) {
+                alert('Não há dados no relatório para gerar o PDF.');
+                return;
+            }
+
+            const modelName = document.getElementById('reportModel').options[document.getElementById('reportModel').selectedIndex].text;
+            const printWindow = window.open('', '_blank', 'width=950,height=750');
+
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Relatório - ${escapeHtml(state.company.name)}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; font-size: 12px; }
+                        .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 18px; }
+                        .header h1 { font-size: 20px; color: #1e5f9e; margin: 0 0 4px; }
+                        .header p { font-size: 12px; color: #4a5568; margin: 2px 0; }
+                        .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; display: flex; justify-content: space-between; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                        th { background: #f1f5f9; color: #1a365d; font-weight: 600; padding: 8px 10px; border: 1px solid #cbd5e1; text-align: left; }
+                        td { padding: 8px 10px; border: 1px solid #cbd5e1; vertical-align: middle; }
+                        tr:nth-child(even) { background: #fafbfc; }
+                        .meal-pill { font-weight: 600; }
+                        .signatures { margin-top: 45px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+                        .sign-box { border-top: 1px solid #718096; text-align: center; padding-top: 6px; font-size: 11px; color: #4a5568; }
+                        .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 8px; font-size: 10px; color: #a0aec0; text-align: right; }
+                        @media print { body { padding: 0; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${escapeHtml(modelName)}</h1>
+                        <p><strong>Unidade Hospitalar:</strong> ${escapeHtml(state.company.name)}</p>
+                    </div>
+
+                    <div class="meta-box">
+                        <div><strong>Total de Registros:</strong> ${currentReportData.length}</div>
+                        <div><strong>Data da Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</div>
+                        <div><strong>Emitido por:</strong> ${escapeHtml(state.user.name)}</div>
+                    </div>
+
+                    ${currentReportHtml}
+
+                    <div class="signatures">
+                        <div class="sign-box">Responsável Técnico / Nutricionista (CRN)</div>
+                        <div class="sign-box">Coordenação de Nutrição & Dietética</div>
+                    </div>
+
+                    <div class="footer">NutriFlow - Documento Oficial de Gestão de Alimentação Hospitalar</div>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            setTimeout(() => {
+                printWindow.focus();
+                printWindow.print();
+            }, 500);
         }
 
         // ══════════════════════════════════════════════
@@ -2081,9 +2350,7 @@
 
                 const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
                 const optNuAdmin = document.getElementById('optNuRoleAdmin');
-                if (optNuAdmin) {
-                    optNuAdmin.disabled = !isCurrentSuperAdmin;
-                }
+                if (optNuAdmin) optNuAdmin.disabled = !isCurrentSuperAdmin;
 
                 const { data: users, error: uErr } = await sb.from('profiles').select('*').order('name');
                 if (uErr) throw uErr;
