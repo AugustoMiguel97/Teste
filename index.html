@@ -365,6 +365,74 @@
         .menu-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .menu-card-title { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-primary); font-size: 14px; }
 
+        /* ── SELETOR & CALENDÁRIO VISUAL DE DATAS COM INDICADORES ── */
+        .date-selector-container {
+            display: flex; flex-direction: column; gap: 12px;
+            margin-bottom: 18px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: var(--radius-lg);
+            padding: 16px 20px; box-shadow: var(--shadow-xs);
+        }
+        .date-selector-header {
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 10px;
+        }
+        .date-strip-row {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding: 4px 2px 8px; scrollbar-width: thin;
+        }
+        .date-strip-row::-webkit-scrollbar { height: 5px; }
+        .date-strip-row::-webkit-scrollbar-thumb { background: var(--border-dark); border-radius: 4px; }
+
+        .date-pill {
+            flex: 0 0 auto; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 8px 12px; border-radius: var(--radius);
+            border: 1.5px solid var(--border); background: var(--surface-subtle);
+            cursor: pointer; transition: all var(--transition);
+            min-width: 66px; position: relative; user-select: none;
+        }
+        .date-pill:hover {
+            border-color: var(--brand); background: var(--brand-light);
+            transform: translateY(-1.5px); box-shadow: var(--shadow-xs);
+        }
+        .date-pill.active {
+            background: var(--brand) !important; border-color: var(--brand-dark) !important;
+            color: #ffffff !important; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.28);
+        }
+        .date-pill.active .date-pill-day,
+        .date-pill.active .date-pill-weekday,
+        .date-pill.active .date-pill-tag {
+            color: #ffffff !important;
+        }
+        .date-pill-weekday {
+            font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+            color: var(--text-secondary); letter-spacing: .4px;
+        }
+        .date-pill-day {
+            font-size: 16px; font-weight: 800; color: var(--text-primary);
+            line-height: 1.15; margin: 2px 0;
+        }
+        .date-pill-tag {
+            font-size: 9.5px; font-weight: 700; color: var(--brand);
+            text-transform: uppercase; letter-spacing: .3px;
+        }
+        .date-pill-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--brand-accent); margin-top: 3px;
+            box-shadow: 0 0 6px var(--brand-accent);
+        }
+        .date-pill.has-data:not(.active) {
+            border-color: var(--brand-muted); background: #f0fdf4;
+        }
+        .date-pill-badge {
+            font-size: 9px; font-weight: 800; padding: 1px 5px;
+            border-radius: 10px; background: rgba(22, 101, 52, 0.14);
+            color: var(--brand); margin-top: 3px; white-space: nowrap;
+        }
+        .date-pill.active .date-pill-badge {
+            background: rgba(255, 255, 255, 0.25); color: #ffffff;
+        }
+
         .option-tags { display: flex; flex-wrap: wrap; gap: 8px; }
         .option-tag { padding: 4px 12px; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-secondary); font-weight: 500; }
 
@@ -633,13 +701,24 @@
                         </div>
                     </div>
 
+                    <div class="date-selector-container">
+                        <div class="date-selector-header">
+                            <div>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Navegação Rápida por Data</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Dias com ponto verde 🟢 possuem cardápio cadastrado</p>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setMenuFilterDateToday()">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearMenuFilterDate()">Ver Todos</button>
+                                <input type="date" id="menuFilterDate" onchange="window.NutriApp.loadMenuNutri()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                            </div>
+                        </div>
+                        <div class="date-strip-row" id="menuDateStrip"></div>
+                    </div>
+
                     <div class="section">
                         <div class="section-header">
-                            <h2>Cardápio cadastrado</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="menuFilterDate" onchange="window.NutriApp.loadMenuNutri()">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('menuFilterDate').value='';window.NutriApp.loadMenuNutri()">Limpar</button>
-                            </div>
+                            <h2 id="menuSectionTitle">Cardápio do Dia</h2>
                         </div>
                         <div class="section-body" id="menuListBody">
                             <div class="empty">
@@ -656,13 +735,25 @@
                         <h1>📊 Solicitações recebidas</h1>
                         <p>Veja quantas e quais refeições foram pedidas</p>
                     </div>
+
+                    <div class="date-selector-container">
+                        <div class="date-selector-header">
+                            <div>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Navegação Rápida por Data</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Dias com ponto verde 🟢 possuem solicitações feitas</p>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqFilterDateToday()">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearReqFilterDate()">Ver Todos</button>
+                                <input type="date" id="reqFilterDate" onchange="window.NutriApp.loadAllRequests()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                            </div>
+                        </div>
+                        <div class="date-strip-row" id="reqDateStrip"></div>
+                    </div>
+
                     <div class="section">
                         <div class="section-header">
-                            <h2>Filtrar por data</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="reqFilterDate" onchange="window.NutriApp.loadAllRequests()">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('reqFilterDate').value='';window.NutriApp.loadAllRequests()">Limpar</button>
-                            </div>
+                            <h2 id="reqSectionTitle">Solicitações do Dia</h2>
                         </div>
                         <div class="section-body" id="allReqsBody">
                             <div class="empty">
@@ -714,29 +805,28 @@
                         </div>
                     </div>
 
-                    <!-- Linha de Filtros Dinâmicos -->
-                    <div class="section" style="margin-bottom:18px">
-                        <div class="section-header">
-                            <h2>Filtros dos Gráficos</h2>
-                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                                <div style="display:flex;align-items:center;gap:6px">
-                                    <label style="font-size:12px;color:#718096;font-weight:600">Data:</label>
-                                    <input type="date" id="statsDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
-                                </div>
-                                <div style="display:flex;align-items:center;gap:6px">
-                                    <label style="font-size:12px;color:#718096;font-weight:600">Tipo de Refeição:</label>
-                                    <select id="statsMealType" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
-                                        <option value="">Todas</option>
-                                        <option value="cafe_manha">☕ Café da manhã</option>
-                                        <option value="almoco">🍛 Almoço</option>
-                                        <option value="lanche_tarde">🥪 Lanche da tarde</option>
-                                        <option value="janta">🍽️ Jantar</option>
-                                        <option value="lanche_noite">🌙 Lanche da noite</option>
-                                    </select>
-                                </div>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearStatsFilters()">Limpar Filtros</button>
+                    <!-- Linha de Filtros Dinâmicos com Seletor Visual -->
+                    <div class="date-selector-container">
+                        <div class="date-selector-header">
+                            <div>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Filtrar por Data</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Dias com pedidos registrados 🟢</p>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsDateToday()">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearStatsFilters()">Geral (Todos)</button>
+                                <input type="date" id="statsDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                <select id="statsMealType" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                    <option value="">Todas as refeições</option>
+                                    <option value="cafe_manha">☕ Café da manhã</option>
+                                    <option value="almoco">🍛 Almoço</option>
+                                    <option value="lanche_tarde">🥪 Lanche da tarde</option>
+                                    <option value="janta">🍽️ Jantar</option>
+                                    <option value="lanche_noite">🌙 Lanche da noite</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="date-strip-row" id="statsDateStrip"></div>
                     </div>
 
                     <!-- GRID DE GRÁFICOS INTERATIVOS -->
@@ -774,6 +864,22 @@
                         </button>
                     </div>
 
+                    <!-- Seletor Visual de Data do Relatório -->
+                    <div class="date-selector-container">
+                        <div class="date-selector-header">
+                            <div>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Selecionar Data do Relatório</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Clique no dia desejado ou escolha no calendário</p>
+                            </div>
+                            <div style="display:flex;gap:8px;align-items:center">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportDateToday()">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearReportDate()">Todas as Datas</button>
+                                <input type="date" id="reportDate" onchange="window.NutriApp.generateReport()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                            </div>
+                        </div>
+                        <div class="date-strip-row" id="reportDateStrip"></div>
+                    </div>
+
                     <!-- Configuração e Filtros do Relatório -->
                     <div class="section">
                         <div class="section-header">
@@ -790,13 +896,9 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>Data Específica</label>
-                                    <input type="date" id="reportDate" onchange="window.NutriApp.generateReport()">
-                                </div>
-                                <div class="form-group">
                                     <label>Tipo de Refeição</label>
                                     <select id="reportMealType" onchange="window.NutriApp.generateReport()">
-                                        <option value="">Todas</option>
+                                        <option value="">Todas as refeições</option>
                                         <option value="cafe_manha">☕ Café da manhã</option>
                                         <option value="almoco">🍛 Almoço</option>
                                         <option value="lanche_tarde">🥪 Lanche da tarde</option>
@@ -1121,6 +1223,71 @@
                 return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
             }
 
+            function getTodayStr() {
+                const now = new Date();
+                const y = now.getFullYear();
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const d = String(now.getDate()).padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            }
+
+            const stripCallbacks = {};
+
+            function _selectStripDate(containerId, dateIso) {
+                const cb = stripCallbacks[containerId];
+                if (typeof cb === 'function') {
+                    cb(dateIso);
+                }
+            }
+
+            function renderDateStrip(containerId, activeDate, countMap = {}, onDateSelected) {
+                const el = document.getElementById(containerId);
+                if (!el) return;
+
+                const todayStr = getTodayStr();
+                const centerDate = new Date();
+                const dates = [];
+
+                // Faixa de 14 dias (4 dias atrás até 9 dias à frente)
+                for (let i = -4; i <= 9; i++) {
+                    const d = new Date(centerDate);
+                    d.setDate(d.getDate() + i);
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const iso = `${y}-${m}-${day}`;
+                    const weekday = d.toLocaleDateString('pt-BR', { weekday: 'short' }).replace('.', '');
+                    dates.push({ iso, weekday, day, isToday: iso === todayStr });
+                }
+
+                el.innerHTML = dates.map(item => {
+                    const count = countMap[item.iso] || 0;
+                    const isActive = activeDate === item.iso;
+                    const hasData = count > 0;
+
+                    let badgeHtml = '';
+                    if (hasData) {
+                        badgeHtml = `<span class="date-pill-badge" title="${count} registros">${count} un</span>`;
+                    } else if (item.isToday) {
+                        badgeHtml = `<span class="date-pill-tag">Hoje</span>`;
+                    }
+
+                    return `
+                        <div class="date-pill ${isActive ? 'active' : ''} ${hasData ? 'has-data' : ''}" 
+                             onclick="window.NutriApp._selectStripDate('${containerId}', '${item.iso}')"
+                             data-date="${item.iso}"
+                             title="${fmtFullDate(item.iso)}: ${hasData ? count + ' registros' : 'Sem registros'}">
+                            <span class="date-pill-weekday">${escapeHtml(item.weekday)}</span>
+                            <span class="date-pill-day">${escapeHtml(item.day)}</span>
+                            ${hasData ? '<span class="date-pill-dot"></span>' : ''}
+                            ${badgeHtml}
+                        </div>
+                    `;
+                }).join('');
+
+                stripCallbacks[containerId] = onDateSelected;
+            }
+
             // ══════════════════════════════════════════════
             //  AUTENTICAÇÃO COM SUPABASE
             // ══════════════════════════════════════════════
@@ -1437,10 +1604,26 @@
                 if (pageId === 'pageHome') loadHome();
                 if (pageId === 'pageRequest') loadRequestPage();
                 if (pageId === 'pageMyReqs') loadMyReqs();
-                if (pageId === 'pageMenu') loadMenuNutri();
-                if (pageId === 'pageRequests') loadAllRequests();
-                if (pageId === 'pageStats') loadStats();
-                if (pageId === 'pageReports') generateReport();
+                if (pageId === 'pageMenu') {
+                    const inp = document.getElementById('menuFilterDate');
+                    if (inp && !inp.value) inp.value = getTodayStr();
+                    loadMenuNutri();
+                }
+                if (pageId === 'pageRequests') {
+                    const inp = document.getElementById('reqFilterDate');
+                    if (inp && !inp.value) inp.value = getTodayStr();
+                    loadAllRequests();
+                }
+                if (pageId === 'pageStats') {
+                    const inp = document.getElementById('statsDate');
+                    if (inp && !inp.value) inp.value = getTodayStr();
+                    loadStats();
+                }
+                if (pageId === 'pageReports') {
+                    const inp = document.getElementById('reportDate');
+                    if (inp && !inp.value) inp.value = getTodayStr();
+                    generateReport();
+                }
                 if (pageId === 'pageUsers') loadUsers();
                 if (pageId === 'pageCompanies') loadCompanies();
                 if (pageId === 'pageChangePassword') resetChangePasswordForm();
@@ -1524,7 +1707,7 @@
                 const contentEl = document.getElementById('homeContent');
 
                 try {
-                    const today = new Date().toISOString().slice(0, 10);
+                    const today = getTodayStr();
                     const { data: menu } = await sb.from('menus')
                         .select('*, options:menu_options(*)')
                         .eq('company_id', state.company.id)
@@ -1579,7 +1762,7 @@
                 const el = document.getElementById('requestMenuList');
                 el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
                 try {
-                    const today = new Date().toISOString().slice(0, 10);
+                    const today = getTodayStr();
                     const { data: menu } = await sb.from('menus')
                         .select('*, options:menu_options(*)')
                         .eq('company_id', state.company.id)
@@ -1767,8 +1950,35 @@
 
             async function loadMenuNutri() {
                 const el = document.getElementById('menuListBody');
-                const date = document.getElementById('menuFilterDate').value;
+                const dateInput = document.getElementById('menuFilterDate');
+                
+                // Se estiver vazio, define como padrão a data de hoje
+                if (!dateInput.value) {
+                    dateInput.value = getTodayStr();
+                }
+                const date = dateInput.value;
+
+                const titleEl = document.getElementById('menuSectionTitle');
+                if (titleEl) {
+                    titleEl.textContent = date ? `Cardápio de ${fmtFullDate(date)}` : 'Todos os Cardápios Cadastrados';
+                }
+
                 try {
+                    // Busca dados para o indicador visual de dias com cardápio
+                    const { data: menuDates } = await sb.from('menus')
+                        .select('meal_date')
+                        .eq('company_id', state.company.id);
+
+                    const menuCountMap = {};
+                    (menuDates || []).forEach(m => {
+                        if (m.meal_date) menuCountMap[m.meal_date] = (menuCountMap[m.meal_date] || 0) + 1;
+                    });
+
+                    renderDateStrip('menuDateStrip', date, menuCountMap, (selectedDate) => {
+                        dateInput.value = selectedDate;
+                        loadMenuNutri();
+                    });
+
                     let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
                     if (date) query = query.eq('meal_date', date);
 
@@ -1776,7 +1986,7 @@
                     if (error) throw error;
 
                     if (!data || !data.length) {
-                        el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
+                        el.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada para ${date ? fmtFullDate(date) : 'este período'}</p></div>`;
                         return;
                     }
 
@@ -1799,6 +2009,18 @@
                 }
             }
 
+            function setMenuFilterDateToday() {
+                const inp = document.getElementById('menuFilterDate');
+                if (inp) inp.value = getTodayStr();
+                loadMenuNutri();
+            }
+
+            function clearMenuFilterDate() {
+                const inp = document.getElementById('menuFilterDate');
+                if (inp) inp.value = '';
+                loadMenuNutri();
+            }
+
             async function deleteMenu(id) {
                 if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
                 try {
@@ -1816,8 +2038,36 @@
             // ══════════════════════════════════════════════
             async function loadAllRequests() {
                 const el = document.getElementById('allReqsBody');
-                const date = document.getElementById('reqFilterDate').value;
+                const dateInput = document.getElementById('reqFilterDate');
+                
+                // Se estiver vazio, define como padrão a data de hoje
+                if (!dateInput.value) {
+                    dateInput.value = getTodayStr();
+                }
+                const date = dateInput.value;
+
+                const titleEl = document.getElementById('reqSectionTitle');
+                if (titleEl) {
+                    titleEl.textContent = date ? `Solicitações de ${fmtFullDate(date)}` : 'Todas as Solicitações Recebidas';
+                }
+
                 try {
+                    // Busca dados para o indicador visual de dias com solicitações
+                    const { data: reqCounts } = await sb.from('meal_requests')
+                        .select('menus!inner(company_id, meal_date)')
+                        .eq('menus.company_id', state.company.id);
+
+                    const reqCountMap = {};
+                    (reqCounts || []).forEach(r => {
+                        const d = r.menus?.meal_date;
+                        if (d) reqCountMap[d] = (reqCountMap[d] || 0) + 1;
+                    });
+
+                    renderDateStrip('reqDateStrip', date, reqCountMap, (selectedDate) => {
+                        dateInput.value = selectedDate;
+                        loadAllRequests();
+                    });
+
                     let query = sb.from('meal_requests')
                         .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
                         .eq('menus.company_id', state.company.id)
@@ -1829,7 +2079,7 @@
                     if (error) throw error;
 
                     if (!data || !data.length) {
-                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
+                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada para ${date ? fmtFullDate(date) : 'este período'}</p></div>`;
                         return;
                     }
 
@@ -1855,6 +2105,18 @@
                 }
             }
 
+            function setReqFilterDateToday() {
+                const inp = document.getElementById('reqFilterDate');
+                if (inp) inp.value = getTodayStr();
+                loadAllRequests();
+            }
+
+            function clearReqFilterDate() {
+                const inp = document.getElementById('reqFilterDate');
+                if (inp) inp.value = '';
+                loadAllRequests();
+            }
+
             // ══════════════════════════════════════════════
             //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
             // ══════════════════════════════════════════════
@@ -1864,16 +2126,45 @@
             let chartInstanceTopOptions = null;
 
             function clearStatsFilters() {
-                document.getElementById('statsDate').value = '';
-                document.getElementById('statsMealType').value = '';
+                const dateInp = document.getElementById('statsDate');
+                if (dateInp) dateInp.value = '';
+                const mealInp = document.getElementById('statsMealType');
+                if (mealInp) mealInp.value = '';
+                loadStats();
+            }
+
+            function setStatsDateToday() {
+                const dateInp = document.getElementById('statsDate');
+                if (dateInp) dateInp.value = getTodayStr();
                 loadStats();
             }
 
             async function loadStats() {
-                const date = document.getElementById('statsDate').value;
-                const mealType = document.getElementById('statsMealType').value;
+                const dateInput = document.getElementById('statsDate');
+                if (dateInput && !dateInput.value && dateInput.dataset.initialized !== 'true') {
+                    dateInput.value = getTodayStr();
+                    dateInput.dataset.initialized = 'true';
+                }
+                const date = dateInput ? dateInput.value : '';
+                const mealType = document.getElementById('statsMealType') ? document.getElementById('statsMealType').value : '';
 
                 try {
+                    // Busca dados para o indicador visual de dias com dados no dashboard
+                    const { data: allReqStats } = await sb.from('meal_requests')
+                        .select('menus!inner(company_id, meal_date)')
+                        .eq('menus.company_id', state.company.id);
+
+                    const statsCountMap = {};
+                    (allReqStats || []).forEach(r => {
+                        const d = r.menus?.meal_date;
+                        if (d) statsCountMap[d] = (statsCountMap[d] || 0) + 1;
+                    });
+
+                    renderDateStrip('statsDateStrip', date, statsCountMap, (selectedDate) => {
+                        if (dateInput) dateInput.value = selectedDate;
+                        loadStats();
+                    });
+
                     let query = sb.from('meal_requests')
                         .select('menus!inner(id, company_id, meal_date, meal_type, meal_time), menu_options(id, description)')
                         .eq('menus.company_id', state.company.id);
@@ -2130,7 +2421,12 @@
 
             async function generateReport() {
                 const model = document.getElementById('reportModel').value;
-                const date = document.getElementById('reportDate').value;
+                const dateInput = document.getElementById('reportDate');
+                if (dateInput && !dateInput.value && dateInput.dataset.initialized !== 'true') {
+                    dateInput.value = getTodayStr();
+                    dateInput.dataset.initialized = 'true';
+                }
+                const date = dateInput ? dateInput.value : '';
                 const mealType = document.getElementById('reportMealType').value;
                 const el = document.getElementById('reportContentBody');
                 const badge = document.getElementById('reportCountBadge');
@@ -2139,6 +2435,22 @@
                 el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Gerando relatório...</p></div>';
 
                 try {
+                    // Busca dados para o indicador visual de dias com dados nos relatórios
+                    const { data: allReqReport } = await sb.from('meal_requests')
+                        .select('menus!inner(company_id, meal_date)')
+                        .eq('menus.company_id', state.company.id);
+
+                    const reportCountMap = {};
+                    (allReqReport || []).forEach(r => {
+                        const d = r.menus?.meal_date;
+                        if (d) reportCountMap[d] = (reportCountMap[d] || 0) + 1;
+                    });
+
+                    renderDateStrip('reportDateStrip', date, reportCountMap, (selectedDate) => {
+                        if (dateInput) dateInput.value = selectedDate;
+                        generateReport();
+                    });
+
                     let query = sb.from('meal_requests')
                         .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
                         .eq('menus.company_id', state.company.id)
@@ -2154,7 +2466,7 @@
                     badge.textContent = `${currentReportData.length} registros`;
 
                     if (!data || !data.length) {
-                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para os filtros selecionados.</p></div>';
+                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para ${date ? fmtFullDate(date) : 'este período'}.</p></div>`;
                         return;
                     }
 
@@ -2267,6 +2579,18 @@
                 } catch (e) {
                     el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao gerar relatório: ${escapeHtml(e.message)}</div>`;
                 }
+            }
+
+            function setReportDateToday() {
+                const inp = document.getElementById('reportDate');
+                if (inp) inp.value = getTodayStr();
+                generateReport();
+            }
+
+            function clearReportDate() {
+                const inp = document.getElementById('reportDate');
+                if (inp) inp.value = '';
+                generateReport();
             }
 
             // Exportação Exclusiva do Relatório em PDF
@@ -2850,12 +3174,20 @@
                 saveMenu,
                 loadMenuNutri,
                 deleteMenu,
+                setMenuFilterDateToday,
+                clearMenuFilterDate,
                 loadAllRequests,
+                setReqFilterDateToday,
+                clearReqFilterDate,
                 loadStats,
+                setStatsDateToday,
                 clearStatsFilters,
                 exportDashboardPdf,
                 generateReport,
+                setReportDateToday,
+                clearReportDate,
                 exportReportsPdf,
+                _selectStripDate,
                 addCompanyChip,
                 removeChip,
                 createUser,
