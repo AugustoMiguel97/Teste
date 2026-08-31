@@ -1457,7 +1457,19 @@
                 navigateTo(targetPage);
             }
 
+            function closeMobileMenu() {
+                const sidebar = document.querySelector('.sidebar');
+                const menuToggle = document.getElementById('menuToggle');
+                if (sidebar && sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+                if (menuToggle && menuToggle.classList.contains('active')) {
+                    menuToggle.classList.remove('active');
+                }
+            }
+
             function navigateTo(pageId) {
+                closeMobileMenu();
                 showPage(pageId);
                 localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
                 if (pageId === 'pageHome') loadHome();
@@ -2872,7 +2884,8 @@
                 saveEditUser,
                 createCompany,
                 deleteCompany,
-                toggleMobileMenu
+                toggleMobileMenu,
+                closeMobileMenu
             });
 
         })();
