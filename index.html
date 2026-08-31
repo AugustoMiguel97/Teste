@@ -2,8 +2,10 @@
 <html lang="pt-BR">
 
 <head>
-    <!-- Importa o SDK do Supabase direto pela internet (CDN) -->
+    <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js CDN para Dashboards e Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -289,16 +291,17 @@
         .page-header h1 { font-size: 22px; font-weight: 700; color: #1a202c; }
         .page-header p { font-size: 13px; color: #718096; margin-top: 3px; }
 
+        /* GRID DE INDICADORES / KPIS */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: #fff;
-            padding: 18px 20px;
+            padding: 16px 18px;
             border-radius: 12px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
             border: 1px solid #e2e8f0;
@@ -307,9 +310,45 @@
             justify-content: space-between;
         }
 
-        .stat-card .val { font-size: 26px; font-weight: 800; color: #1e5f9e; line-height: 1.2; }
-        .stat-card .lbl { font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: .5px; margin-top: 6px; font-weight: 600; }
+        .stat-card .val { font-size: 24px; font-weight: 800; color: #1e5f9e; line-height: 1.2; }
+        .stat-card .lbl { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: .5px; margin-top: 6px; font-weight: 700; }
         .stat-card .sub { font-size: 11px; color: #a0aec0; margin-top: 2px; }
+
+        /* GRID DE GRÁFICOS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .chart-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px 20px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-box h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-canvas-container {
+            position: relative;
+            flex: 1;
+            min-height: 240px;
+            max-height: 280px;
+            width: 100%;
+        }
 
         .section {
             background: #fff;
@@ -443,19 +482,20 @@
             .sidebar.open .sidebar-nav { display: flex !important; flex-direction: column !important; flex: 1 1 auto !important; padding: 16px 0 !important; overflow-y: auto !important; }
             .sidebar.open .sidebar-footer { display: flex !important; flex-direction: column !important; padding: 16px 20px !important; background: #152d4f !important; }
             .form-row { grid-template-columns: 1fr !important; }
-            .stats-grid { grid-template-columns: 1fr !important; }
+            .stats-grid { grid-template-columns: 1fr 1fr !important; }
+            .charts-grid { grid-template-columns: 1fr !important; }
             .main { padding: 16px !important; height: calc(100vh - 65px) !important; }
         }
 
-        /* ── ESTILOS EXCLUSIVOS DE IMPRESSÃO / RELATÓRIO PDF ── */
+        /* ── ESTILOS DE IMPRESSÃO / PDF ── */
         @media print {
             body { background: #ffffff !important; overflow: visible !important; }
-            .sidebar, .menu-toggle, #btnExportPdf, .section-header form, .btn, .nav-item { display: none !important; }
+            .sidebar, .menu-toggle, #btnExportPdf, .section-header form, .btn, .nav-item, #statsFiltersRow { display: none !important; }
             .main { padding: 0 !important; height: auto !important; overflow: visible !important; }
-            .section { box-shadow: none !important; border: 1px solid #cbd5e1 !important; page-break-inside: avoid; }
-            .stat-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+            .section, .chart-box, .stat-card { box-shadow: none !important; border: 1px solid #cbd5e1 !important; page-break-inside: avoid; }
             .page { display: block !important; max-width: 100% !important; padding: 0 !important; }
             #screenApp, .layout { height: auto !important; overflow: visible !important; display: block !important; }
+            .charts-grid { grid-template-columns: 1fr 1fr !important; }
         }
     </style>
 </head>
@@ -690,48 +730,58 @@
                     </div>
                 </div>
 
-                <!-- PAGE: Dashboard Estatístico (nutri/admin) -->
+                <!-- PAGE: Dashboard Estatístico Avançado (nutri/admin) -->
                 <div class="page" id="pageStats">
                     <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
                         <div>
-                            <h1>📈 Dashboard de Estatísticas</h1>
-                            <p>Análise de demandas de refeições, pratos preferidos e relatórios</p>
+                            <h1>📈 Painel Analítico & Gráficos</h1>
+                            <p>Inteligência de dados, consumo de refeições e relatórios da unidade</p>
                         </div>
                         <button type="button" class="btn btn-primary" id="btnExportPdf" onclick="exportStatsPdf()">
                             📥 Baixar Relatório em PDF
                         </button>
                     </div>
 
-                    <!-- Indicadores Chave (KPIs) -->
+                    <!-- 6 Indicadores Executivos (KPIs) -->
                     <div class="stats-grid" id="statsKpis">
                         <div class="stat-card">
                             <div class="val" id="kpiTotalReqs">0</div>
-                            <div class="lbl">Refeições Pedidas</div>
-                            <div class="sub">Total no período</div>
+                            <div class="lbl">Total de Refeições</div>
+                            <div class="sub">Pedidos registrados</div>
                         </div>
                         <div class="stat-card">
-                            <div class="val" id="kpiTopMeal" style="font-size:18px;color:#16a34a">-</div>
-                            <div class="lbl">Refeição Mais Pedida</div>
-                            <div class="sub">Horário de maior pico</div>
+                            <div class="val" id="kpiTopMeal" style="font-size:17px;color:#16a34a">—</div>
+                            <div class="lbl">Refeição de Maior Pico</div>
+                            <div class="sub">Mais demandada</div>
                         </div>
                         <div class="stat-card">
-                            <div class="val" id="kpiTopOption" style="font-size:16px;color:#553c9a">-</div>
-                            <div class="lbl">Prato Campeão</div>
-                            <div class="sub">Opção com mais escolhas</div>
+                            <div class="val" id="kpiTopOption" style="font-size:15px;color:#553c9a">—</div>
+                            <div class="lbl">Prato Favorito</div>
+                            <div class="sub">Opção mais escolhida</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="val" id="kpiAvgDaily">0</div>
+                            <div class="lbl">Média / Dia</div>
+                            <div class="sub">Volume diário estimado</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="val" id="kpiMenusCount">0</div>
+                            <div class="lbl">Cardápios Ofertados</div>
+                            <div class="sub">Total de serviços</div>
                         </div>
                     </div>
 
-                    <!-- Filtros do Dashboard -->
-                    <div class="section">
-                        <div class="section-header">
-                            <h2>Filtrar Dados</h2>
+                    <!-- Linha de Filtros Dinâmicos -->
+                    <div class="section" style="margin-bottom:18px">
+                        <div class="section-header" id="statsFiltersRow">
+                            <h2>Filtros do Painel</h2>
                             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                                 <div style="display:flex;align-items:center;gap:6px">
                                     <label style="font-size:12px;color:#718096;font-weight:600">Data:</label>
                                     <input type="date" id="statsDate" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
                                 </div>
                                 <div style="display:flex;align-items:center;gap:6px">
-                                    <label style="font-size:12px;color:#718096;font-weight:600">Tipo:</label>
+                                    <label style="font-size:12px;color:#718096;font-weight:600">Tipo de Refeição:</label>
                                     <select id="statsMealType" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
                                         <option value="">Todas</option>
                                         <option value="cafe_manha">☕ Café da manhã</option>
@@ -744,10 +794,39 @@
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="clearStatsFilters()">Limpar Filtros</button>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- GRID DE GRÁFICOS INTERATIVOS -->
+                    <div class="charts-grid">
+                        <div class="chart-box">
+                            <h3>🍩 Distribuição por Tipo de Refeição</h3>
+                            <div class="chart-canvas-container">
+                                <canvas id="chartMealDistribution"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-box">
+                            <h3>📈 Tendência e Evolução Diária</h3>
+                            <div class="chart-canvas-container">
+                                <canvas id="chartDailyTrend"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-box" style="grid-column: 1 / -1">
+                            <h3>🏆 Top Pratos / Opções Mais Solicitadas</h3>
+                            <div class="chart-canvas-container" style="max-height:300px">
+                                <canvas id="chartTopOptions"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalhamento em Cards com Barras -->
+                    <div class="section">
+                        <div class="section-header">
+                            <h2>Detalhamento das Refeições no Período</h2>
+                        </div>
                         <div class="section-body" id="statsBody">
                             <div class="empty">
                                 <div class="empty-icon">📊</div>
-                                <p>Carregando estatísticas...</p>
+                                <p>Carregando dados estatísticos...</p>
                             </div>
                         </div>
                     </div>
@@ -1265,10 +1344,10 @@
 
             if (role === 'nutricionista' || role === 'admin') {
                 items.push(
-                    { sep: 'Nutrição' },
+                    { sep: 'Nutrição & Relatórios' },
                     { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
                     { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
-                    { page: 'pageStats', icon: '📈', label: 'Estatísticas' }
+                    { page: 'pageStats', icon: '📈', label: 'Dashboards & Gráficos' }
                 );
             }
             const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
@@ -1728,9 +1807,12 @@
         }
 
         // ══════════════════════════════════════════════
-        //  DASHBOARD DE ESTATÍSTICAS E RELATÓRIOS
+        //  DASHBOARD AVANÇADO COM CHART.JS
         // ══════════════════════════════════════════════
         let currentStatsData = [];
+        let chartInstanceMealDist = null;
+        let chartInstanceDailyTrend = null;
+        let chartInstanceTopOptions = null;
 
         function clearStatsFilters() {
             document.getElementById('statsDate').value = '';
@@ -1745,7 +1827,7 @@
 
             try {
                 let query = sb.from('meal_requests')
-                    .select('menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                    .select('menus!inner(id, company_id, meal_date, meal_type, meal_time), menu_options(id, description)')
                     .eq('menus.company_id', state.company.id);
 
                 if (date) query = query.eq('menus.meal_date', date);
@@ -1760,32 +1842,44 @@
                     document.getElementById('kpiTotalReqs').textContent = '0';
                     document.getElementById('kpiTopMeal').textContent = '—';
                     document.getElementById('kpiTopOption').textContent = '—';
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado encontrado para o filtro selecionado.</p></div>';
+                    document.getElementById('kpiAvgDaily').textContent = '0';
+                    document.getElementById('kpiMenusCount').textContent = '0';
+                    destroyAllCharts();
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado encontrado para os filtros selecionados.</p></div>';
                     return;
                 }
 
-                // Cálculo dos KPIs
+                // Total de solicitações
                 const totalReqs = data.length;
                 document.getElementById('kpiTotalReqs').textContent = totalReqs;
 
+                // Contadores e Agrupamentos
                 const mealTypeCounts = {};
                 const optionCounts = {};
+                const dailyTrendCounts = {};
                 const groups = {};
+                const distinctMenuIds = new Set();
 
                 data.forEach(r => {
-                    // Contagem por refeição
-                    mealTypeCounts[r.menus.meal_type] = (mealTypeCounts[r.menus.meal_type] || 0) + 1;
-
-                    // Contagem por prato
+                    const mType = r.menus.meal_type;
+                    const mDate = r.menus.meal_date;
                     const optDesc = r.menu_options?.description || 'Opção Geral';
+
+                    distinctMenuIds.add(r.menus.id);
+
+                    // Refeição
+                    mealTypeCounts[mType] = (mealTypeCounts[mType] || 0) + 1;
+                    // Opção
                     optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
+                    // Tendência diária
+                    dailyTrendCounts[mDate] = (dailyTrendCounts[mDate] || 0) + 1;
 
                     // Agrupamento por Cardápio (Data + Refeição)
-                    const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
+                    const key = `${mDate}_${mType}`;
                     if (!groups[key]) {
                         groups[key] = {
-                            meal_date: r.menus.meal_date,
-                            meal_type: r.menus.meal_type,
+                            meal_date: mDate,
+                            meal_type: mType,
                             meal_time: r.menus.meal_time,
                             counts: {}
                         };
@@ -1801,7 +1895,21 @@
                 const topOption = Object.entries(optionCounts).sort((a, b) => b[1] - a[1])[0];
                 document.getElementById('kpiTopOption').textContent = topOption ? `${topOption[0]} (${topOption[1]})` : '—';
 
-                // Renderização dos Grupos
+                // Média diária
+                const totalDias = Object.keys(dailyTrendCounts).length || 1;
+                document.getElementById('kpiAvgDaily').textContent = Math.round(totalReqs / totalDias);
+
+                // Total de Cardápios Ofertados
+                document.getElementById('kpiMenusCount').textContent = distinctMenuIds.size;
+
+                // ══ RENDERIZAR OS GRÁFICOS CHART.JS ══
+                renderCharts({
+                    mealTypeCounts,
+                    dailyTrendCounts,
+                    optionCounts
+                });
+
+                // ══ RENDERIZAR TABELA DETALHADA ══
                 el.innerHTML = Object.values(groups).map(g => {
                     const totalCardapio = Object.values(g.counts).reduce((a, b) => a + b, 0);
                     return `
@@ -1839,7 +1947,109 @@
             }
         }
 
-        // Exportação do Relatório Estatístico em PDF
+        function destroyAllCharts() {
+            if (chartInstanceMealDist) { chartInstanceMealDist.destroy(); chartInstanceMealDist = null; }
+            if (chartInstanceDailyTrend) { chartInstanceDailyTrend.destroy(); chartInstanceDailyTrend = null; }
+            if (chartInstanceTopOptions) { chartInstanceTopOptions.destroy(); chartInstanceTopOptions = null; }
+        }
+
+        function renderCharts({ mealTypeCounts, dailyTrendCounts, optionCounts }) {
+            destroyAllCharts();
+
+            // 1. Gráfico de Rosca (Donut) - Tipos de Refeição
+            const mealLabels = Object.keys(mealTypeCounts).map(k => MEAL_LABELS[k] ? MEAL_LABELS[k].replace(/^[^\s]+\s/, '') : k);
+            const mealValues = Object.values(mealTypeCounts);
+            const ctxDonut = document.getElementById('chartMealDistribution');
+
+            if (ctxDonut) {
+                chartInstanceMealDist = new Chart(ctxDonut, {
+                    type: 'doughnut',
+                    data: {
+                        labels: mealLabels,
+                        datasets: [{
+                            data: mealValues,
+                            backgroundColor: ['#1e5f9e', '#16a34a', '#d97706', '#8b5cf6', '#0ea5e9'],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } }
+                        }
+                    }
+                });
+            }
+
+            // 2. Gráfico de Linha / Área - Tendência Diária
+            const sortedDates = Object.keys(dailyTrendCounts).sort();
+            const dateLabels = sortedDates.map(d => fmtDate(d));
+            const dateValues = sortedDates.map(d => dailyTrendCounts[d]);
+            const ctxLine = document.getElementById('chartDailyTrend');
+
+            if (ctxLine) {
+                chartInstanceDailyTrend = new Chart(ctxLine, {
+                    type: 'line',
+                    data: {
+                        labels: dateLabels,
+                        datasets: [{
+                            label: 'Refeições Solicitadas',
+                            data: dateValues,
+                            borderColor: '#1e5f9e',
+                            backgroundColor: 'rgba(30, 95, 158, 0.12)',
+                            fill: true,
+                            tension: 0.35,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#1e5f9e',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { precision: 0 } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+
+            // 3. Gráfico de Barras Horizontais - Top Pratos
+            const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+            const topOptLabels = sortedOptions.map(o => o[0]);
+            const topOptValues = sortedOptions.map(o => o[1]);
+            const ctxBar = document.getElementById('chartTopOptions');
+
+            if (ctxBar) {
+                chartInstanceTopOptions = new Chart(ctxBar, {
+                    type: 'bar',
+                    data: {
+                        labels: topOptLabels,
+                        datasets: [{
+                            label: 'Quantidade Pedida',
+                            data: topOptValues,
+                            backgroundColor: '#16a34a',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { beginAtZero: true, ticks: { precision: 0 } },
+                            y: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        }
+
         function exportStatsPdf() {
             if (!currentStatsData || !currentStatsData.length) {
                 alert('Não há dados estatísticos disponíveis para exportar no filtro atual.');
