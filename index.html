@@ -25,6 +25,13 @@
             background: #f0f4f8;
             color: #1a202c;
             overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        input, select, textarea {
+            user-select: text;
+            -webkit-user-select: text;
         }
 
         .screen {
@@ -507,16 +514,16 @@
             </div>
             <div class="form-group"><label>Senha</label>
                 <input type="password" id="loginPassword" placeholder="••••••••"
-                    onkeydown="if(event.key==='Enter')doLogin()">
+                    onkeydown="if(event.key==='Enter')window.NutriApp.doLogin()">
             </div>
             <div style="display:flex;align-items:center;margin-top:-8px;margin-bottom:18px">
                 <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#4a5568;cursor:pointer;user-select:none;font-weight:400">
-                    <input type="checkbox" id="chkShowLoginPass" onchange="toggleLoginPassword(this.checked)"
+                    <input type="checkbox" id="chkShowLoginPass" onchange="window.NutriApp.toggleLoginPassword(this.checked)"
                         style="width:15px;height:15px;accent-color:#1e5f9e;cursor:pointer">
                     <span>Mostrar senha</span>
                 </label>
             </div>
-            <button type="button" class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
+            <button type="button" class="btn btn-primary btn-full" onclick="window.NutriApp.doLogin()">Entrar</button>
         </div>
     </div>
 
@@ -527,7 +534,7 @@
             <p id="companyGreeting">Escolha em qual empresa deseja entrar</p>
             <div class="alert alert-error" id="companyError"></div>
             <div class="company-list" id="companyList"></div>
-            <button type="button" id="btnCompanyBack" class="btn btn-secondary btn-full" onclick="handleCompanyBack()">← Voltar</button>
+            <button type="button" id="btnCompanyBack" class="btn btn-secondary btn-full" onclick="window.NutriApp.handleCompanyBack()">← Voltar</button>
         </div>
     </div>
 
@@ -538,10 +545,10 @@
             <!-- SIDEBAR -->
             <div class="sidebar">
                 <div class="sidebar-brand">
-                    <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly%20menu.png?raw=true" alt="NutriStaff" class="sidebar-logo" onclick="navigateTo('pageHome')" style="cursor:pointer" title="Ir para o Início">
-                    <p id="sbUser" onclick="navigateTo('pageHome')" style="font-weight:600;font-size:12px;color:#90cdf4;margin:0 0 1px 0;cursor:pointer"></p>
+                    <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly%20menu.png?raw=true" alt="NutriStaff" class="sidebar-logo" onclick="window.NutriApp.navigateTo('pageHome')" style="cursor:pointer" title="Ir para o Início">
+                    <p id="sbUser" onclick="window.NutriApp.navigateTo('pageHome')" style="font-weight:600;font-size:12px;color:#90cdf4;margin:0 0 1px 0;cursor:pointer"></p>
                     <small id="sbCompany" style="font-size:10px;color:#63b3ed;font-style:italic"></small>
-                    <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menu" style="position:absolute;right:16px;top:50%;transform:translateY(-50%)">
+                    <button class="menu-toggle" id="menuToggle" onclick="window.NutriApp.toggleMobileMenu()" aria-label="Abrir menu" style="position:absolute;right:16px;top:50%;transform:translateY(-50%)">
                         <span class="bar"></span>
                         <span class="bar"></span>
                         <span class="bar"></span>
@@ -549,8 +556,8 @@
                 </div>
                 <nav class="sidebar-nav" id="sidebarNav"></nav>
                 <div class="sidebar-footer">
-                    <button type="button" id="btnSwitchCompany" onclick="goToSelectCompany()">↩ Trocar empresa</button>
-                    <button type="button" onclick="doLogout()"
+                    <button type="button" id="btnSwitchCompany" onclick="window.NutriApp.goToSelectCompany()">↩ Trocar empresa</button>
+                    <button type="button" onclick="window.NutriApp.doLogout()"
                         style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕ Sair</button>
                 </div>
             </div>
@@ -618,7 +625,7 @@
                             <div class="form-group">
                                 <label>Nova senha</label>
                                 <input type="password" id="changeNewPass" placeholder="Mínimo 6 caracteres"
-                                    oninput="updatePassStrength(this.value)">
+                                    oninput="window.NutriApp.updatePassStrength(this.value)">
                                 <div class="pass-strength-bar">
                                     <div class="pass-strength-fill" id="passStrengthFill"></div>
                                 </div>
@@ -628,7 +635,7 @@
                                 <label>Confirmar nova senha</label>
                                 <input type="password" id="changeConfirmPass" placeholder="Repita a nova senha">
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="changePassword()">💾 Salvar nova senha</button>
+                            <button type="button" class="btn btn-primary" onclick="window.NutriApp.changePassword()">💾 Salvar nova senha</button>
                         </div>
                     </div>
                 </div>
@@ -670,12 +677,12 @@
                                 <div id="optionInputs" class="options-input-list">
                                     <div class="option-input-row">
                                         <input type="text" placeholder="Ex: Frango grelhado">
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.removeOptionInput(this)">✕</button>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addOptionInput()">+ Adicionar opção</button>
+                                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="window.NutriApp.addOptionInput()">+ Adicionar opção</button>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="saveMenu()">Salvar refeição</button>
+                            <button type="button" class="btn btn-success" onclick="window.NutriApp.saveMenu()">Salvar refeição</button>
                         </div>
                     </div>
 
@@ -683,8 +690,8 @@
                         <div class="section-header">
                             <h2>Cardápio cadastrado</h2>
                             <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="menuFilterDate" onchange="loadMenuNutri()">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('menuFilterDate').value='';loadMenuNutri()">Limpar</button>
+                                <input type="date" id="menuFilterDate" onchange="window.NutriApp.loadMenuNutri()">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('menuFilterDate').value='';window.NutriApp.loadMenuNutri()">Limpar</button>
                             </div>
                         </div>
                         <div class="section-body" id="menuListBody">
@@ -706,8 +713,8 @@
                         <div class="section-header">
                             <h2>Filtrar por data</h2>
                             <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="reqFilterDate" onchange="loadAllRequests()">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('reqFilterDate').value='';loadAllRequests()">Limpar</button>
+                                <input type="date" id="reqFilterDate" onchange="window.NutriApp.loadAllRequests()">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('reqFilterDate').value='';window.NutriApp.loadAllRequests()">Limpar</button>
                             </div>
                         </div>
                         <div class="section-body" id="allReqsBody">
@@ -726,7 +733,7 @@
                             <h1>📈 Painel Analítico & Dashboards</h1>
                             <p>Inteligência de consumo de refeições e gráficos visuais</p>
                         </div>
-                        <button type="button" class="btn btn-primary" onclick="exportDashboardPdf()">
+                        <button type="button" class="btn btn-primary" onclick="window.NutriApp.exportDashboardPdf()">
                             📥 Baixar Dashboard em PDF
                         </button>
                     </div>
@@ -767,11 +774,11 @@
                             <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                                 <div style="display:flex;align-items:center;gap:6px">
                                     <label style="font-size:12px;color:#718096;font-weight:600">Data:</label>
-                                    <input type="date" id="statsDate" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
+                                    <input type="date" id="statsDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
                                 </div>
                                 <div style="display:flex;align-items:center;gap:6px">
                                     <label style="font-size:12px;color:#718096;font-weight:600">Tipo de Refeição:</label>
-                                    <select id="statsMealType" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
+                                    <select id="statsMealType" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
                                         <option value="">Todas</option>
                                         <option value="cafe_manha">☕ Café da manhã</option>
                                         <option value="almoco">🍛 Almoço</option>
@@ -780,7 +787,7 @@
                                         <option value="lanche_noite">🌙 Lanche da noite</option>
                                     </select>
                                 </div>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="clearStatsFilters()">Limpar Filtros</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearStatsFilters()">Limpar Filtros</button>
                             </div>
                         </div>
                     </div>
@@ -815,7 +822,7 @@
                             <h1>📑 Central de Relatórios</h1>
                             <p>Emissão de relatórios operacionais para a cozinha e relatórios nominais</p>
                         </div>
-                        <button type="button" class="btn btn-success" onclick="exportReportsPdf()">
+                        <button type="button" class="btn btn-success" onclick="window.NutriApp.exportReportsPdf()">
                             📥 Baixar Relatório em PDF
                         </button>
                     </div>
@@ -829,7 +836,7 @@
                             <div class="form-row" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));gap:12px">
                                 <div class="form-group">
                                     <label>Modelo de Relatório</label>
-                                    <select id="reportModel" onchange="generateReport()">
+                                    <select id="reportModel" onchange="window.NutriApp.generateReport()">
                                         <option value="producao">🍳 1. Relatório de Produção (Cozinha)</option>
                                         <option value="nominal">👥 2. Relatório Nominal de Colaboradores</option>
                                         <option value="sintetico">📊 3. Relatório Sintético por Refeição</option>
@@ -837,11 +844,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Data Específica</label>
-                                    <input type="date" id="reportDate" onchange="generateReport()">
+                                    <input type="date" id="reportDate" onchange="window.NutriApp.generateReport()">
                                 </div>
                                 <div class="form-group">
                                     <label>Tipo de Refeição</label>
-                                    <select id="reportMealType" onchange="generateReport()">
+                                    <select id="reportMealType" onchange="window.NutriApp.generateReport()">
                                         <option value="">Todas</option>
                                         <option value="cafe_manha">☕ Café da manhã</option>
                                         <option value="almoco">🍛 Almoço</option>
@@ -906,7 +913,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Empresas vinculadas</label>
-                                <select id="nuCompanySelect" onchange="addCompanyChip()">
+                                <select id="nuCompanySelect" onchange="window.NutriApp.addCompanyChip()">
                                     <option value="">Selecione para adicionar...</option>
                                 </select>
                                 <div class="chip-list" id="nuCompanyChips"></div>
@@ -923,7 +930,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="createUser()">Criar usuário</button>
+                            <button type="button" class="btn btn-success" onclick="window.NutriApp.createUser()">Criar usuário</button>
                         </div>
                     </div>
 
@@ -958,7 +965,7 @@
                                 <div class="form-group"><label>Nome da empresa</label><input type="text" id="ncName" placeholder="Hospital São Lucas"></div>
                                 <div class="form-group"><label>CNPJ</label><input type="text" id="ncCnpj" placeholder="00.000.000/0001-00"></div>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="createCompany()">Criar empresa</button>
+                            <button type="button" class="btn btn-success" onclick="window.NutriApp.createCompany()">Criar empresa</button>
                         </div>
                     </div>
 
@@ -984,7 +991,7 @@
         <div class="modal-dialog">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:22px">
                 <h2 style="font-size:18px;color:#1a202c;font-weight:700">✏️ Editar usuário</h2>
-                <button type="button" class="modal-close-btn" onclick="closeEditUser()">&times;</button>
+                <button type="button" class="modal-close-btn" onclick="window.NutriApp.closeEditUser()">&times;</button>
             </div>
 
             <input type="hidden" id="editUserId">
@@ -1026,7 +1033,7 @@
 
             <div class="form-group" style="margin-bottom:14px">
                 <label>Empresas vinculadas</label>
-                <select id="editCompanySelect" onchange="addEditCompanyChip()">
+                <select id="editCompanySelect" onchange="window.NutriApp.addEditCompanyChip()">
                     <option value="">Selecione para adicionar...</option>
                 </select>
                 <div class="chip-list" id="editCompanyChips"></div>
@@ -1046,8 +1053,8 @@
             </div>
 
             <div style="display:flex;gap:12px">
-                <button type="button" class="btn btn-success" style="flex:1" onclick="saveEditUser()">💾 Salvar alterações</button>
-                <button type="button" class="btn btn-secondary" onclick="closeEditUser()">Cancelar</button>
+                <button type="button" class="btn btn-success" style="flex:1" onclick="window.NutriApp.saveEditUser()">💾 Salvar alterações</button>
+                <button type="button" class="btn btn-secondary" onclick="window.NutriApp.closeEditUser()">Cancelar</button>
             </div>
 
             <div class="alert alert-error" id="editUserError" style="margin-top:14px"></div>
@@ -1055,548 +1062,572 @@
         </div>
     </div>
 
+    <!-- ══ SCRIPT ENCAPSULADO E PROTEGIDO CONTRA INSPEÇÃO ══ -->
     <script>
-        // ══════════════════════════════════════════════
-        //  CONFIGURAÇÃO DO SUPABASE
-        // ══════════════════════════════════════════════
-        const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
+        (() => {
+            'use strict';
 
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            // ══════════════════════════════════════════════
+            //  CAMADA DE PROTEÇÃO CONTRA DEVTOOLS E ATALHOS
+            // ══════════════════════════════════════════════
+            // Bloqueia clique com o botão direito
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-        // ══════════════════════════════════════════════
-        //  FUNÇÃO DE SANITIZAÇÃO (ANTI-XSS)
-        // ══════════════════════════════════════════════
-        function escapeHtml(str) {
-            if (str === null || str === undefined) return '';
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        // ══════════════════════════════════════════════
-        //  ESTADO GLOBAL
-        // ══════════════════════════════════════════════
-        let state = {
-            token: null,
-            user: null,
-            company: null,
-            pendingUser: null,
-            pendingCompanies: []
-        };
-
-        const MEAL_LABELS = {
-            cafe_manha: '☕ Café da manhã',
-            almoco: '🍛 Almoço',
-            lanche_tarde: '🥪 Lanche da tarde',
-            janta: '🍽️ Jantar',
-            lanche_noite: '🌙 Lanche da noite'
-        };
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => {
-                s.classList.remove('active');
-                s.style.setProperty('display', 'none', 'important');
-            });
-
-            const target = document.getElementById(id);
-            if (target) {
-                target.classList.add('active');
-                target.style.setProperty('display', 'flex', 'important');
-            }
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const el = document.getElementById(id);
-            if (el) el.classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => {
-                n.classList.toggle('active', n.dataset.page === id);
-            });
-            const mainContainer = document.querySelector('.main');
-            if (mainContainer) mainContainer.scrollTop = 0;
-        }
-
-        function alert_(elId, msg, type = 'error') {
-            const el = document.getElementById(elId);
-            if (!el) return;
-            el.className = `alert alert-${type}`;
-            el.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
-            el.style.display = 'block';
-            setTimeout(() => el.style.display = 'none', 5000);
-        }
-
-        function fmtDate(d) {
-            if (!d) return '-';
-            return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
-        }
-
-        function fmtFullDate(d) {
-            if (!d) return '-';
-            return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function hoursUntil(dateStr, timeStr) {
-            return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
-        }
-
-        // ══════════════════════════════════════════════
-        //  AUTENTICAÇÃO COM SUPABASE
-        // ══════════════════════════════════════════════
-        async function doLogin() {
-            const rawInput = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!rawInput || !password) return alert_('loginError', 'Preencha o identificador e a senha');
-
-            try {
-                let emailToUse = rawInput;
-
-                if (!rawInput.includes('@')) {
-                    const { data: profileByUsername, error: usernameErr } = await sb
-                        .from('profiles')
-                        .select('email')
-                        .eq('username', rawInput.toLowerCase())
-                        .maybeSingle();
-
-                    if (usernameErr) throw usernameErr;
-                    if (!profileByUsername) {
-                        return alert_('loginError', 'Usuário "' + escapeHtml(rawInput) + '" não encontrado.');
-                    }
-                    emailToUse = profileByUsername.email;
-                }
-
-                const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
-                if (error) throw error;
-
-                const passEl = document.getElementById('loginPassword');
-                if (passEl) passEl.value = '';
-
-                const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
-                const role = profile?.role || 'colaborador';
-
-                state.user = {
-                    id: data.user.id,
-                    email: data.user.email,
-                    name: profile?.name || data.user.email.split('@')[0],
-                    username: profile?.username || '',
-                    role: role,
-                    extra_permissions: profile?.extra_permissions || []
-                };
-                state.token = data.session.access_token;
-
-                let companies = [];
-
-                if (role === 'admin') {
-                    const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
-                    companies = allComps || [];
-                } else {
-                    const { data: userComps } = await sb.from('company_users')
-                        .select('companies(*)')
-                        .eq('user_id', data.user.id);
-
-                    companies = (userComps || [])
-                        .map(uc => uc.companies)
-                        .filter(c => c && c.active);
-                }
-
-                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
-                state.pendingCompanies = companies;
-
-                if (companies.length === 0) {
-                    return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
-                }
-
-                if (companies.length === 1) {
-                    state.company = companies[0];
-                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
-                    startInactivityMonitor();
-                    buildApp();
-                    showScreen('screenApp');
-                } else {
-                    renderCompanySelectionScreen();
-                    showScreen('screenCompany');
-                }
-            } catch (e) {
-                alert_('loginError', e.message || 'Erro ao realizar login');
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  TEMPORIZADOR DE INATIVIDADE (3 MINUTOS)
-        // ══════════════════════════════════════════════
-        const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000;
-        const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
-        const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
-        const STORAGE_KEY_ACTIVE_PAGE = 'nutriflow_active_page';
-        let inactivityTimerInterval = null;
-
-        function recordActivity() {
-            if (state.user) {
-                localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
-            }
-        }
-
-        function startInactivityMonitor() {
-            stopInactivityMonitor();
-            recordActivity();
-
-            const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
-            events.forEach(evt => {
-                window.addEventListener(evt, recordActivity, { passive: true });
-            });
-
-            inactivityTimerInterval = setInterval(checkInactivity, 4000);
-        }
-
-        function stopInactivityMonitor() {
-            if (inactivityTimerInterval) {
-                clearInterval(inactivityTimerInterval);
-                inactivityTimerInterval = null;
-            }
-            const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
-            events.forEach(evt => {
-                window.removeEventListener(evt, recordActivity);
-            });
-        }
-
-        function checkInactivity() {
-            if (!state.user) {
-                stopInactivityMonitor();
-                return;
-            }
-            const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
-            if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
-                handleInactivityTimeout();
-            }
-        }
-
-        async function handleInactivityTimeout() {
-            stopInactivityMonitor();
-            await doLogout();
-            alert_('loginError', 'Sua sessão foi encerrada por inatividade (3 minutos). Faça login novamente.', 'error');
-        }
-
-        function renderCompanySelectionScreen() {
-            document.getElementById('companyGreeting').textContent = `Olá, ${escapeHtml(state.user.name)}! Escolha em qual empresa deseja entrar:`;
-            const list = document.getElementById('companyList');
-            list.innerHTML = '';
-
-            (state.pendingCompanies || []).forEach(c => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'company-btn';
-                const isCurrent = state.company && state.company.id === c.id;
-                btn.innerHTML = `<span>🏢 ${escapeHtml(c.name)}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
-                btn.onclick = () => {
-                    state.company = c;
-                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, c.id.toString());
-                    startInactivityMonitor();
-                    buildApp();
-                    showScreen('screenApp');
-                };
-                list.appendChild(btn);
-            });
-
-            const backBtn = document.getElementById('btnCompanyBack');
-            if (backBtn) {
-                backBtn.textContent = state.company ? '← Voltar ao sistema' : '← Voltar ao login';
-            }
-        }
-
-        function handleCompanyBack() {
-            if (state.company) {
-                showScreen('screenApp');
-            } else {
-                doLogout();
-            }
-        }
-
-        function goToSelectCompany() {
-            if (!state.pendingCompanies || state.pendingCompanies.length <= 1) return;
-            renderCompanySelectionScreen();
-            showScreen('screenCompany');
-        }
-
-        function toggleLoginPassword(show) {
-            const passInput = document.getElementById('loginPassword');
-            if (passInput) passInput.type = show ? 'text' : 'password';
-        }
-
-        function clearLoginForm() {
-            const emailInput = document.getElementById('loginEmail');
-            const passInput = document.getElementById('loginPassword');
-            const errorAlert = document.getElementById('loginError');
-            const showPassChk = document.getElementById('chkShowLoginPass');
-            if (emailInput) emailInput.value = '';
-            if (passInput) {
-                passInput.value = '';
-                passInput.type = 'password';
-            }
-            if (showPassChk) showPassChk.checked = false;
-            if (errorAlert) {
-                errorAlert.textContent = '';
-                errorAlert.style.display = 'none';
-            }
-        }
-
-        async function doLogout() {
-            stopInactivityMonitor();
-            localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
-            localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
-            localStorage.removeItem(STORAGE_KEY_ACTIVE_PAGE);
-            try {
-                await sb.auth.signOut();
-            } catch (e) {
-                console.error(e);
-            }
-            state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
-            clearLoginForm();
-            showScreen('screenLogin');
-        }
-
-        // ══════════════════════════════════════════════
-        //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
-        // ══════════════════════════════════════════════
-        function buildApp() {
-            const role = state.user.role;
-            document.getElementById('sbUser').textContent = state.user.name;
-            document.getElementById('sbCompany').textContent = state.company.name;
-            document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
-            document.getElementById('homeSubtitle').textContent =
-                `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
-
-            const switchBtn = document.getElementById('btnSwitchCompany');
-            if (switchBtn) {
-                switchBtn.style.display = (state.pendingCompanies && state.pendingCompanies.length > 1) ? 'block' : 'none';
-            }
-
-            const nav = document.getElementById('sidebarNav');
-            nav.innerHTML = '';
-
-            const items = [
-                { page: 'pageHome', icon: '🏠', label: 'Início' },
-                { page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
-                { page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
-                { sep: 'Minha Conta' },
-                { page: 'pageChangePassword', icon: '🔑', label: 'Alterar Senha' },
-            ];
-
-            if (role === 'nutricionista' || role === 'admin') {
-                items.push(
-                    { sep: 'Nutrição & Relatórios' },
-                    { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
-                    { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
-                    { page: 'pageStats', icon: '📈', label: 'Dashboards' },
-                    { page: 'pageReports', icon: '📑', label: 'Relatórios' }
-                );
-            }
-            const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
-            if (canManageUsers) {
-                items.push(
-                    { sep: 'Administração' },
-                    { page: 'pageUsers', icon: '👥', label: 'Usuários' }
-                );
-            }
-            if (role === 'admin') {
-                items.push(
-                    { page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
-                );
-            }
-
-            items.forEach(item => {
-                if (item.sep) {
-                    const s = document.createElement('div');
-                    s.className = 'nav-sep'; s.textContent = item.sep;
-                    nav.appendChild(s);
-                } else {
-                    const a = document.createElement('div');
-                    a.className = 'nav-item'; a.dataset.page = item.page;
-                    a.innerHTML = `<span class="nav-icon">${item.icon}</span>${item.label}`;
-                    a.onclick = () => navigateTo(item.page);
-                    nav.appendChild(a);
+            // Bloqueia atalhos comuns de desenvolvedor (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
+            document.addEventListener('keydown', (e) => {
+                if (
+                    e.key === 'F12' ||
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+                    (e.metaKey && e.altKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+                    (e.ctrlKey && (e.key === 'U' || e.key === 'u')) ||
+                    (e.metaKey && (e.key === 'U' || e.key === 'u'))
+                ) {
+                    e.preventDefault();
+                    return false;
                 }
             });
 
-            const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
-            const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
-            const targetPage = (savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome';
-            navigateTo(targetPage);
-        }
+            // ══════════════════════════════════════════════
+            //  CONFIGURAÇÃO PRIVADA DO SUPABASE
+            // ══════════════════════════════════════════════
+            const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
 
-        function navigateTo(pageId) {
-            showPage(pageId);
-            localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
-            if (pageId === 'pageHome') loadHome();
-            if (pageId === 'pageRequest') loadRequestPage();
-            if (pageId === 'pageMyReqs') loadMyReqs();
-            if (pageId === 'pageMenu') loadMenuNutri();
-            if (pageId === 'pageRequests') loadAllRequests();
-            if (pageId === 'pageStats') loadStats();
-            if (pageId === 'pageReports') generateReport();
-            if (pageId === 'pageUsers') loadUsers();
-            if (pageId === 'pageCompanies') loadCompanies();
-            if (pageId === 'pageChangePassword') resetChangePasswordForm();
-        }
+            const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ══════════════════════════════════════════════
-        //  ALTERAR SENHA
-        // ══════════════════════════════════════════════
-        function resetChangePasswordForm() {
-            document.getElementById('changeCurrentPass').value = '';
-            document.getElementById('changeNewPass').value = '';
-            document.getElementById('changeConfirmPass').value = '';
-            updatePassStrength('');
-        }
+            // ══════════════════════════════════════════════
+            //  ESTADO PRIVADO (NÃO ACESSÍVEL PELO CONSOLE)
+            // ══════════════════════════════════════════════
+            let state = {
+                token: null,
+                user: null,
+                company: null,
+                pendingUser: null,
+                pendingCompanies: []
+            };
 
-        function updatePassStrength(value) {
-            const fill = document.getElementById('passStrengthFill');
-            const label = document.getElementById('passStrengthLabel');
-            if (!value) {
-                fill.style.width = '0%';
-                label.textContent = '';
-                return;
+            const MEAL_LABELS = {
+                cafe_manha: '☕ Café da manhã',
+                almoco: '🍛 Almoço',
+                lanche_tarde: '🥪 Lanche da tarde',
+                janta: '🍽️ Jantar',
+                lanche_noite: '🌙 Lanche da noite'
+            };
+
+            // ══════════════════════════════════════════════
+            //  FUNÇÕES DE UTILIDADE E SANITIZAÇÃO (ANTI-XSS)
+            // ══════════════════════════════════════════════
+            function escapeHtml(str) {
+                if (str === null || str === undefined) return '';
+                return String(str)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
             }
-            let score = 0;
-            if (value.length >= 6) score++;
-            if (value.length >= 10) score++;
-            if (/[A-Z]/.test(value)) score++;
-            if (/[0-9]/.test(value)) score++;
-            if (/[^A-Za-z0-9]/.test(value)) score++;
 
-            if (score <= 2) {
-                fill.style.width = '33%';
-                fill.style.backgroundColor = '#dc2626';
-                label.textContent = 'Força: Fraca';
-                label.style.color = '#dc2626';
-            } else if (score <= 4) {
-                fill.style.width = '66%';
-                fill.style.backgroundColor = '#d97706';
-                label.textContent = 'Força: Média';
-                label.style.color = '#d97706';
-            } else {
-                fill.style.width = '100%';
-                fill.style.backgroundColor = '#16a34a';
-                label.textContent = 'Força: Forte 🔒';
-                label.style.color = '#16a34a';
-            }
-        }
-
-        async function changePassword() {
-            const currentPass = document.getElementById('changeCurrentPass').value;
-            const newPass = document.getElementById('changeNewPass').value;
-            const confirmPass = document.getElementById('changeConfirmPass').value;
-
-            if (!currentPass) return alert_('changePassError', 'Informe sua senha atual');
-            if (!newPass || newPass.length < 6) return alert_('changePassError', 'A nova senha deve ter pelo menos 6 caracteres');
-            if (newPass !== confirmPass) return alert_('changePassError', 'A confirmação não coincide com a nova senha');
-            if (newPass === currentPass) return alert_('changePassError', 'A nova senha deve ser diferente da senha atual');
-
-            try {
-                const { error: signInError } = await sb.auth.signInWithPassword({
-                    email: state.user.email,
-                    password: currentPass
+            function showScreen(id) {
+                document.querySelectorAll('.screen').forEach(s => {
+                    s.classList.remove('active');
+                    s.style.setProperty('display', 'none', 'important');
                 });
-                if (signInError) throw new Error('Senha atual incorreta. Verifique e tente novamente.');
 
-                const { error: updateError } = await sb.auth.updateUser({ password: newPass });
-                if (updateError) throw updateError;
-
-                alert_('changePassSuccess', 'Senha alterada com sucesso! Use a nova senha no próximo acesso.', 'success');
-                resetChangePasswordForm();
-            } catch (e) {
-                alert_('changePassError', e.message);
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  PÁGINA INICIAL (HOME)
-        // ══════════════════════════════════════════════
-        async function loadHome() {
-            const statsEl = document.getElementById('homeStats');
-            const contentEl = document.getElementById('homeContent');
-
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-                const { data: menu } = await sb.from('menus')
-                    .select('*, options:menu_options(*)')
-                    .eq('company_id', state.company.id)
-                    .gte('meal_date', today);
-
-                const { data: myReqs } = await sb.from('meal_requests')
-                    .select('id')
-                    .eq('user_id', state.user.id);
-
-                statsEl.innerHTML = `
-                    <div class="stat-card"><div class="val">${menu?.length || 0}</div><div class="lbl">Cardápios ativos</div></div>
-                    <div class="stat-card"><div class="val">${myReqs?.length || 0}</div><div class="lbl">Minhas solicitações</div></div>
-                `;
-
-                if (menu && menu.length > 0) {
-                    contentEl.innerHTML = `
-                        <div class="section">
-                            <div class="section-header"><h2>Próximas Refeições Disponíveis</h2></div>
-                            <div class="section-body">
-                                ${menu.map(m => `
-                                    <div class="menu-card">
-                                        <div class="menu-card-header">
-                                            <div class="menu-card-title">
-                                                <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                                <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
-                                            </div>
-                                        </div>
-                                        <div class="option-tags">
-                                            ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
-                                        </div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    contentEl.innerHTML = `<div class="section"><div class="section-body">
-                        <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível no momento</p></div>
-                    </div></div>`;
+                const target = document.getElementById(id);
+                if (target) {
+                    target.classList.add('active');
+                    target.style.setProperty('display', 'flex', 'important');
                 }
-            } catch (e) {
-                contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${escapeHtml(e.message)}</div>`;
             }
-        }
 
-        // ══════════════════════════════════════════════
-        //  SOLICITAR REFEIÇÃO (ANTI-XSS & PREVENÇÃO 24H)
-        // ══════════════════════════════════════════════
-        let selectedOptions = {};
+            function showPage(id) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                const el = document.getElementById(id);
+                if (el) el.classList.add('active');
+                document.querySelectorAll('.nav-item').forEach(n => {
+                    n.classList.toggle('active', n.dataset.page === id);
+                });
+                const mainContainer = document.querySelector('.main');
+                if (mainContainer) mainContainer.scrollTop = 0;
+            }
 
-        async function loadRequestPage() {
-            const el = document.getElementById('requestMenuList');
-            el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
-            try {
-                const today = new Date().toISOString().slice(0, 10);
-                const { data: menu } = await sb.from('menus')
-                    .select('*, options:menu_options(*)')
-                    .eq('company_id', state.company.id)
-                    .gte('meal_date', today);
+            function alert_(elId, msg, type = 'error') {
+                const el = document.getElementById(elId);
+                if (!el) return;
+                el.className = `alert alert-${type}`;
+                el.textContent = (type === 'error' ? '❌ ' : '✅ ') + msg;
+                el.style.display = 'block';
+                setTimeout(() => { if (el) el.style.display = 'none'; }, 5000);
+            }
 
-                const { data: myReqs } = await sb.from('meal_requests')
-                    .select('menu_id')
-                    .eq('user_id', state.user.id);
+            function fmtDate(d) {
+                if (!d) return '-';
+                return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+            }
 
-                const requestedMenuIds = new Set((myReqs || []).map(r => r.menu_id));
-                const available = (menu || []).filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
+            function fmtFullDate(d) {
+                if (!d) return '-';
+                return new Date(d + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
 
-                if (!available.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (necessário antecedência mínima de 24h)</p></div>';
+            function hoursUntil(dateStr, timeStr) {
+                return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
+            }
+
+            // ══════════════════════════════════════════════
+            //  AUTENTICAÇÃO COM SUPABASE
+            // ══════════════════════════════════════════════
+            async function doLogin() {
+                const rawInput = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                if (!rawInput || !password) return alert_('loginError', 'Preencha o identificador e a senha');
+
+                try {
+                    let emailToUse = rawInput;
+
+                    if (!rawInput.includes('@')) {
+                        const { data: profileByUsername, error: usernameErr } = await sb
+                            .from('profiles')
+                            .select('email')
+                            .eq('username', rawInput.toLowerCase())
+                            .maybeSingle();
+
+                        if (usernameErr) throw usernameErr;
+                        if (!profileByUsername) {
+                            return alert_('loginError', 'Usuário "' + escapeHtml(rawInput) + '" não encontrado.');
+                        }
+                        emailToUse = profileByUsername.email;
+                    }
+
+                    const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
+                    if (error) throw error;
+
+                    const passEl = document.getElementById('loginPassword');
+                    if (passEl) passEl.value = '';
+
+                    const { data: profile } = await sb.from('profiles').select('*').eq('id', data.user.id).single();
+                    const role = profile?.role || 'colaborador';
+
+                    state.user = {
+                        id: data.user.id,
+                        email: data.user.email,
+                        name: profile?.name || data.user.email.split('@')[0],
+                        username: profile?.username || '',
+                        role: role,
+                        extra_permissions: profile?.extra_permissions || []
+                    };
+                    state.token = data.session.access_token;
+
+                    let companies = [];
+
+                    if (role === 'admin') {
+                        const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
+                        companies = allComps || [];
+                    } else {
+                        const { data: userComps } = await sb.from('company_users')
+                            .select('companies(*)')
+                            .eq('user_id', data.user.id);
+
+                        companies = (userComps || [])
+                            .map(uc => uc.companies)
+                            .filter(c => c && c.active);
+                    }
+
+                    companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
+                    state.pendingCompanies = companies;
+
+                    if (companies.length === 0) {
+                        return alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+                    }
+
+                    if (companies.length === 1) {
+                        state.company = companies[0];
+                        localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
+                        startInactivityMonitor();
+                        buildApp();
+                        showScreen('screenApp');
+                    } else {
+                        renderCompanySelectionScreen();
+                        showScreen('screenCompany');
+                    }
+                } catch (e) {
+                    alert_('loginError', e.message || 'Erro ao realizar login');
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  TEMPORIZADOR DE INATIVIDADE (3 MINUTOS)
+            // ══════════════════════════════════════════════
+            const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000;
+            const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
+            const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
+            const STORAGE_KEY_ACTIVE_PAGE = 'nutriflow_active_page';
+            let inactivityTimerInterval = null;
+
+            function recordActivity() {
+                if (state.user) {
+                    localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
+                }
+            }
+
+            function startInactivityMonitor() {
+                stopInactivityMonitor();
+                recordActivity();
+
+                const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
+                events.forEach(evt => {
+                    window.addEventListener(evt, recordActivity, { passive: true });
+                });
+
+                inactivityTimerInterval = setInterval(checkInactivity, 4000);
+            }
+
+            function stopInactivityMonitor() {
+                if (inactivityTimerInterval) {
+                    clearInterval(inactivityTimerInterval);
+                    inactivityTimerInterval = null;
+                }
+                const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click', 'wheel'];
+                events.forEach(evt => {
+                    window.removeEventListener(evt, recordActivity);
+                });
+            }
+
+            function checkInactivity() {
+                if (!state.user) {
+                    stopInactivityMonitor();
                     return;
                 }
+                const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
+                if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
+                    handleInactivityTimeout();
+                }
+            }
 
-                el.innerHTML = available.map(m => {
-                    const already = requestedMenuIds.has(m.id);
-                    return `
-                        <div class="section" id="menuSection${m.id}">
-                            <div class="section-header">
+            async function handleInactivityTimeout() {
+                stopInactivityMonitor();
+                await doLogout();
+                alert_('loginError', 'Sua sessão foi encerrada por inatividade (3 minutos). Faça login novamente.', 'error');
+            }
+
+            function renderCompanySelectionScreen() {
+                document.getElementById('companyGreeting').textContent = `Olá, ${escapeHtml(state.user.name)}! Escolha em qual empresa deseja entrar:`;
+                const list = document.getElementById('companyList');
+                list.innerHTML = '';
+
+                (state.pendingCompanies || []).forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'company-btn';
+                    const isCurrent = state.company && state.company.id === c.id;
+                    btn.innerHTML = `<span>🏢 ${escapeHtml(c.name)}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
+                    btn.onclick = () => {
+                        state.company = c;
+                        localStorage.setItem(STORAGE_KEY_COMPANY_ID, c.id.toString());
+                        startInactivityMonitor();
+                        buildApp();
+                        showScreen('screenApp');
+                    };
+                    list.appendChild(btn);
+                });
+
+                const backBtn = document.getElementById('btnCompanyBack');
+                if (backBtn) {
+                    backBtn.textContent = state.company ? '← Voltar ao sistema' : '← Voltar ao login';
+                }
+            }
+
+            function handleCompanyBack() {
+                if (state.company) {
+                    showScreen('screenApp');
+                } else {
+                    doLogout();
+                }
+            }
+
+            function goToSelectCompany() {
+                if (!state.pendingCompanies || state.pendingCompanies.length <= 1) return;
+                renderCompanySelectionScreen();
+                showScreen('screenCompany');
+            }
+
+            function toggleLoginPassword(show) {
+                const passInput = document.getElementById('loginPassword');
+                if (passInput) passInput.type = show ? 'text' : 'password';
+            }
+
+            function clearLoginForm() {
+                const emailInput = document.getElementById('loginEmail');
+                const passInput = document.getElementById('loginPassword');
+                const errorAlert = document.getElementById('loginError');
+                const showPassChk = document.getElementById('chkShowLoginPass');
+                if (emailInput) emailInput.value = '';
+                if (passInput) {
+                    passInput.value = '';
+                    passInput.type = 'password';
+                }
+                if (showPassChk) showPassChk.checked = false;
+                if (errorAlert) {
+                    errorAlert.textContent = '';
+                    errorAlert.style.display = 'none';
+                }
+            }
+
+            async function doLogout() {
+                stopInactivityMonitor();
+                localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
+                localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
+                localStorage.removeItem(STORAGE_KEY_ACTIVE_PAGE);
+                try {
+                    await sb.auth.signOut();
+                } catch (e) {
+                    console.error(e);
+                }
+                state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
+                clearLoginForm();
+                showScreen('screenLogin');
+            }
+
+            // ══════════════════════════════════════════════
+            //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
+            // ══════════════════════════════════════════════
+            function buildApp() {
+                const role = state.user.role;
+                document.getElementById('sbUser').textContent = state.user.name;
+                document.getElementById('sbCompany').textContent = state.company.name;
+                document.getElementById('homeTitle').textContent = `Bom dia, ${state.user.name.split(' ')[0]}! 👋`;
+                document.getElementById('homeSubtitle').textContent =
+                    `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
+
+                const switchBtn = document.getElementById('btnSwitchCompany');
+                if (switchBtn) {
+                    switchBtn.style.display = (state.pendingCompanies && state.pendingCompanies.length > 1) ? 'block' : 'none';
+                }
+
+                const nav = document.getElementById('sidebarNav');
+                nav.innerHTML = '';
+
+                const items = [
+                    { page: 'pageHome', icon: '🏠', label: 'Início' },
+                    { page: 'pageRequest', icon: '🍽️', label: 'Solicitar refeição' },
+                    { page: 'pageMyReqs', icon: '📋', label: 'Minhas solicitações' },
+                    { sep: 'Minha Conta' },
+                    { page: 'pageChangePassword', icon: '🔑', label: 'Alterar Senha' },
+                ];
+
+                if (role === 'nutricionista' || role === 'admin') {
+                    items.push(
+                        { sep: 'Nutrição & Relatórios' },
+                        { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
+                        { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
+                        { page: 'pageStats', icon: '📈', label: 'Dashboards' },
+                        { page: 'pageReports', icon: '📑', label: 'Relatórios' }
+                    );
+                }
+                const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
+                if (canManageUsers) {
+                    items.push(
+                        { sep: 'Administração' },
+                        { page: 'pageUsers', icon: '👥', label: 'Usuários' }
+                    );
+                }
+                if (role === 'admin') {
+                    items.push(
+                        { page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
+                    );
+                }
+
+                items.forEach(item => {
+                    if (item.sep) {
+                        const s = document.createElement('div');
+                        s.className = 'nav-sep'; s.textContent = item.sep;
+                        nav.appendChild(s);
+                    } else {
+                        const a = document.createElement('div');
+                        a.className = 'nav-item'; a.dataset.page = item.page;
+                        a.innerHTML = `<span class="nav-icon">${item.icon}</span>${item.label}`;
+                        a.onclick = () => navigateTo(item.page);
+                        nav.appendChild(a);
+                    }
+                });
+
+                const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
+                const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
+                const targetPage = (savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome';
+                navigateTo(targetPage);
+            }
+
+            function navigateTo(pageId) {
+                showPage(pageId);
+                localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
+                if (pageId === 'pageHome') loadHome();
+                if (pageId === 'pageRequest') loadRequestPage();
+                if (pageId === 'pageMyReqs') loadMyReqs();
+                if (pageId === 'pageMenu') loadMenuNutri();
+                if (pageId === 'pageRequests') loadAllRequests();
+                if (pageId === 'pageStats') loadStats();
+                if (pageId === 'pageReports') generateReport();
+                if (pageId === 'pageUsers') loadUsers();
+                if (pageId === 'pageCompanies') loadCompanies();
+                if (pageId === 'pageChangePassword') resetChangePasswordForm();
+            }
+
+            // ══════════════════════════════════════════════
+            //  ALTERAR SENHA
+            // ══════════════════════════════════════════════
+            function resetChangePasswordForm() {
+                document.getElementById('changeCurrentPass').value = '';
+                document.getElementById('changeNewPass').value = '';
+                document.getElementById('changeConfirmPass').value = '';
+                updatePassStrength('');
+            }
+
+            function updatePassStrength(value) {
+                const fill = document.getElementById('passStrengthFill');
+                const label = document.getElementById('passStrengthLabel');
+                if (!value) {
+                    fill.style.width = '0%';
+                    label.textContent = '';
+                    return;
+                }
+                let score = 0;
+                if (value.length >= 6) score++;
+                if (value.length >= 10) score++;
+                if (/[A-Z]/.test(value)) score++;
+                if (/[0-9]/.test(value)) score++;
+                if (/[^A-Za-z0-9]/.test(value)) score++;
+
+                if (score <= 2) {
+                    fill.style.width = '33%';
+                    fill.style.backgroundColor = '#dc2626';
+                    label.textContent = 'Força: Fraca';
+                    label.style.color = '#dc2626';
+                } else if (score <= 4) {
+                    fill.style.width = '66%';
+                    fill.style.backgroundColor = '#d97706';
+                    label.textContent = 'Força: Média';
+                    label.style.color = '#d97706';
+                } else {
+                    fill.style.width = '100%';
+                    fill.style.backgroundColor = '#16a34a';
+                    label.textContent = 'Força: Forte 🔒';
+                    label.style.color = '#16a34a';
+                }
+            }
+
+            async function changePassword() {
+                const currentPass = document.getElementById('changeCurrentPass').value;
+                const newPass = document.getElementById('changeNewPass').value;
+                const confirmPass = document.getElementById('changeConfirmPass').value;
+
+                if (!currentPass) return alert_('changePassError', 'Informe sua senha atual');
+                if (!newPass || newPass.length < 6) return alert_('changePassError', 'A nova senha deve ter pelo menos 6 caracteres');
+                if (newPass !== confirmPass) return alert_('changePassError', 'A confirmação não coincide com a nova senha');
+                if (newPass === currentPass) return alert_('changePassError', 'A nova senha deve ser diferente da senha atual');
+
+                try {
+                    const { error: signInError } = await sb.auth.signInWithPassword({
+                        email: state.user.email,
+                        password: currentPass
+                    });
+                    if (signInError) throw new Error('Senha atual incorreta. Verifique e tente novamente.');
+
+                    const { error: updateError } = await sb.auth.updateUser({ password: newPass });
+                    if (updateError) throw updateError;
+
+                    alert_('changePassSuccess', 'Senha alterada com sucesso! Use a nova senha no próximo acesso.', 'success');
+                    resetChangePasswordForm();
+                } catch (e) {
+                    alert_('changePassError', e.message);
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  PÁGINA INICIAL (HOME)
+            // ══════════════════════════════════════════════
+            async function loadHome() {
+                const statsEl = document.getElementById('homeStats');
+                const contentEl = document.getElementById('homeContent');
+
+                try {
+                    const today = new Date().toISOString().slice(0, 10);
+                    const { data: menu } = await sb.from('menus')
+                        .select('*, options:menu_options(*)')
+                        .eq('company_id', state.company.id)
+                        .gte('meal_date', today);
+
+                    const { data: myReqs } = await sb.from('meal_requests')
+                        .select('id')
+                        .eq('user_id', state.user.id);
+
+                    statsEl.innerHTML = `
+                        <div class="stat-card"><div class="val">${menu?.length || 0}</div><div class="lbl">Cardápios ativos</div></div>
+                        <div class="stat-card"><div class="val">${myReqs?.length || 0}</div><div class="lbl">Minhas solicitações</div></div>
+                    `;
+
+                    if (menu && menu.length > 0) {
+                        contentEl.innerHTML = `
+                            <div class="section">
+                                <div class="section-header"><h2>Próximas Refeições Disponíveis</h2></div>
+                                <div class="section-body">
+                                    ${menu.map(m => `
+                                        <div class="menu-card">
+                                            <div class="menu-card-header">
+                                                <div class="menu-card-title">
+                                                    <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                                    <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
+                                                </div>
+                                            </div>
+                                            <div class="option-tags">
+                                                ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        contentEl.innerHTML = `<div class="section"><div class="section-body">
+                            <div class="empty"><div class="empty-icon">🗓️</div><p>Nenhuma refeição disponível no momento</p></div>
+                        </div></div>`;
+                    }
+                } catch (e) {
+                    contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${escapeHtml(e.message)}</div>`;
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  SOLICITAR REFEIÇÃO (ANTI-XSS & PREVENÇÃO 24H)
+            // ══════════════════════════════════════════════
+            let selectedOptions = {};
+
+            async function loadRequestPage() {
+                const el = document.getElementById('requestMenuList');
+                el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
+                try {
+                    const today = new Date().toISOString().slice(0, 10);
+                    const { data: menu } = await sb.from('menus')
+                        .select('*, options:menu_options(*)')
+                        .eq('company_id', state.company.id)
+                        .gte('meal_date', today);
+
+                    const { data: myReqs } = await sb.from('meal_requests')
+                        .select('menu_id')
+                        .eq('user_id', state.user.id);
+
+                    const requestedMenuIds = new Set((myReqs || []).map(r => r.menu_id));
+                    const available = (menu || []).filter(m => hoursUntil(m.meal_date, m.meal_time) >= 24);
+
+                    if (!available.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma refeição disponível para solicitação (necessário antecedência mínima de 24h)</p></div>';
+                        return;
+                    }
+
+                    el.innerHTML = available.map(m => {
+                        const already = requestedMenuIds.has(m.id);
+                        return `
+                            <div class="section" id="menuSection${m.id}">
+                                <div class="section-header">
                                 <div>
                                     <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
                                     <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</strong>
@@ -1608,1199 +1639,1243 @@
                                     <p style="font-size:13px;color:#718096;margin-bottom:8px">Escolha uma opção:</p>
                                     <div class="options-grid">
                                         ${(m.options || []).map(o => `
-                                            <div class="option-card" id="opt_${m.id}_${o.id}" onclick="selectOption(${m.id}, ${o.id})">
+                                            <div class="option-card" id="opt_${m.id}_${o.id}" onclick="window.NutriApp.selectOption(${m.id}, ${o.id})">
                                                 ${escapeHtml(o.description)}
                                             </div>
                                         `).join('')}
                                     </div>
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="submitRequest(${m.id})">Confirmar solicitação</button>
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="window.NutriApp.submitRequest(${m.id})">Confirmar solicitação</button>
                                 `}
                             </div>
                         </div>
                     `;
-                }).join('');
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
-            }
-        }
-
-        function selectOption(menuId, optionId) {
-            selectedOptions[menuId] = optionId;
-            document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
-            const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
-            if (optEl) optEl.classList.add('selected');
-        }
-
-        async function submitRequest(menuId) {
-            const optionId = selectedOptions[menuId];
-            if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
-            try {
-                const { error } = await sb.from('meal_requests').insert({
-                    user_id: state.user.id,
-                    menu_id: menuId,
-                    option_id: optionId
-                });
-                if (error) throw error;
-                alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
-                delete selectedOptions[menuId];
-                setTimeout(() => loadRequestPage(), 1200);
-            } catch (e) {
-                alert_('reqError', e.message);
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  MINHAS SOLICITAÇÕES
-        // ══════════════════════════════════════════════
-        async function loadMyReqs() {
-            const el = document.getElementById('myReqsBody');
-            try {
-                const { data, error } = await sb.from('meal_requests')
-                    .select('id, menu:menus(*), option:menu_options(*)')
-                    .eq('user_id', state.user.id)
-                    .order('id', { ascending: false });
-
-                if (error) throw error;
-
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação ainda</p></div>';
-                    return;
+                    }).join('');
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
                 }
-
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
-                    <tbody>
-                        ${data.map(r => {
-                    const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
-                    const canCancel = hrs >= 24;
-                    return `<tr>
-                                <td><strong>${r.menu ? escapeHtml(fmtDate(r.menu.meal_date)) : '-'}</strong></td>
-                                <td><span class="meal-pill ${escapeHtml(r.menu?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menu?.meal_type] || '-')}</span></td>
-                                <td>${escapeHtml(r.menu?.meal_time || '-')}</td>
-                                <td>${escapeHtml(r.option?.description || '-')}</td>
-                                <td>${canCancel
-                            ? `<button type="button" class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
-                            : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado (&lt;24h)</span>`}
-                                </td>
-                            </tr>`;
-                }).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
-        }
 
-        async function cancelMyReq(id) {
-            if (!confirm('Deseja cancelar esta solicitação?')) return;
-            try {
-                const { error } = await sb.from('meal_requests').delete().eq('id', id);
-                if (error) throw error;
-                alert_('myReqSuccess', 'Solicitação cancelada.', 'success');
-                loadMyReqs();
-            } catch (e) {
-                alert_('myReqError', e.message);
+            function selectOption(menuId, optionId) {
+                selectedOptions[menuId] = optionId;
+                document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
+                const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
+                if (optEl) optEl.classList.add('selected');
             }
-        }
 
-        // ══════════════════════════════════════════════
-        //  GERENCIAR CARDÁPIO (NUTRI)
-        // ══════════════════════════════════════════════
-        function addOptionInput() {
-            const list = document.getElementById('optionInputs');
-            const row = document.createElement('div');
-            row.className = 'option-input-row';
-            row.innerHTML = `<input type="text" placeholder="Ex: Salada vegana">
-                <button type="button" class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>`;
-            list.appendChild(row);
-        }
-
-        function removeOptionInput(btn) {
-            const list = document.getElementById('optionInputs');
-            if (list.children.length <= 1) return;
-            btn.parentElement.remove();
-        }
-
-        async function saveMenu() {
-            const meal_date = document.getElementById('newMenuDate').value;
-            const meal_type = document.getElementById('newMenuType').value;
-            const meal_time = document.getElementById('newMenuTime').value;
-            const inputs = [...document.querySelectorAll('#optionInputs input')];
-            const options = inputs.map(i => i.value.trim()).filter(Boolean);
-
-            if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
-            if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
-
-            try {
-                const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
-                    company_id: state.company.id,
-                    meal_date,
-                    meal_type,
-                    meal_time
-                }).select().single();
-
-                if (menuErr) throw menuErr;
-
-                const optionsToInsert = options.map(desc => ({ menu_id: newMenu.id, description: desc }));
-                const { error: optErr } = await sb.from('menu_options').insert(optionsToInsert);
-                if (optErr) throw optErr;
-
-                alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
-                document.getElementById('newMenuDate').value = '';
-                document.getElementById('newMenuType').value = '';
-                document.getElementById('newMenuTime').value = '';
-                document.getElementById('optionInputs').innerHTML = `
-                    <div class="option-input-row">
-                        <input type="text" placeholder="Ex: Frango grelhado">
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
-                    </div>
-                `;
-                loadMenuNutri();
-            } catch (e) {
-                alert_('menuError', e.message);
-            }
-        }
-
-        async function loadMenuNutri() {
-            const el = document.getElementById('menuListBody');
-            const date = document.getElementById('menuFilterDate').value;
-            try {
-                let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
-                if (date) query = query.eq('meal_date', date);
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
-                    return;
+            async function submitRequest(menuId) {
+                const optionId = selectedOptions[menuId];
+                if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
+                try {
+                    const { error } = await sb.from('meal_requests').insert({
+                        user_id: state.user.id,
+                        menu_id: menuId,
+                        option_id: optionId
+                    });
+                    if (error) throw error;
+                    alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
+                    delete selectedOptions[menuId];
+                    setTimeout(() => loadRequestPage(), 1200);
+                } catch (e) {
+                    alert_('reqError', e.message);
                 }
+            }
 
-                el.innerHTML = data.map(m => `
-                    <div class="menu-card">
-                        <div class="menu-card-header">
-                            <div class="menu-card-title">
-                                <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
+            // ══════════════════════════════════════════════
+            //  MINHAS SOLICITAÇÕES
+            // ══════════════════════════════════════════════
+            async function loadMyReqs() {
+                const el = document.getElementById('myReqsBody');
+                try {
+                    const { data, error } = await sb.from('meal_requests')
+                        .select('id, menu:menus(*), option:menu_options(*)')
+                        .eq('user_id', state.user.id)
+                        .order('id', { ascending: false });
+
+                    if (error) throw error;
+
+                    if (!data || !data.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação ainda</p></div>';
+                        return;
+                    }
+
+                    el.innerHTML = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
+                        <tbody>
+                            ${data.map(r => {
+                        const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
+                        const canCancel = hrs >= 24;
+                        return `<tr>
+                                    <td><strong>${r.menu ? escapeHtml(fmtDate(r.menu.meal_date)) : '-'}</strong></td>
+                                    <td><span class="meal-pill ${escapeHtml(r.menu?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menu?.meal_type] || '-')}</span></td>
+                                    <td>${escapeHtml(r.menu?.meal_time || '-')}</td>
+                                    <td>${escapeHtml(r.option?.description || '-')}</td>
+                                    <td>${canCancel
+                                ? `<button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.cancelMyReq(${r.id})">Cancelar</button>`
+                                : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado (&lt;24h)</span>`}
+                                    </td>
+                                </tr>`;
+                    }).join('')}
+                        </tbody></table></div>`;
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
+                }
+            }
+
+            async function cancelMyReq(id) {
+                if (!confirm('Deseja cancelar esta solicitação?')) return;
+                try {
+                    const { error } = await sb.from('meal_requests').delete().eq('id', id);
+                    if (error) throw error;
+                    alert_('myReqSuccess', 'Solicitação cancelada.', 'success');
+                    loadMyReqs();
+                } catch (e) {
+                    alert_('myReqError', e.message);
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  GERENCIAR CARDÁPIO (NUTRI)
+            // ══════════════════════════════════════════════
+            function addOptionInput() {
+                const list = document.getElementById('optionInputs');
+                const row = document.createElement('div');
+                row.className = 'option-input-row';
+                row.innerHTML = `<input type="text" placeholder="Ex: Salada vegana">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.removeOptionInput(this)">✕</button>`;
+                list.appendChild(row);
+            }
+
+            function removeOptionInput(btn) {
+                const list = document.getElementById('optionInputs');
+                if (list.children.length <= 1) return;
+                btn.parentElement.remove();
+            }
+
+            async function saveMenu() {
+                const meal_date = document.getElementById('newMenuDate').value;
+                const meal_type = document.getElementById('newMenuType').value;
+                const meal_time = document.getElementById('newMenuTime').value;
+                const inputs = [...document.querySelectorAll('#optionInputs input')];
+                const options = inputs.map(i => i.value.trim()).filter(Boolean);
+
+                if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
+                if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
+
+                try {
+                    const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
+                        company_id: state.company.id,
+                        meal_date,
+                        meal_type,
+                        meal_time
+                    }).select().single();
+
+                    if (menuErr) throw menuErr;
+
+                    const optionsToInsert = options.map(desc => ({ menu_id: newMenu.id, description: desc }));
+                    const { error: optErr } = await sb.from('menu_options').insert(optionsToInsert);
+                    if (optErr) throw optErr;
+
+                    alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
+                    document.getElementById('newMenuDate').value = '';
+                    document.getElementById('newMenuType').value = '';
+                    document.getElementById('newMenuTime').value = '';
+                    document.getElementById('optionInputs').innerHTML = `
+                        <div class="option-input-row">
+                            <input type="text" placeholder="Ex: Frango grelhado">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.removeOptionInput(this)">✕</button>
+                        </div>
+                    `;
+                    loadMenuNutri();
+                } catch (e) {
+                    alert_('menuError', e.message);
+                }
+            }
+
+            async function loadMenuNutri() {
+                const el = document.getElementById('menuListBody');
+                const date = document.getElementById('menuFilterDate').value;
+                try {
+                    let query = sb.from('menus').select('*, options:menu_options(*)').eq('company_id', state.company.id).order('meal_date', { ascending: false });
+                    if (date) query = query.eq('meal_date', date);
+
+                    const { data, error } = await query;
+                    if (error) throw error;
+
+                    if (!data || !data.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>Nenhuma refeição cadastrada</p></div>';
+                        return;
+                    }
+
+                    el.innerHTML = data.map(m => `
+                        <div class="menu-card">
+                            <div class="menu-card-header">
+                                <div class="menu-card-title">
+                                    <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                    <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
+                                </div>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.deleteMenu(${m.id})">Excluir</button>
                             </div>
-                            <button type="button" class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Excluir</button>
+                            <div class="option-tags">
+                                ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
+                            </div>
                         </div>
-                        <div class="option-tags">
-                            ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
-            }
-        }
-
-        async function deleteMenu(id) {
-            if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
-            try {
-                const { error } = await sb.from('menus').delete().eq('id', id);
-                if (error) throw error;
-                alert_('menuSuccess', 'Refeição removida.', 'success');
-                loadMenuNutri();
-            } catch (e) {
-                alert_('menuError', e.message);
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  SOLICITAÇÕES RECEBIDAS (NUTRI)
-        // ══════════════════════════════════════════════
-        async function loadAllRequests() {
-            const el = document.getElementById('allReqsBody');
-            const date = document.getElementById('reqFilterDate').value;
-            try {
-                let query = sb.from('meal_requests')
-                    .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
-                    .eq('menus.company_id', state.company.id)
-                    .order('id', { ascending: false });
-
-                if (date) query = query.eq('menus.meal_date', date);
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
-                    return;
+                    `).join('');
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
                 }
-
-                const userIds = [...new Set(data.map(r => r.user_id))];
-                const { data: profilesData } = await sb.from('profiles')
-                    .select('id, name')
-                    .in('id', userIds);
-                const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p.name]));
-
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
-                    <tbody>
-                        ${data.map(r => `<tr>
-                            <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
-                            <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
-                            <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
-                            <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
-                            <td>${escapeHtml(r.menu_options?.description || '-')}</td>
-                        </tr>`).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
-        }
 
-        // ══════════════════════════════════════════════
-        //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
-        // ══════════════════════════════════════════════
-        let currentStatsData = [];
-        let chartInstanceMealDist = null;
-        let chartInstanceDailyTrend = null;
-        let chartInstanceTopOptions = null;
-
-        function clearStatsFilters() {
-            document.getElementById('statsDate').value = '';
-            document.getElementById('statsMealType').value = '';
-            loadStats();
-        }
-
-        async function loadStats() {
-            const date = document.getElementById('statsDate').value;
-            const mealType = document.getElementById('statsMealType').value;
-
-            try {
-                let query = sb.from('meal_requests')
-                    .select('menus!inner(id, company_id, meal_date, meal_type, meal_time), menu_options(id, description)')
-                    .eq('menus.company_id', state.company.id);
-
-                if (date) query = query.eq('menus.meal_date', date);
-                if (mealType) query = query.eq('menus.meal_type', mealType);
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                currentStatsData = data || [];
-
-                if (!data || !data.length) {
-                    document.getElementById('kpiTotalReqs').textContent = '0';
-                    document.getElementById('kpiTopMeal').textContent = '—';
-                    document.getElementById('kpiTopOption').textContent = '—';
-                    document.getElementById('kpiAvgDaily').textContent = '0';
-                    document.getElementById('kpiMenusCount').textContent = '0';
-                    destroyAllCharts();
-                    return;
+            async function deleteMenu(id) {
+                if (!confirm('Remover esta refeição e todas as solicitações associadas?')) return;
+                try {
+                    const { error } = await sb.from('menus').delete().eq('id', id);
+                    if (error) throw error;
+                    alert_('menuSuccess', 'Refeição removida.', 'success');
+                    loadMenuNutri();
+                } catch (e) {
+                    alert_('menuError', e.message);
                 }
-
-                const totalReqs = data.length;
-                document.getElementById('kpiTotalReqs').textContent = totalReqs;
-
-                const mealTypeCounts = {};
-                const optionCounts = {};
-                const dailyTrendCounts = {};
-                const distinctMenuIds = new Set();
-
-                data.forEach(r => {
-                    const mType = r.menus.meal_type;
-                    const mDate = r.menus.meal_date;
-                    const optDesc = r.menu_options?.description || 'Opção Geral';
-
-                    distinctMenuIds.add(r.menus.id);
-                    mealTypeCounts[mType] = (mealTypeCounts[mType] || 0) + 1;
-                    optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
-                    dailyTrendCounts[mDate] = (dailyTrendCounts[mDate] || 0) + 1;
-                });
-
-                const topMeal = Object.entries(mealTypeCounts).sort((a, b) => b[1] - a[1])[0];
-                document.getElementById('kpiTopMeal').textContent = topMeal ? `${MEAL_LABELS[topMeal[0]] || topMeal[0]} (${topMeal[1]})` : '—';
-
-                const topOption = Object.entries(optionCounts).sort((a, b) => b[1] - a[1])[0];
-                document.getElementById('kpiTopOption').textContent = topOption ? `${topOption[0]} (${topOption[1]})` : '—';
-
-                const totalDias = Object.keys(dailyTrendCounts).length || 1;
-                document.getElementById('kpiAvgDaily').textContent = Math.round(totalReqs / totalDias);
-                document.getElementById('kpiMenusCount').textContent = distinctMenuIds.size;
-
-                renderCharts({
-                    mealTypeCounts,
-                    dailyTrendCounts,
-                    optionCounts
-                });
-            } catch (e) {
-                console.error('Erro ao carregar estatísticas:', e);
             }
-        }
 
-        function destroyAllCharts() {
-            if (chartInstanceMealDist) { chartInstanceMealDist.destroy(); chartInstanceMealDist = null; }
-            if (chartInstanceDailyTrend) { chartInstanceDailyTrend.destroy(); chartInstanceDailyTrend = null; }
-            if (chartInstanceTopOptions) { chartInstanceTopOptions.destroy(); chartInstanceTopOptions = null; }
-        }
+            // ══════════════════════════════════════════════
+            //  SOLICITAÇÕES RECEBIDAS (NUTRI)
+            // ══════════════════════════════════════════════
+            async function loadAllRequests() {
+                const el = document.getElementById('allReqsBody');
+                const date = document.getElementById('reqFilterDate').value;
+                try {
+                    let query = sb.from('meal_requests')
+                        .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                        .eq('menus.company_id', state.company.id)
+                        .order('id', { ascending: false });
 
-        function renderCharts({ mealTypeCounts, dailyTrendCounts, optionCounts }) {
-            destroyAllCharts();
+                    if (date) query = query.eq('menus.meal_date', date);
 
-            // 1. Donut
-            const mealLabels = Object.keys(mealTypeCounts).map(k => MEAL_LABELS[k] ? MEAL_LABELS[k].replace(/^[^\s]+\s/, '') : k);
-            const mealValues = Object.values(mealTypeCounts);
-            const ctxDonut = document.getElementById('chartMealDistribution');
+                    const { data, error } = await query;
+                    if (error) throw error;
 
-            if (ctxDonut) {
-                chartInstanceMealDist = new Chart(ctxDonut, {
-                    type: 'doughnut',
-                    data: {
-                        labels: mealLabels,
-                        datasets: [{
-                            data: mealValues,
-                            backgroundColor: ['#1e5f9e', '#16a34a', '#d97706', '#8b5cf6', '#0ea5e9'],
-                            borderWidth: 2,
-                            borderColor: '#ffffff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: false, // Para permitir captura instantânea de imagem se necessário
-                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } } }
+                    if (!data || !data.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada</p></div>';
+                        return;
                     }
-                });
-            }
-
-            // 2. Line
-            const sortedDates = Object.keys(dailyTrendCounts).sort();
-            const dateLabels = sortedDates.map(d => fmtDate(d));
-            const dateValues = sortedDates.map(d => dailyTrendCounts[d]);
-            const ctxLine = document.getElementById('chartDailyTrend');
-
-            if (ctxLine) {
-                chartInstanceDailyTrend = new Chart(ctxLine, {
-                    type: 'line',
-                    data: {
-                        labels: dateLabels,
-                        datasets: [{
-                            label: 'Refeições Solicitadas',
-                            data: dateValues,
-                            borderColor: '#1e5f9e',
-                            backgroundColor: 'rgba(30, 95, 158, 0.12)',
-                            fill: true,
-                            tension: 0.35,
-                            borderWidth: 3,
-                            pointBackgroundColor: '#1e5f9e',
-                            pointRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { beginAtZero: true, ticks: { precision: 0 } },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            }
-
-            // 3. Horizontal Bar
-            const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
-            const topOptLabels = sortedOptions.map(o => o[0]);
-            const topOptValues = sortedOptions.map(o => o[1]);
-            const ctxBar = document.getElementById('chartTopOptions');
-
-            if (ctxBar) {
-                chartInstanceTopOptions = new Chart(ctxBar, {
-                    type: 'bar',
-                    data: {
-                        labels: topOptLabels,
-                        datasets: [{
-                            label: 'Quantidade Pedida',
-                            data: topOptValues,
-                            backgroundColor: '#16a34a',
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        animation: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { beginAtZero: true, ticks: { precision: 0 } },
-                            y: { grid: { display: false } }
-                        }
-                    }
-                });
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  EXPORTAÇÃO EXCLUSIVA DO DASHBOARD EM PDF
-        // ══════════════════════════════════════════════
-        function exportDashboardPdf() {
-            if (!currentStatsData || !currentStatsData.length) {
-                alert('Não há dados estatísticos para gerar o PDF.');
-                return;
-            }
-
-            // Converte os canvas em imagens para o print popup
-            const donutImg = document.getElementById('chartMealDistribution')?.toDataURL('image/png') || '';
-            const lineImg = document.getElementById('chartDailyTrend')?.toDataURL('image/png') || '';
-            const barImg = document.getElementById('chartTopOptions')?.toDataURL('image/png') || '';
-
-            const totalReqs = document.getElementById('kpiTotalReqs').textContent;
-            const topMeal = document.getElementById('kpiTopMeal').textContent;
-            const topOption = document.getElementById('kpiTopOption').textContent;
-            const avgDaily = document.getElementById('kpiAvgDaily').textContent;
-            const menusCount = document.getElementById('kpiMenusCount').textContent;
-
-            const printWindow = window.open('', '_blank', 'width=900,height=700');
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Dashboard Executivo - ${escapeHtml(state.company.name)}</title>
-                    <style>
-                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; }
-                        .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 20px; }
-                        .header h1 { font-size: 22px; color: #1e5f9e; margin: 0 0 4px; }
-                        .header p { font-size: 12px; color: #718096; margin: 0; }
-                        .kpis-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 25px; }
-                        .kpi { border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc; text-align: center; }
-                        .kpi .val { font-size: 18px; font-weight: bold; color: #1e5f9e; }
-                        .kpi .lbl { font-size: 10px; color: #718096; text-transform: uppercase; margin-top: 4px; }
-                        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-                        .chart-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
-                        .chart-card h4 { font-size: 13px; color: #2d3748; margin: 0 0 10px; }
-                        .chart-card img { width: 100%; height: auto; max-height: 220px; object-fit: contain; }
-                        .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 10px; color: #a0aec0; text-align: right; }
-                        @media print { body { padding: 0; } }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>📊 Dashboard Analítico de Refeições</h1>
-                        <p><strong>Unidade:</strong> ${escapeHtml(state.company.name)} | <strong>Emitido em:</strong> ${new Date().toLocaleString('pt-BR')} por ${escapeHtml(state.user.name)}</p>
-                    </div>
-
-                    <div class="kpis-grid">
-                        <div class="kpi"><div class="val">${totalReqs}</div><div class="lbl">Total Refeições</div></div>
-                        <div class="kpi"><div class="val" style="font-size:14px;color:#16a34a">${escapeHtml(topMeal)}</div><div class="lbl">Pico de Horário</div></div>
-                        <div class="kpi"><div class="val" style="font-size:13px;color:#553c9a">${escapeHtml(topOption)}</div><div class="lbl">Prato Campeão</div></div>
-                        <div class="kpi"><div class="val">${avgDaily}</div><div class="lbl">Média / Dia</div></div>
-                        <div class="kpi"><div class="val">${menusCount}</div><div class="lbl">Cardápios</div></div>
-                    </div>
-
-                    <div class="charts-row">
-                        <div class="chart-card">
-                            <h4>🍩 Distribuição por Tipo de Refeição</h4>
-                            ${donutImg ? `<img src="${donutImg}">` : '<p>Sem gráfico</p>'}
-                        </div>
-                        <div class="chart-card">
-                            <h4>📈 Evolução Diária de Pedidos</h4>
-                            ${lineImg ? `<img src="${lineImg}">` : '<p>Sem gráfico</p>'}
-                        </div>
-                    </div>
-
-                    <div class="chart-card" style="margin-bottom:20px">
-                        <h4>🏆 Top Pratos / Opções Mais Solicitadas</h4>
-                        ${barImg ? `<img src="${barImg}">` : '<p>Sem gráfico</p>'}
-                    </div>
-
-                    <div class="footer">NutriFlow - Sistema Hospitalar de Gestão de Refeições</div>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-            }, 600);
-        }
-
-        // ══════════════════════════════════════════════
-        //  CENTRAL DE RELATÓRIOS & EXPORTAÇÃO EM PDF
-        // ══════════════════════════════════════════════
-        let currentReportData = [];
-        let currentReportHtml = '';
-
-        async function generateReport() {
-            const model = document.getElementById('reportModel').value;
-            const date = document.getElementById('reportDate').value;
-            const mealType = document.getElementById('reportMealType').value;
-            const el = document.getElementById('reportContentBody');
-            const badge = document.getElementById('reportCountBadge');
-            const titleDisplay = document.getElementById('reportTitleDisplay');
-
-            el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Gerando relatório...</p></div>';
-
-            try {
-                let query = sb.from('meal_requests')
-                    .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
-                    .eq('menus.company_id', state.company.id)
-                    .order('id', { ascending: false });
-
-                if (date) query = query.eq('menus.meal_date', date);
-                if (mealType) query = query.eq('menus.meal_type', mealType);
-
-                const { data, error } = await query;
-                if (error) throw error;
-
-                currentReportData = data || [];
-                badge.textContent = `${currentReportData.length} registros`;
-
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para os filtros selecionados.</p></div>';
-                    return;
-                }
-
-                // 1. MODELO: PRODUÇÃO (COZINHA)
-                if (model === 'producao') {
-                    titleDisplay.textContent = '🍳 Relatório de Produção / Cozinha (Totalização por Prato)';
-                    
-                    const prodGroups = {};
-                    data.forEach(r => {
-                        const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
-                        if (!prodGroups[key]) {
-                            prodGroups[key] = {
-                                date: r.menus.meal_date,
-                                type: r.menus.meal_type,
-                                time: r.menus.meal_time,
-                                items: {}
-                            };
-                        }
-                        const opt = r.menu_options?.description || 'Opção Geral';
-                        prodGroups[key].items[opt] = (prodGroups[key].items[opt] || 0) + 1;
-                    });
-
-                    let html = `<div class="tbl-wrap"><table>
-                        <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Prato / Opção</th><th style="text-align:right">Quantidade a Preparar</th></tr></thead>
-                        <tbody>`;
-
-                    Object.values(prodGroups).forEach(g => {
-                        const totalMeal = Object.values(g.items).reduce((a, b) => a + b, 0);
-                        const entries = Object.entries(g.items);
-                        entries.forEach(([opt, count], idx) => {
-                            html += `<tr>
-                                ${idx === 0 ? `<td rowspan="${entries.length}"><strong>${escapeHtml(fmtFullDate(g.date))}</strong></td>
-                                               <td rowspan="${entries.length}"><span class="meal-pill ${escapeHtml(g.type)}">${escapeHtml(MEAL_LABELS[g.type] || g.type)}</span></td>
-                                               <td rowspan="${entries.length}">${escapeHtml(g.time)}</td>` : ''}
-                                <td>${escapeHtml(opt)}</td>
-                                <td style="text-align:right;font-weight:bold;color:#1e5f9e;font-size:14px">${count} un</td>
-                            </tr>`;
-                        });
-                        html += `<tr style="background:#edf2f7"><td colspan="4" style="text-align:right;font-weight:700">Subtotal da Refeição:</td><td style="text-align:right;font-weight:800;color:#16a34a">${totalMeal} porções</td></tr>`;
-                    });
-
-                    html += `</tbody></table></div>`;
-                    currentReportHtml = html;
-                    el.innerHTML = html;
-                }
-
-                // 2. MODELO: NOMINAL DE COLABORADORES
-                else if (model === 'nominal') {
-                    titleDisplay.textContent = '👥 Relatório Nominal de Solicitações por Colaborador';
 
                     const userIds = [...new Set(data.map(r => r.user_id))];
-                    const { data: profs } = await sb.from('profiles').select('id, name, email, username').in('id', userIds);
-                    const profsMap = Object.fromEntries((profs || []).map(p => [p.id, p]));
+                    const { data: profilesData } = await sb.from('profiles')
+                        .select('id, name')
+                        .in('id', userIds);
+                    const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p.name]));
 
-                    let html = `<div class="tbl-wrap"><table>
-                        <thead><tr><th>Colaborador</th><th>Identificador</th><th>Data Refeição</th><th>Refeição</th><th>Horário</th><th>Opção Escolhida</th></tr></thead>
-                        <tbody>`;
+                    el.innerHTML = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
+                        <tbody>
+                            ${data.map(r => `<tr>
+                                <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
+                                <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
+                                <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
+                                <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                                <td>${escapeHtml(r.menu_options?.description || '-')}</td>
+                            </tr>`).join('')}
+                        </tbody></table></div>`;
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
+            // ══════════════════════════════════════════════
+            let currentStatsData = [];
+            let chartInstanceMealDist = null;
+            let chartInstanceDailyTrend = null;
+            let chartInstanceTopOptions = null;
+
+            function clearStatsFilters() {
+                document.getElementById('statsDate').value = '';
+                document.getElementById('statsMealType').value = '';
+                loadStats();
+            }
+
+            async function loadStats() {
+                const date = document.getElementById('statsDate').value;
+                const mealType = document.getElementById('statsMealType').value;
+
+                try {
+                    let query = sb.from('meal_requests')
+                        .select('menus!inner(id, company_id, meal_date, meal_type, meal_time), menu_options(id, description)')
+                        .eq('menus.company_id', state.company.id);
+
+                    if (date) query = query.eq('menus.meal_date', date);
+                    if (mealType) query = query.eq('menus.meal_type', mealType);
+
+                    const { data, error } = await query;
+                    if (error) throw error;
+
+                    currentStatsData = data || [];
+
+                    if (!data || !data.length) {
+                        document.getElementById('kpiTotalReqs').textContent = '0';
+                        document.getElementById('kpiTopMeal').textContent = '—';
+                        document.getElementById('kpiTopOption').textContent = '—';
+                        document.getElementById('kpiAvgDaily').textContent = '0';
+                        document.getElementById('kpiMenusCount').textContent = '0';
+                        destroyAllCharts();
+                        return;
+                    }
+
+                    const totalReqs = data.length;
+                    document.getElementById('kpiTotalReqs').textContent = totalReqs;
+
+                    const mealTypeCounts = {};
+                    const optionCounts = {};
+                    const dailyTrendCounts = {};
+                    const distinctMenuIds = new Set();
 
                     data.forEach(r => {
-                        const p = profsMap[r.user_id] || { name: 'Colaborador', email: '-', username: '' };
-                        html += `<tr>
-                            <td><strong>${escapeHtml(p.name)}</strong></td>
-                            <td style="font-size:12px;color:#718096">${p.username ? '@' + escapeHtml(p.username) : escapeHtml(p.email)}</td>
-                            <td>${escapeHtml(fmtFullDate(r.menus?.meal_date))}</td>
-                            <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || '-')}</span></td>
-                            <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
-                            <td><strong>${escapeHtml(r.menu_options?.description || '-')}</strong></td>
-                        </tr>`;
+                        const mType = r.menus.meal_type;
+                        const mDate = r.menus.meal_date;
+                        const optDesc = r.menu_options?.description || 'Opção Geral';
+
+                        distinctMenuIds.add(r.menus.id);
+                        mealTypeCounts[mType] = (mealTypeCounts[mType] || 0) + 1;
+                        optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
+                        dailyTrendCounts[mDate] = (dailyTrendCounts[mDate] || 0) + 1;
                     });
 
-                    html += `</tbody></table></div>`;
-                    currentReportHtml = html;
-                    el.innerHTML = html;
+                    const topMeal = Object.entries(mealTypeCounts).sort((a, b) => b[1] - a[1])[0];
+                    document.getElementById('kpiTopMeal').textContent = topMeal ? `${MEAL_LABELS[topMeal[0]] || topMeal[0]} (${topMeal[1]})` : '—';
+
+                    const topOption = Object.entries(optionCounts).sort((a, b) => b[1] - a[1])[0];
+                    document.getElementById('kpiTopOption').textContent = topOption ? `${topOption[0]} (${topOption[1]})` : '—';
+
+                    const totalDias = Object.keys(dailyTrendCounts).length || 1;
+                    document.getElementById('kpiAvgDaily').textContent = Math.round(totalReqs / totalDias);
+                    document.getElementById('kpiMenusCount').textContent = distinctMenuIds.size;
+
+                    renderCharts({
+                        mealTypeCounts,
+                        dailyTrendCounts,
+                        optionCounts
+                    });
+                } catch (e) {
+                    console.error('Erro ao carregar estatísticas:', e);
                 }
+            }
 
-                // 3. MODELO: SINTÉTICO DIÁRIO
-                else {
-                    titleDisplay.textContent = '📊 Relatório Sintético de Demanda por Refeição';
+            function destroyAllCharts() {
+                if (chartInstanceMealDist) { chartInstanceMealDist.destroy(); chartInstanceMealDist = null; }
+                if (chartInstanceDailyTrend) { chartInstanceDailyTrend.destroy(); chartInstanceDailyTrend = null; }
+                if (chartInstanceTopOptions) { chartInstanceTopOptions.destroy(); chartInstanceTopOptions = null; }
+            }
 
-                    const dateGroups = {};
-                    data.forEach(r => {
-                        const d = r.menus.meal_date;
-                        if (!dateGroups[d]) dateGroups[d] = { date: d, cafe_manha: 0, almoco: 0, lanche_tarde: 0, janta: 0, lanche_noite: 0, total: 0 };
-                        if (dateGroups[d][r.menus.meal_type] !== undefined) {
-                            dateGroups[d][r.menus.meal_type]++;
+            function renderCharts({ mealTypeCounts, dailyTrendCounts, optionCounts }) {
+                destroyAllCharts();
+
+                // 1. Donut
+                const mealLabels = Object.keys(mealTypeCounts).map(k => MEAL_LABELS[k] ? MEAL_LABELS[k].replace(/^[^\s]+\s/, '') : k);
+                const mealValues = Object.values(mealTypeCounts);
+                const ctxDonut = document.getElementById('chartMealDistribution');
+
+                if (ctxDonut) {
+                    chartInstanceMealDist = new Chart(ctxDonut, {
+                        type: 'doughnut',
+                        data: {
+                            labels: mealLabels,
+                            datasets: [{
+                                data: mealValues,
+                                backgroundColor: ['#1e5f9e', '#16a34a', '#d97706', '#8b5cf6', '#0ea5e9'],
+                                borderWidth: 2,
+                                borderColor: '#ffffff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: false,
+                            plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } } }
                         }
-                        dateGroups[d].total++;
                     });
-
-                    let html = `<div class="tbl-wrap"><table>
-                        <thead><tr><th>Data</th><th>Café da Manhã</th><th>Almoço</th><th>Lanche Tarde</th><th>Jantar</th><th>Lanche Noite</th><th style="text-align:right">Total do Dia</th></tr></thead>
-                        <tbody>`;
-
-                    Object.values(dateGroups).forEach(d => {
-                        html += `<tr>
-                            <td><strong>${escapeHtml(fmtFullDate(d.date))}</strong></td>
-                            <td>${d.cafe_manha}</td>
-                            <td>${d.almoco}</td>
-                            <td>${d.lanche_tarde}</td>
-                            <td>${d.janta}</td>
-                            <td>${d.lanche_noite}</td>
-                            <td style="text-align:right;font-weight:800;color:#1e5f9e;font-size:14px">${d.total}</td>
-                        </tr>`;
-                    });
-
-                    html += `</tbody></table></div>`;
-                    currentReportHtml = html;
-                    el.innerHTML = html;
                 }
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao gerar relatório: ${escapeHtml(e.message)}</div>`;
+
+                // 2. Line
+                const sortedDates = Object.keys(dailyTrendCounts).sort();
+                const dateLabels = sortedDates.map(d => fmtDate(d));
+                const dateValues = sortedDates.map(d => dailyTrendCounts[d]);
+                const ctxLine = document.getElementById('chartDailyTrend');
+
+                if (ctxLine) {
+                    chartInstanceDailyTrend = new Chart(ctxLine, {
+                        type: 'line',
+                        data: {
+                            labels: dateLabels,
+                            datasets: [{
+                                label: 'Refeições Solicitadas',
+                                data: dateValues,
+                                borderColor: '#1e5f9e',
+                                backgroundColor: 'rgba(30, 95, 158, 0.12)',
+                                fill: true,
+                                tension: 0.35,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#1e5f9e',
+                                pointRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { beginAtZero: true, ticks: { precision: 0 } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                // 3. Horizontal Bar
+                const sortedOptions = Object.entries(optionCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+                const topOptLabels = sortedOptions.map(o => o[0]);
+                const topOptValues = sortedOptions.map(o => o[1]);
+                const ctxBar = document.getElementById('chartTopOptions');
+
+                if (ctxBar) {
+                    chartInstanceTopOptions = new Chart(ctxBar, {
+                        type: 'bar',
+                        data: {
+                            labels: topOptLabels,
+                            datasets: [{
+                                label: 'Quantidade Pedida',
+                                data: topOptValues,
+                                backgroundColor: '#16a34a',
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { beginAtZero: true, ticks: { precision: 0 } },
+                                y: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
             }
-        }
 
-        // Exportação Exclusiva do Relatório em PDF
-        function exportReportsPdf() {
-            if (!currentReportData || !currentReportData.length) {
-                alert('Não há dados no relatório para gerar o PDF.');
-                return;
+            // ══════════════════════════════════════════════
+            //  EXPORTAÇÃO EXCLUSIVA DO DASHBOARD EM PDF
+            // ══════════════════════════════════════════════
+            function exportDashboardPdf() {
+                if (!currentStatsData || !currentStatsData.length) {
+                    alert('Não há dados estatísticos para gerar o PDF.');
+                    return;
+                }
+
+                const donutImg = document.getElementById('chartMealDistribution')?.toDataURL('image/png') || '';
+                const lineImg = document.getElementById('chartDailyTrend')?.toDataURL('image/png') || '';
+                const barImg = document.getElementById('chartTopOptions')?.toDataURL('image/png') || '';
+
+                const totalReqs = document.getElementById('kpiTotalReqs').textContent;
+                const topMeal = document.getElementById('kpiTopMeal').textContent;
+                const topOption = document.getElementById('kpiTopOption').textContent;
+                const avgDaily = document.getElementById('kpiAvgDaily').textContent;
+                const menusCount = document.getElementById('kpiMenusCount').textContent;
+
+                const printWindow = window.open('', '_blank', 'width=900,height=700');
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Dashboard Executivo - ${escapeHtml(state.company.name)}</title>
+                        <style>
+                            body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; }
+                            .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 20px; }
+                            .header h1 { font-size: 22px; color: #1e5f9e; margin: 0 0 4px; }
+                            .header p { font-size: 12px; color: #718096; margin: 0; }
+                            .kpis-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 25px; }
+                            .kpi { border: 1px solid #e2e8f0; padding: 10px; border-radius: 8px; background: #f8fafc; text-align: center; }
+                            .kpi .val { font-size: 18px; font-weight: bold; color: #1e5f9e; }
+                            .kpi .lbl { font-size: 10px; color: #718096; text-transform: uppercase; margin-top: 4px; }
+                            .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+                            .chart-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; }
+                            .chart-card h4 { font-size: 13px; color: #2d3748; margin: 0 0 10px; }
+                            .chart-card img { width: 100%; height: auto; max-height: 220px; object-fit: contain; }
+                            .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 10px; color: #a0aec0; text-align: right; }
+                            @media print { body { padding: 0; } }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>📊 Dashboard Analítico de Refeições</h1>
+                            <p><strong>Unidade:</strong> ${escapeHtml(state.company.name)} | <strong>Emitido em:</strong> ${new Date().toLocaleString('pt-BR')} por ${escapeHtml(state.user.name)}</p>
+                        </div>
+
+                        <div class="kpis-grid">
+                            <div class="kpi"><div class="val">${totalReqs}</div><div class="lbl">Total Refeições</div></div>
+                            <div class="kpi"><div class="val" style="font-size:14px;color:#16a34a">${escapeHtml(topMeal)}</div><div class="lbl">Pico de Horário</div></div>
+                            <div class="kpi"><div class="val" style="font-size:13px;color:#553c9a">${escapeHtml(topOption)}</div><div class="lbl">Prato Campeão</div></div>
+                            <div class="kpi"><div class="val">${avgDaily}</div><div class="lbl">Média / Dia</div></div>
+                            <div class="kpi"><div class="val">${menusCount}</div><div class="lbl">Cardápios</div></div>
+                        </div>
+
+                        <div class="charts-row">
+                            <div class="chart-card">
+                                <h4>🍩 Distribuição por Tipo de Refeição</h4>
+                                ${donutImg ? `<img src="${donutImg}">` : '<p>Sem gráfico</p>'}
+                            </div>
+                            <div class="chart-card">
+                                <h4>📈 Evolução Diária de Pedidos</h4>
+                                ${lineImg ? `<img src="${lineImg}">` : '<p>Sem gráfico</p>'}
+                            </div>
+                        </div>
+
+                        <div class="chart-card" style="margin-bottom:20px">
+                            <h4>🏆 Top Pratos / Opções Mais Solicitadas</h4>
+                            ${barImg ? `<img src="${barImg}">` : '<p>Sem gráfico</p>'}
+                        </div>
+
+                        <div class="footer">NutriFlow - Sistema Hospitalar de Gestão de Refeições</div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                setTimeout(() => {
+                    printWindow.focus();
+                    printWindow.print();
+                }, 600);
             }
 
-            const modelName = document.getElementById('reportModel').options[document.getElementById('reportModel').selectedIndex].text;
-            const printWindow = window.open('', '_blank', 'width=950,height=750');
+            // ══════════════════════════════════════════════
+            //  CENTRAL DE RELATÓRIOS & EXPORTAÇÃO EM PDF
+            // ══════════════════════════════════════════════
+            let currentReportData = [];
+            let currentReportHtml = '';
 
-            printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Relatório - ${escapeHtml(state.company.name)}</title>
-                    <style>
-                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; font-size: 12px; }
-                        .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 18px; }
-                        .header h1 { font-size: 20px; color: #1e5f9e; margin: 0 0 4px; }
-                        .header p { font-size: 12px; color: #4a5568; margin: 2px 0; }
-                        .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; display: flex; justify-content: space-between; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        th { background: #f1f5f9; color: #1a365d; font-weight: 600; padding: 8px 10px; border: 1px solid #cbd5e1; text-align: left; }
-                        td { padding: 8px 10px; border: 1px solid #cbd5e1; vertical-align: middle; }
-                        tr:nth-child(even) { background: #fafbfc; }
-                        .meal-pill { font-weight: 600; }
-                        .signatures { margin-top: 45px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-                        .sign-box { border-top: 1px solid #718096; text-align: center; padding-top: 6px; font-size: 11px; color: #4a5568; }
-                        .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 8px; font-size: 10px; color: #a0aec0; text-align: right; }
-                        @media print { body { padding: 0; } }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>${escapeHtml(modelName)}</h1>
-                        <p><strong>Unidade Hospitalar:</strong> ${escapeHtml(state.company.name)}</p>
-                    </div>
+            async function generateReport() {
+                const model = document.getElementById('reportModel').value;
+                const date = document.getElementById('reportDate').value;
+                const mealType = document.getElementById('reportMealType').value;
+                const el = document.getElementById('reportContentBody');
+                const badge = document.getElementById('reportCountBadge');
+                const titleDisplay = document.getElementById('reportTitleDisplay');
 
-                    <div class="meta-box">
-                        <div><strong>Total de Registros:</strong> ${currentReportData.length}</div>
-                        <div><strong>Data da Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</div>
-                        <div><strong>Emitido por:</strong> ${escapeHtml(state.user.name)}</div>
-                    </div>
+                el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Gerando relatório...</p></div>';
 
-                    ${currentReportHtml}
+                try {
+                    let query = sb.from('meal_requests')
+                        .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                        .eq('menus.company_id', state.company.id)
+                        .order('id', { ascending: false });
 
-                    <div class="signatures">
-                        <div class="sign-box">Responsável Técnico / Nutricionista (CRN)</div>
-                        <div class="sign-box">Coordenação de Nutrição & Dietética</div>
-                    </div>
+                    if (date) query = query.eq('menus.meal_date', date);
+                    if (mealType) query = query.eq('menus.meal_type', mealType);
 
-                    <div class="footer">NutriFlow - Documento Oficial de Gestão de Alimentação Hospitalar</div>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-            setTimeout(() => {
-                printWindow.focus();
-                printWindow.print();
-            }, 500);
-        }
+                    const { data, error } = await query;
+                    if (error) throw error;
 
-        // ══════════════════════════════════════════════
-        //  USUÁRIOS (ADMIN / PERMISSÃO CRIAR_USUARIO)
-        // ══════════════════════════════════════════════
-        let nuCompanyIds = [];
-        let allCompanies = [];
-        let usersMap = {};
+                    currentReportData = data || [];
+                    badge.textContent = `${currentReportData.length} registros`;
 
-        async function loadUsers() {
-            try {
-                const { data: comps } = await sb.from('companies').select('*').order('id');
-                allCompanies = comps || [];
+                    if (!data || !data.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para os filtros selecionados.</p></div>';
+                        return;
+                    }
+
+                    // 1. MODELO: PRODUÇÃO (COZINHA)
+                    if (model === 'producao') {
+                        titleDisplay.textContent = '🍳 Relatório de Produção / Cozinha (Totalização por Prato)';
+                        
+                        const prodGroups = {};
+                        data.forEach(r => {
+                            const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
+                            if (!prodGroups[key]) {
+                                prodGroups[key] = {
+                                    date: r.menus.meal_date,
+                                    type: r.menus.meal_type,
+                                    time: r.menus.meal_time,
+                                    items: {}
+                                };
+                            }
+                            const opt = r.menu_options?.description || 'Opção Geral';
+                            prodGroups[key].items[opt] = (prodGroups[key].items[opt] || 0) + 1;
+                        });
+
+                        let html = `<div class="tbl-wrap"><table>
+                            <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Prato / Opção</th><th style="text-align:right">Quantidade a Preparar</th></tr></thead>
+                            <tbody>`;
+
+                        Object.values(prodGroups).forEach(g => {
+                            const totalMeal = Object.values(g.items).reduce((a, b) => a + b, 0);
+                            const entries = Object.entries(g.items);
+                            entries.forEach(([opt, count], idx) => {
+                                html += `<tr>
+                                    ${idx === 0 ? `<td rowspan="${entries.length}"><strong>${escapeHtml(fmtFullDate(g.date))}</strong></td>
+                                                   <td rowspan="${entries.length}"><span class="meal-pill ${escapeHtml(g.type)}">${escapeHtml(MEAL_LABELS[g.type] || g.type)}</span></td>
+                                                   <td rowspan="${entries.length}">${escapeHtml(g.time)}</td>` : ''}
+                                    <td>${escapeHtml(opt)}</td>
+                                    <td style="text-align:right;font-weight:bold;color:#1e5f9e;font-size:14px">${count} un</td>
+                                </tr>`;
+                            });
+                            html += `<tr style="background:#edf2f7"><td colspan="4" style="text-align:right;font-weight:700">Subtotal da Refeição:</td><td style="text-align:right;font-weight:800;color:#16a34a">${totalMeal} porções</td></tr>`;
+                        });
+
+                        html += `</tbody></table></div>`;
+                        currentReportHtml = html;
+                        el.innerHTML = html;
+                    }
+
+                    // 2. MODELO: NOMINAL DE COLABORADORES
+                    else if (model === 'nominal') {
+                        titleDisplay.textContent = '👥 Relatório Nominal de Solicitações por Colaborador';
+
+                        const userIds = [...new Set(data.map(r => r.user_id))];
+                        const { data: profs } = await sb.from('profiles').select('id, name, email, username').in('id', userIds);
+                        const profsMap = Object.fromEntries((profs || []).map(p => [p.id, p]));
+
+                        let html = `<div class="tbl-wrap"><table>
+                            <thead><tr><th>Colaborador</th><th>Identificador</th><th>Data Refeição</th><th>Refeição</th><th>Horário</th><th>Opção Escolhida</th></tr></thead>
+                            <tbody>`;
+
+                        data.forEach(r => {
+                            const p = profsMap[r.user_id] || { name: 'Colaborador', email: '-', username: '' };
+                            html += `<tr>
+                                <td><strong>${escapeHtml(p.name)}</strong></td>
+                                <td style="font-size:12px;color:#718096">${p.username ? '@' + escapeHtml(p.username) : escapeHtml(p.email)}</td>
+                                <td>${escapeHtml(fmtFullDate(r.menus?.meal_date))}</td>
+                                <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || '-')}</span></td>
+                                <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                                <td><strong>${escapeHtml(r.menu_options?.description || '-')}</strong></td>
+                            </tr>`;
+                        });
+
+                        html += `</tbody></table></div>`;
+                        currentReportHtml = html;
+                        el.innerHTML = html;
+                    }
+
+                    // 3. MODELO: SINTÉTICO DIÁRIO
+                    else {
+                        titleDisplay.textContent = '📊 Relatório Sintético de Demanda por Refeição';
+
+                        const dateGroups = {};
+                        data.forEach(r => {
+                            const d = r.menus.meal_date;
+                            if (!dateGroups[d]) dateGroups[d] = { date: d, cafe_manha: 0, almoco: 0, lanche_tarde: 0, janta: 0, lanche_noite: 0, total: 0 };
+                            if (dateGroups[d][r.menus.meal_type] !== undefined) {
+                                dateGroups[d][r.menus.meal_type]++;
+                            }
+                            dateGroups[d].total++;
+                        });
+
+                        let html = `<div class="tbl-wrap"><table>
+                            <thead><tr><th>Data</th><th>Café da Manhã</th><th>Almoço</th><th>Lanche Tarde</th><th>Jantar</th><th>Lanche Noite</th><th style="text-align:right">Total do Dia</th></tr></thead>
+                            <tbody>`;
+
+                        Object.values(dateGroups).forEach(d => {
+                            html += `<tr>
+                                <td><strong>${escapeHtml(fmtFullDate(d.date))}</strong></td>
+                                <td>${d.cafe_manha}</td>
+                                <td>${d.almoco}</td>
+                                <td>${d.lanche_tarde}</td>
+                                <td>${d.janta}</td>
+                                <td>${d.lanche_noite}</td>
+                                <td style="text-align:right;font-weight:800;color:#1e5f9e;font-size:14px">${d.total}</td>
+                            </tr>`;
+                        });
+
+                        html += `</tbody></table></div>`;
+                        currentReportHtml = html;
+                        el.innerHTML = html;
+                    }
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao gerar relatório: ${escapeHtml(e.message)}</div>`;
+                }
+            }
+
+            // Exportação Exclusiva do Relatório em PDF
+            function exportReportsPdf() {
+                if (!currentReportData || !currentReportData.length) {
+                    alert('Não há dados no relatório para gerar o PDF.');
+                    return;
+                }
+
+                const modelName = document.getElementById('reportModel').options[document.getElementById('reportModel').selectedIndex].text;
+                const printWindow = window.open('', '_blank', 'width=950,height=750');
+
+                printWindow.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Relatório - ${escapeHtml(state.company.name)}</title>
+                        <style>
+                            body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1a202c; font-size: 12px; }
+                            .header { border-bottom: 2px solid #1e5f9e; padding-bottom: 12px; margin-bottom: 18px; }
+                            .header h1 { font-size: 20px; color: #1e5f9e; margin: 0 0 4px; }
+                            .header p { font-size: 12px; color: #4a5568; margin: 2px 0; }
+                            .meta-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; margin-bottom: 18px; display: flex; justify-content: space-between; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                            th { background: #f1f5f9; color: #1a365d; font-weight: 600; padding: 8px 10px; border: 1px solid #cbd5e1; text-align: left; }
+                            td { padding: 8px 10px; border: 1px solid #cbd5e1; vertical-align: middle; }
+                            tr:nth-child(even) { background: #fafbfc; }
+                            .meal-pill { font-weight: 600; }
+                            .signatures { margin-top: 45px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+                            .sign-box { border-top: 1px solid #718096; text-align: center; padding-top: 6px; font-size: 11px; color: #4a5568; }
+                            .footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 8px; font-size: 10px; color: #a0aec0; text-align: right; }
+                            @media print { body { padding: 0; } }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>${escapeHtml(modelName)}</h1>
+                            <p><strong>Unidade Hospitalar:</strong> ${escapeHtml(state.company.name)}</p>
+                        </div>
+
+                        <div class="meta-box">
+                            <div><strong>Total de Registros:</strong> ${currentReportData.length}</div>
+                            <div><strong>Data da Emissão:</strong> ${new Date().toLocaleString('pt-BR')}</div>
+                            <div><strong>Emitido por:</strong> ${escapeHtml(state.user.name)}</div>
+                        </div>
+
+                        ${currentReportHtml}
+
+                        <div class="signatures">
+                            <div class="sign-box">Responsável Técnico / Nutricionista (CRN)</div>
+                            <div class="sign-box">Coordenação de Nutrição & Dietética</div>
+                        </div>
+
+                        <div class="footer">NutriFlow - Documento Oficial de Gestão de Alimentação Hospitalar</div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                setTimeout(() => {
+                    printWindow.focus();
+                    printWindow.print();
+                }, 500);
+            }
+
+            // ══════════════════════════════════════════════
+            //  USUÁRIOS (ADMIN / PERMISSÃO CRIAR_USUARIO)
+            // ══════════════════════════════════════════════
+            let nuCompanyIds = [];
+            let allCompanies = [];
+            let usersMap = {};
+
+            async function loadUsers() {
+                try {
+                    const { data: comps } = await sb.from('companies').select('*').order('id');
+                    allCompanies = comps || [];
+                    const sel = document.getElementById('nuCompanySelect');
+                    if (sel) {
+                        sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
+                        allCompanies.forEach(c => {
+                            const o = document.createElement('option');
+                            o.value = c.id; o.textContent = c.name;
+                            sel.appendChild(o);
+                        });
+                    }
+
+                    const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+                    const optNuAdmin = document.getElementById('optNuRoleAdmin');
+                    if (optNuAdmin) optNuAdmin.disabled = !isCurrentSuperAdmin;
+
+                    const { data: users, error: uErr } = await sb.from('profiles').select('*').order('name');
+                    if (uErr) throw uErr;
+
+                    const { data: compUsers } = await sb.from('company_users').select('user_id, company_id');
+
+                    const userCompsMap = {};
+                    (compUsers || []).forEach(cu => {
+                        if (!userCompsMap[cu.user_id]) userCompsMap[cu.user_id] = [];
+                        const foundComp = allCompanies.find(c => String(c.id) === String(cu.company_id));
+                        userCompsMap[cu.user_id].push({
+                            company_id: cu.company_id,
+                            companies: foundComp || { id: cu.company_id, name: 'Empresa ' + cu.company_id }
+                        });
+                    });
+
+                    usersMap = {};
+                    (users || []).forEach(u => {
+                        u.company_users = userCompsMap[u.id] || [];
+                        usersMap[u.id] = u;
+                    });
+
+                    const el = document.getElementById('usersBody');
+                    if (!users || !users.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
+                        return;
+                    }
+
+                    el.innerHTML = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
+                        <tbody>
+                            ${users.map(u => {
+                        const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
+                        const perms = u.extra_permissions || [];
+                        const permBadges = perms.length
+                            ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : escapeHtml(p)}</span>`).join('')
+                            : '<span style="color:#a0aec0;font-size:11px">—</span>';
+
+                        const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
+                        const canEdit = isCurrentSuperAdmin || !isTargetAdmin;
+                        const isMainAdmin = (u.email === 'admin@hospital.com');
+
+                        let actionButtons = '';
+                        if (canEdit) {
+                            actionButtons += `<button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.openEditUser('${u.id}')">✏️ Editar</button>`;
+                        } else {
+                            actionButtons += `<span class="badge" style="background:#edf2f7;color:#718096">🔒 Protegido</span>`;
+                        }
+
+                        if (!isMainAdmin && canEdit) {
+                            actionButtons += `<button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.deleteUser('${u.id}')">Excluir</button>`;
+                        }
+
+                        return `<tr>
+                                    <td><strong>${escapeHtml(u.name || '-')}</strong></td>
+                                    <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + escapeHtml(u.username) : '<span style="color:#a0aec0">—</span>'}</td>
+                                    <td style="color:#718096;font-size:12px">${escapeHtml(u.email || '-')}</td>
+                                    <td><span class="badge badge-${escapeHtml(u.role)}">${escapeHtml(u.role)}</span></td>
+                                    <td>${permBadges}</td>
+                                    <td style="font-size:12px">${escapeHtml(compsList)}</td>
+                                    <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
+                                    <td><div style="display:flex;gap:6px;align-items:center">${actionButtons}</div></td>
+                                </tr>`;
+                    }).join('')}
+                        </tbody></table></div>`;
+                } catch (e) {
+                    document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar usuários: ${escapeHtml(e.message)}</div>`;
+                }
+            }
+
+            function addCompanyChip() {
                 const sel = document.getElementById('nuCompanySelect');
+                const id = sel.value;
+                if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
+                nuCompanyIds.push(id);
+                sel.value = '';
+                renderChips();
+            }
+
+            function removeChip(id) {
+                nuCompanyIds = nuCompanyIds.filter(c => String(c) !== String(id));
+                renderChips();
+            }
+
+            function renderChips() {
+                const el = document.getElementById('nuCompanyChips');
+                el.innerHTML = nuCompanyIds.map(id => {
+                    const c = allCompanies.find(comp => String(comp.id) === String(id));
+                    return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="window.NutriApp.removeChip('${id}')">×</span></div>`;
+                }).join('');
+            }
+
+            async function createUser() {
+                const name = document.getElementById('nuName').value.trim();
+                const email = document.getElementById('nuEmail').value.trim();
+                const username = document.getElementById('nuUsername').value.trim().toLowerCase();
+                const password = document.getElementById('nuPass').value;
+                const role = document.getElementById('nuRole').value;
+                if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
+
+                const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+                if (role === 'admin' && !isCurrentSuperAdmin) {
+                    return alert_('usersError', 'Apenas Administradores podem criar outro usuário Administrador.');
+                }
+
+                try {
+                    if (username) {
+                        const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
+                        if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso.`);
+                    }
+
+                    const { data, error } = await sb.auth.signUp({ email, password });
+                    if (error) throw error;
+
+                    if (data.user) {
+                        const extraPerms = [];
+                        if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
+
+                        await sb.from('profiles').insert({
+                            id: data.user.id,
+                            name,
+                            email,
+                            username: username || null,
+                            role,
+                            active: true,
+                            extra_permissions: extraPerms
+                        });
+                        if (nuCompanyIds.length > 0) {
+                            await sb.from('company_users').insert(
+                                nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
+                            );
+                        }
+                    }
+
+                    alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
+                    document.getElementById('nuName').value = '';
+                    document.getElementById('nuEmail').value = '';
+                    document.getElementById('nuUsername').value = '';
+                    document.getElementById('nuPass').value = '';
+                    if (document.getElementById('permCriarUsuario')) document.getElementById('permCriarUsuario').checked = false;
+                    nuCompanyIds = [];
+                    renderChips();
+                    loadUsers();
+                } catch (e) {
+                    alert_('usersError', e.message);
+                }
+            }
+
+            async function deleteUser(id) {
+                const u = usersMap[id];
+                const isTargetAdmin = u && (u.email === 'admin@hospital.com' || u.role === 'admin');
+                const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
+                if (u && u.email === 'admin@hospital.com') return alert('O Administrador principal não pode ser excluído.');
+                if (isTargetAdmin && !isCurrentSuperAdmin) return alert('Você não tem permissão para excluir um Administrador.');
+
+                if (!confirm(`Excluir o usuário "${u?.name || 'selecionado'}"?`)) return;
+                try {
+                    await sb.from('company_users').delete().eq('user_id', id);
+                    const { error } = await sb.from('profiles').delete().eq('id', id);
+                    if (error) throw error;
+                    alert_('usersSuccess', 'Usuário excluído com sucesso.', 'success');
+                    loadUsers();
+                } catch (e) {
+                    alert_('usersError', e.message);
+                }
+            }
+
+            // ══════════════════════════════════════════════
+            //  MODAL: EDITAR USUÁRIO
+            // ══════════════════════════════════════════════
+            let editCompanyIds = [];
+
+            function openEditUser(userId) {
+                const u = usersMap[userId];
+                if (!u) return alert('Usuário não encontrado. Recarregue a página.');
+
+                const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
+                const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
+                if (isTargetAdmin && !isCurrentSuperAdmin) {
+                    alert('Você não possui permissão para editar o Administrador.');
+                    return;
+                }
+
+                document.getElementById('editUserId').value = u.id;
+                document.getElementById('editUserName').value = u.name || '';
+                document.getElementById('editUserEmail').value = u.email || '';
+                document.getElementById('editUserRole').value = u.role || 'colaborador';
+                document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
+                document.getElementById('editUserUsername').value = u.username || '';
+
+                const optAdmin = document.getElementById('optEditRoleAdmin');
+                if (optAdmin) optAdmin.disabled = !isCurrentSuperAdmin;
+
+                const perms = u.extra_permissions || [];
+                document.getElementById('editPermCriarUsuario').checked = Array.isArray(perms) && perms.includes('criar_usuario');
+
+                editCompanyIds = (u.company_users || []).map(cu => cu.company_id || cu.companies?.id).filter(Boolean);
+
+                const sel = document.getElementById('editCompanySelect');
                 if (sel) {
                     sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
                     allCompanies.forEach(c => {
                         const o = document.createElement('option');
-                        o.value = c.id; o.textContent = c.name;
+                        o.value = c.id;
+                        o.textContent = c.name;
                         sel.appendChild(o);
                     });
                 }
 
+                renderEditChips();
+
+                document.getElementById('editUserError').style.display = 'none';
+                document.getElementById('editUserSuccess').style.display = 'none';
+                document.getElementById('modalEditUser').classList.add('open');
+            }
+
+            function closeEditUser() {
+                document.getElementById('modalEditUser').classList.remove('open');
+            }
+
+            document.getElementById('modalEditUser').addEventListener('click', function (e) {
+                if (e.target === this) closeEditUser();
+            });
+
+            function addEditCompanyChip() {
+                const sel = document.getElementById('editCompanySelect');
+                const id = sel.value;
+                if (!id || editCompanyIds.some(cid => String(cid) === String(id))) { sel.value = ''; return; }
+                editCompanyIds.push(id);
+                sel.value = '';
+                renderEditChips();
+            }
+
+            function removeEditChip(id) {
+                editCompanyIds = editCompanyIds.filter(c => String(c) !== String(id));
+                renderEditChips();
+            }
+
+            function renderEditChips() {
+                const el = document.getElementById('editCompanyChips');
+                el.innerHTML = editCompanyIds.map(id => {
+                    const c = allCompanies.find(comp => String(comp.id) === String(id));
+                    return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="window.NutriApp.removeEditChip('${id}')">×</span></div>`;
+                }).join('');
+            }
+
+            async function saveEditUser() {
+                const id = document.getElementById('editUserId').value;
+                const name = document.getElementById('editUserName').value.trim();
+                const role = document.getElementById('editUserRole').value;
+                const active = document.getElementById('editUserActive').value === 'true';
+                const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
+                const extraPerms = [];
+                if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
+
+                if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
+
+                const targetUser = usersMap[id];
+                const isTargetAdmin = targetUser && (targetUser.email === 'admin@hospital.com' || targetUser.role === 'admin');
                 const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
-                const optNuAdmin = document.getElementById('optNuRoleAdmin');
-                if (optNuAdmin) optNuAdmin.disabled = !isCurrentSuperAdmin;
 
-                const { data: users, error: uErr } = await sb.from('profiles').select('*').order('name');
-                if (uErr) throw uErr;
-
-                const { data: compUsers } = await sb.from('company_users').select('user_id, company_id');
-
-                const userCompsMap = {};
-                (compUsers || []).forEach(cu => {
-                    if (!userCompsMap[cu.user_id]) userCompsMap[cu.user_id] = [];
-                    const foundComp = allCompanies.find(c => String(c.id) === String(cu.company_id));
-                    userCompsMap[cu.user_id].push({
-                        company_id: cu.company_id,
-                        companies: foundComp || { id: cu.company_id, name: 'Empresa ' + cu.company_id }
-                    });
-                });
-
-                usersMap = {};
-                (users || []).forEach(u => {
-                    u.company_users = userCompsMap[u.id] || [];
-                    usersMap[u.id] = u;
-                });
-
-                const el = document.getElementById('usersBody');
-                if (!users || !users.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
-                    return;
+                if (isTargetAdmin && !isCurrentSuperAdmin) {
+                    return alert_('editUserError', 'Você não tem permissão para alterar o Administrador.');
+                }
+                if (role === 'admin' && !isCurrentSuperAdmin) {
+                    return alert_('editUserError', 'Apenas Administradores podem definir o cargo como Administrador.');
                 }
 
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
-                    <tbody>
-                        ${users.map(u => {
-                    const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
-                    const perms = u.extra_permissions || [];
-                    const permBadges = perms.length
-                        ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : escapeHtml(p)}</span>`).join('')
-                        : '<span style="color:#a0aec0;font-size:11px">—</span>';
-
-                    const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
-                    const canEdit = isCurrentSuperAdmin || !isTargetAdmin;
-                    const isMainAdmin = (u.email === 'admin@hospital.com');
-
-                    let actionButtons = '';
-                    if (canEdit) {
-                        actionButtons += `<button type="button" class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>`;
-                    } else {
-                        actionButtons += `<span class="badge" style="background:#edf2f7;color:#718096">🔒 Protegido</span>`;
+                try {
+                    if (username) {
+                        const { data: existingUser } = await sb.from('profiles')
+                            .select('id').eq('username', username).neq('id', id).maybeSingle();
+                        if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso.`);
                     }
 
-                    if (!isMainAdmin && canEdit) {
-                        actionButtons += `<button type="button" class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`;
-                    }
+                    const { error: profErr } = await sb.from('profiles')
+                        .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
+                        .eq('id', id);
+                    if (profErr) throw profErr;
 
-                    return `<tr>
-                                <td><strong>${escapeHtml(u.name || '-')}</strong></td>
-                                <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + escapeHtml(u.username) : '<span style="color:#a0aec0">—</span>'}</td>
-                                <td style="color:#718096;font-size:12px">${escapeHtml(u.email || '-')}</td>
-                                <td><span class="badge badge-${escapeHtml(u.role)}">${escapeHtml(u.role)}</span></td>
-                                <td>${permBadges}</td>
-                                <td style="font-size:12px">${escapeHtml(compsList)}</td>
-                                <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
-                                <td><div style="display:flex;gap:6px;align-items:center">${actionButtons}</div></td>
-                            </tr>`;
-                }).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar usuários: ${escapeHtml(e.message)}</div>`;
-            }
-        }
-
-        function addCompanyChip() {
-            const sel = document.getElementById('nuCompanySelect');
-            const id = sel.value;
-            if (!id || nuCompanyIds.includes(id)) { sel.value = ''; return; }
-            nuCompanyIds.push(id);
-            sel.value = '';
-            renderChips();
-        }
-
-        function removeChip(id) {
-            nuCompanyIds = nuCompanyIds.filter(c => String(c) !== String(id));
-            renderChips();
-        }
-
-        function renderChips() {
-            const el = document.getElementById('nuCompanyChips');
-            el.innerHTML = nuCompanyIds.map(id => {
-                const c = allCompanies.find(comp => String(comp.id) === String(id));
-                return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="removeChip('${id}')">×</span></div>`;
-            }).join('');
-        }
-
-        async function createUser() {
-            const name = document.getElementById('nuName').value.trim();
-            const email = document.getElementById('nuEmail').value.trim();
-            const username = document.getElementById('nuUsername').value.trim().toLowerCase();
-            const password = document.getElementById('nuPass').value;
-            const role = document.getElementById('nuRole').value;
-            if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
-
-            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
-            if (role === 'admin' && !isCurrentSuperAdmin) {
-                return alert_('usersError', 'Apenas Administradores podem criar outro usuário Administrador.');
-            }
-
-            try {
-                if (username) {
-                    const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
-                    if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso.`);
-                }
-
-                const { data, error } = await sb.auth.signUp({ email, password });
-                if (error) throw error;
-
-                if (data.user) {
-                    const extraPerms = [];
-                    if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
-
-                    await sb.from('profiles').insert({
-                        id: data.user.id,
-                        name,
-                        email,
-                        username: username || null,
-                        role,
-                        active: true,
-                        extra_permissions: extraPerms
-                    });
-                    if (nuCompanyIds.length > 0) {
-                        await sb.from('company_users').insert(
-                            nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
+                    await sb.from('company_users').delete().eq('user_id', id);
+                    if (editCompanyIds.length > 0) {
+                        const { error: compErr } = await sb.from('company_users').insert(
+                            editCompanyIds.map(cid => ({ user_id: id, company_id: cid }))
                         );
+                        if (compErr) throw compErr;
                     }
+
+                    alert_('editUserSuccess', 'Usuário atualizado com sucesso!', 'success');
+                    setTimeout(() => {
+                        closeEditUser();
+                        loadUsers();
+                    }, 1000);
+                } catch (e) {
+                    alert_('editUserError', e.message || 'Erro ao salvar usuário');
                 }
-
-                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
-                document.getElementById('nuName').value = '';
-                document.getElementById('nuEmail').value = '';
-                document.getElementById('nuUsername').value = '';
-                document.getElementById('nuPass').value = '';
-                if (document.getElementById('permCriarUsuario')) document.getElementById('permCriarUsuario').checked = false;
-                nuCompanyIds = [];
-                renderChips();
-                loadUsers();
-            } catch (e) {
-                alert_('usersError', e.message);
-            }
-        }
-
-        async function deleteUser(id) {
-            const u = usersMap[id];
-            const isTargetAdmin = u && (u.email === 'admin@hospital.com' || u.role === 'admin');
-            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
-
-            if (u && u.email === 'admin@hospital.com') return alert('O Administrador principal não pode ser excluído.');
-            if (isTargetAdmin && !isCurrentSuperAdmin) return alert('Você não tem permissão para excluir um Administrador.');
-
-            if (!confirm(`Excluir o usuário "${u?.name || 'selecionado'}"?`)) return;
-            try {
-                await sb.from('company_users').delete().eq('user_id', id);
-                const { error } = await sb.from('profiles').delete().eq('id', id);
-                if (error) throw error;
-                alert_('usersSuccess', 'Usuário excluído com sucesso.', 'success');
-                loadUsers();
-            } catch (e) {
-                alert_('usersError', e.message);
-            }
-        }
-
-        // ══════════════════════════════════════════════
-        //  MODAL: EDITAR USUÁRIO
-        // ══════════════════════════════════════════════
-        let editCompanyIds = [];
-
-        function openEditUser(userId) {
-            const u = usersMap[userId];
-            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
-
-            const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
-            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
-
-            if (isTargetAdmin && !isCurrentSuperAdmin) {
-                alert('Você não possui permissão para editar o Administrador.');
-                return;
             }
 
-            document.getElementById('editUserId').value = u.id;
-            document.getElementById('editUserName').value = u.name || '';
-            document.getElementById('editUserEmail').value = u.email || '';
-            document.getElementById('editUserRole').value = u.role || 'colaborador';
-            document.getElementById('editUserActive').value = u.active ? 'true' : 'false';
-            document.getElementById('editUserUsername').value = u.username || '';
-
-            const optAdmin = document.getElementById('optEditRoleAdmin');
-            if (optAdmin) optAdmin.disabled = !isCurrentSuperAdmin;
-
-            const perms = u.extra_permissions || [];
-            document.getElementById('editPermCriarUsuario').checked = Array.isArray(perms) && perms.includes('criar_usuario');
-
-            editCompanyIds = (u.company_users || []).map(cu => cu.company_id || cu.companies?.id).filter(Boolean);
-
-            const sel = document.getElementById('editCompanySelect');
-            if (sel) {
-                sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
-                allCompanies.forEach(c => {
-                    const o = document.createElement('option');
-                    o.value = c.id;
-                    o.textContent = c.name;
-                    sel.appendChild(o);
-                });
-            }
-
-            renderEditChips();
-
-            document.getElementById('editUserError').style.display = 'none';
-            document.getElementById('editUserSuccess').style.display = 'none';
-            document.getElementById('modalEditUser').classList.add('open');
-        }
-
-        function closeEditUser() {
-            document.getElementById('modalEditUser').classList.remove('open');
-        }
-
-        document.getElementById('modalEditUser').addEventListener('click', function (e) {
-            if (e.target === this) closeEditUser();
-        });
-
-        function addEditCompanyChip() {
-            const sel = document.getElementById('editCompanySelect');
-            const id = sel.value;
-            if (!id || editCompanyIds.some(cid => String(cid) === String(id))) { sel.value = ''; return; }
-            editCompanyIds.push(id);
-            sel.value = '';
-            renderEditChips();
-        }
-
-        function removeEditChip(id) {
-            editCompanyIds = editCompanyIds.filter(c => String(c) !== String(id));
-            renderEditChips();
-        }
-
-        function renderEditChips() {
-            const el = document.getElementById('editCompanyChips');
-            el.innerHTML = editCompanyIds.map(id => {
-                const c = allCompanies.find(comp => String(comp.id) === String(id));
-                return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="removeEditChip('${id}')">×</span></div>`;
-            }).join('');
-        }
-
-        async function saveEditUser() {
-            const id = document.getElementById('editUserId').value;
-            const name = document.getElementById('editUserName').value.trim();
-            const role = document.getElementById('editUserRole').value;
-            const active = document.getElementById('editUserActive').value === 'true';
-            const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
-            const extraPerms = [];
-            if (document.getElementById('editPermCriarUsuario').checked) extraPerms.push('criar_usuario');
-
-            if (!name) return alert_('editUserError', 'Nome não pode ser vazio');
-
-            const targetUser = usersMap[id];
-            const isTargetAdmin = targetUser && (targetUser.email === 'admin@hospital.com' || targetUser.role === 'admin');
-            const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
-
-            if (isTargetAdmin && !isCurrentSuperAdmin) {
-                return alert_('editUserError', 'Você não tem permissão para alterar o Administrador.');
-            }
-            if (role === 'admin' && !isCurrentSuperAdmin) {
-                return alert_('editUserError', 'Apenas Administradores podem definir o cargo como Administrador.');
-            }
-
-            try {
-                if (username) {
-                    const { data: existingUser } = await sb.from('profiles')
-                        .select('id').eq('username', username).neq('id', id).maybeSingle();
-                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso.`);
+            // ══════════════════════════════════════════════
+            //  EMPRESAS (ADMIN)
+            // ══════════════════════════════════════════════
+            async function loadCompanies() {
+                const el = document.getElementById('companiesBody');
+                try {
+                    const { data, error } = await sb.from('companies').select('*').order('id', { ascending: false });
+                    if (error) throw error;
+                    if (!data || !data.length) {
+                        el.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div><p>Nenhuma empresa cadastrada</p></div>';
+                        return;
+                    }
+                    el.innerHTML = `<div class="tbl-wrap"><table>
+                        <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
+                        <tbody>
+                            ${data.map(c => `<tr>
+                                <td><strong>${escapeHtml(c.name)}</strong></td>
+                                <td>${escapeHtml(c.cnpj || '-')}</td>
+                                <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
+                                <td><button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.deleteCompany(${c.id})">Excluir</button></td>
+                            </tr>`).join('')}
+                        </tbody></table></div>`;
+                } catch (e) {
+                    el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
                 }
+            }
 
-                const { error: profErr } = await sb.from('profiles')
-                    .update({ name, role, active, extra_permissions: extraPerms, username: username || null })
-                    .eq('id', id);
-                if (profErr) throw profErr;
-
-                await sb.from('company_users').delete().eq('user_id', id);
-                if (editCompanyIds.length > 0) {
-                    const { error: compErr } = await sb.from('company_users').insert(
-                        editCompanyIds.map(cid => ({ user_id: id, company_id: cid }))
-                    );
-                    if (compErr) throw compErr;
+            async function createCompany() {
+                const name = document.getElementById('ncName').value.trim();
+                const cnpj = document.getElementById('ncCnpj').value.trim();
+                if (!name) return alert_('compError', 'Nome da empresa é obrigatório');
+                try {
+                    const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
+                    if (error) throw error;
+                    alert_('compSuccess', `Empresa "${escapeHtml(name)}" criada!`, 'success');
+                    document.getElementById('ncName').value = '';
+                    document.getElementById('ncCnpj').value = '';
+                    loadCompanies();
+                } catch (e) {
+                    alert_('compError', e.message);
                 }
-
-                alert_('editUserSuccess', 'Usuário atualizado com sucesso!', 'success');
-                setTimeout(() => {
-                    closeEditUser();
-                    loadUsers();
-                }, 1000);
-            } catch (e) {
-                alert_('editUserError', e.message || 'Erro ao salvar usuário');
             }
-        }
 
-        // ══════════════════════════════════════════════
-        //  EMPRESAS (ADMIN)
-        // ══════════════════════════════════════════════
-        async function loadCompanies() {
-            const el = document.getElementById('companiesBody');
-            try {
-                const { data, error } = await sb.from('companies').select('*').order('id', { ascending: false });
-                if (error) throw error;
-                if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">🏢</div><p>Nenhuma empresa cadastrada</p></div>';
-                    return;
+            async function deleteCompany(id) {
+                if (!confirm('Excluir esta empresa?')) return;
+                try {
+                    const { error } = await sb.from('companies').delete().eq('id', id);
+                    if (error) throw error;
+                    alert_('compSuccess', 'Empresa excluída.', 'success');
+                    loadCompanies();
+                } catch (e) {
+                    alert_('compError', e.message);
                 }
-                el.innerHTML = `<div class="tbl-wrap"><table>
-                    <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
-                    <tbody>
-                        ${data.map(c => `<tr>
-                            <td><strong>${escapeHtml(c.name)}</strong></td>
-                            <td>${escapeHtml(c.cnpj || '-')}</td>
-                            <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
-                            <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button></td>
-                        </tr>`).join('')}
-                    </tbody></table></div>`;
-            } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
-        }
 
-        async function createCompany() {
-            const name = document.getElementById('ncName').value.trim();
-            const cnpj = document.getElementById('ncCnpj').value.trim();
-            if (!name) return alert_('compError', 'Nome da empresa é obrigatório');
-            try {
-                const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
-                if (error) throw error;
-                alert_('compSuccess', `Empresa "${escapeHtml(name)}" criada!`, 'success');
-                document.getElementById('ncName').value = '';
-                document.getElementById('ncCnpj').value = '';
-                loadCompanies();
-            } catch (e) {
-                alert_('compError', e.message);
-            }
-        }
+            // ══════════════════════════════════════════════
+            //  INICIALIZAÇÃO DA SESSÃO (PERSISTÊNCIA NO F5)
+            // ══════════════════════════════════════════════
+            async function initApp() {
+                try {
+                    const { data: { session }, error: sessErr } = await sb.auth.getSession();
+                    if (sessErr || !session || !session.user) {
+                        showScreen('screenLogin');
+                        return;
+                    }
 
-        async function deleteCompany(id) {
-            if (!confirm('Excluir esta empresa?')) return;
-            try {
-                const { error } = await sb.from('companies').delete().eq('id', id);
-                if (error) throw error;
-                alert_('compSuccess', 'Empresa excluída.', 'success');
-                loadCompanies();
-            } catch (e) {
-                alert_('compError', e.message);
-            }
-        }
+                    const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
+                    if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
+                        await sb.auth.signOut();
+                        localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
+                        localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
+                        showScreen('screenLogin');
+                        alert_('loginError', 'Sua sessão expirou por inatividade (3 minutos). Faça login novamente.', 'error');
+                        return;
+                    }
 
-        // ══════════════════════════════════════════════
-        //  INICIALIZAÇÃO DA SESSÃO (PERSISTÊNCIA NO F5)
-        // ══════════════════════════════════════════════
-        async function initApp() {
-            try {
-                const { data: { session }, error: sessErr } = await sb.auth.getSession();
-                if (sessErr || !session || !session.user) {
+                    const { data: profile, error: profErr } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
+                    if (profErr || !profile) {
+                        await sb.auth.signOut();
+                        showScreen('screenLogin');
+                        return;
+                    }
+
+                    const role = profile.role || 'colaborador';
+                    state.user = {
+                        id: session.user.id,
+                        email: session.user.email,
+                        name: profile.name || session.user.email.split('@')[0],
+                        username: profile.username || '',
+                        role: role,
+                        extra_permissions: profile.extra_permissions || []
+                    };
+                    state.token = session.access_token;
+
+                    let companies = [];
+                    if (role === 'admin') {
+                        const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
+                        companies = allComps || [];
+                    } else {
+                        const { data: userComps } = await sb.from('company_users')
+                            .select('companies(*)')
+                            .eq('user_id', session.user.id);
+
+                        companies = (userComps || [])
+                            .map(uc => uc.companies)
+                            .filter(c => c && c.active);
+                    }
+
+                    companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
+                    state.pendingCompanies = companies;
+
+                    if (companies.length === 0) {
+                        await sb.auth.signOut();
+                        showScreen('screenLogin');
+                        alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
+                        return;
+                    }
+
+                    const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
+                    const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
+
+                    if (companies.length === 1) {
+                        state.company = companies[0];
+                        localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
+                        startInactivityMonitor();
+                        buildApp();
+                        showScreen('screenApp');
+                    } else if (matchedCompany) {
+                        state.company = matchedCompany;
+                        startInactivityMonitor();
+                        buildApp();
+                        showScreen('screenApp');
+                    } else {
+                        renderCompanySelectionScreen();
+                        showScreen('screenCompany');
+                    }
+                } catch (e) {
+                    console.error('Erro na inicialização da sessão:', e);
                     showScreen('screenLogin');
-                    return;
                 }
-
-                const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
-                if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
-                    await sb.auth.signOut();
-                    localStorage.removeItem(STORAGE_KEY_LAST_ACTIVITY);
-                    localStorage.removeItem(STORAGE_KEY_COMPANY_ID);
-                    showScreen('screenLogin');
-                    alert_('loginError', 'Sua sessão expirou por inatividade (3 minutos). Faça login novamente.', 'error');
-                    return;
-                }
-
-                const { data: profile, error: profErr } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
-                if (profErr || !profile) {
-                    await sb.auth.signOut();
-                    showScreen('screenLogin');
-                    return;
-                }
-
-                const role = profile.role || 'colaborador';
-                state.user = {
-                    id: session.user.id,
-                    email: session.user.email,
-                    name: profile.name || session.user.email.split('@')[0],
-                    username: profile.username || '',
-                    role: role,
-                    extra_permissions: profile.extra_permissions || []
-                };
-                state.token = session.access_token;
-
-                let companies = [];
-                if (role === 'admin') {
-                    const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
-                    companies = allComps || [];
-                } else {
-                    const { data: userComps } = await sb.from('company_users')
-                        .select('companies(*)')
-                        .eq('user_id', session.user.id);
-
-                    companies = (userComps || [])
-                        .map(uc => uc.companies)
-                        .filter(c => c && c.active);
-                }
-
-                companies = Array.from(new Map(companies.map(c => [c.id, c])).values());
-                state.pendingCompanies = companies;
-
-                if (companies.length === 0) {
-                    await sb.auth.signOut();
-                    showScreen('screenLogin');
-                    alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
-                    return;
-                }
-
-                const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
-                const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
-
-                if (companies.length === 1) {
-                    state.company = companies[0];
-                    localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
-                    startInactivityMonitor();
-                    buildApp();
-                    showScreen('screenApp');
-                } else if (matchedCompany) {
-                    state.company = matchedCompany;
-                    startInactivityMonitor();
-                    buildApp();
-                    showScreen('screenApp');
-                } else {
-                    renderCompanySelectionScreen();
-                    showScreen('screenCompany');
-                }
-            } catch (e) {
-                console.error('Erro na inicialização da sessão:', e);
-                showScreen('screenLogin');
             }
-        }
 
-        initApp();
+            function toggleMobileMenu() {
+                const sidebar = document.querySelector('.sidebar');
+                const menuToggle = document.getElementById('menuToggle');
+                if (sidebar) sidebar.classList.toggle('open');
+                if (menuToggle) menuToggle.classList.toggle('active');
+            }
 
-        function toggleMobileMenu() {
-            const sidebar = document.querySelector('.sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            if (sidebar) sidebar.classList.toggle('open');
-            if (menuToggle) menuToggle.classList.toggle('active');
-        }
+            // Inicia o app automaticamente
+            initApp();
+
+            // ══════════════════════════════════════════════
+            //  DISPATCHER PÚBLICO SEGURO (WINDOW.NutriApp)
+            //  Expõe apenas os gatilhos de clique, mas
+            //  MANTÉM TODAS AS VARIÁVEIS INTERNAS 100% OCULTAS
+            // ══════════════════════════════════════════════
+            window.NutriApp = Object.freeze({
+                doLogin,
+                doLogout,
+                navigateTo,
+                handleCompanyBack,
+                goToSelectCompany,
+                toggleLoginPassword,
+                updatePassStrength,
+                changePassword,
+                selectOption,
+                submitRequest,
+                cancelMyReq,
+                addOptionInput,
+                removeOptionInput,
+                saveMenu,
+                loadMenuNutri,
+                deleteMenu,
+                loadAllRequests,
+                loadStats,
+                clearStatsFilters,
+                exportDashboardPdf,
+                generateReport,
+                exportReportsPdf,
+                addCompanyChip,
+                removeChip,
+                createUser,
+                deleteUser,
+                openEditUser,
+                closeEditUser,
+                addEditCompanyChip,
+                removeEditChip,
+                saveEditUser,
+                createCompany,
+                deleteCompany,
+                toggleMobileMenu
+            });
+
+        })();
     </script>
 </body>
 </html>
