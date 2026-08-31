@@ -142,52 +142,16 @@
             text-decoration: none;
         }
 
-        .btn-full {
-            width: 100%;
-        }
-
-        .btn-primary {
-            background: #1e5f9e;
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: #174682;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: #fff;
-        }
-
-        .btn-success:hover {
-            background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .btn-secondary {
-            background: #edf2f7;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            font-size: 12px;
-            border-radius: 6px;
-        }
+        .btn-full { width: 100%; }
+        .btn-primary { background: #1e5f9e; color: #fff; }
+        .btn-primary:hover { background: #174682; }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-secondary { background: #edf2f7; color: #4a5568; border: 1px solid #e2e8f0; }
+        .btn-secondary:hover { background: #e2e8f0; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
 
         #screenApp {
             height: 100vh;
@@ -245,17 +209,8 @@
             margin: 0 0 6px 0;
         }
 
-        .sidebar-brand p {
-            font-size: 11px;
-            color: #90cdf4;
-            margin-bottom: 2px;
-        }
-
-        .sidebar-brand small {
-            font-size: 10px;
-            color: #63b3ed;
-            font-style: italic;
-        }
+        .sidebar-brand p { font-size: 11px; color: #90cdf4; margin-bottom: 2px; }
+        .sidebar-brand small { font-size: 10px; color: #63b3ed; font-style: italic; }
 
         .sidebar-nav {
             flex: 1;
@@ -264,14 +219,8 @@
             padding: 14px 0;
         }
 
-        .sidebar-nav::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .sidebar-nav::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 4px;
-        }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
 
         .nav-item {
             display: flex;
@@ -285,22 +234,9 @@
             border-left: 3px solid transparent;
         }
 
-        .nav-item:hover {
-            background: rgba(255, 255, 255, .07);
-            color: #fff;
-        }
-
-        .nav-item.active {
-            background: rgba(255, 255, 255, .12);
-            color: #fff;
-            border-left-color: #63b3ed;
-        }
-
-        .nav-icon {
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-        }
+        .nav-item:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+        .nav-item.active { background: rgba(255, 255, 255, .12); color: #fff; border-left-color: #63b3ed; }
+        .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 
         .nav-sep {
             padding: 12px 20px 4px;
@@ -334,9 +270,7 @@
             transition: .2s;
         }
 
-        .sidebar-footer button:hover {
-            background: rgba(255, 255, 255, .15);
-        }
+        .sidebar-footer button:hover { background: rgba(255, 255, 255, .15); }
 
         .main {
             flex: 1;
@@ -349,66 +283,38 @@
             background: #f0f4f8;
         }
 
-        .page {
-            display: none;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding-bottom: 40px;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        .page-header {
-            margin-bottom: 24px;
-        }
-
-        .page-header h1 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a202c;
-        }
-
-        .page-header p {
-            font-size: 13px;
-            color: #718096;
-            margin-top: 3px;
-        }
+        .page { display: none; max-width: 1100px; margin: 0 auto; padding-bottom: 40px; }
+        .page.active { display: block; }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 22px; font-weight: 700; color: #1a202c; }
+        .page-header p { font-size: 13px; color: #718096; margin-top: 3px; }
 
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
 
         .stat-card {
             background: #fff;
-            padding: 18px;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            padding: 18px 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
             border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .stat-card .val {
-            font-size: 30px;
-            font-weight: 700;
-            color: #1e5f9e;
-        }
-
-        .stat-card .lbl {
-            font-size: 11px;
-            color: #a0aec0;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            margin-top: 2px;
-        }
+        .stat-card .val { font-size: 26px; font-weight: 800; color: #1e5f9e; line-height: 1.2; }
+        .stat-card .lbl { font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: .5px; margin-top: 6px; font-weight: 600; }
+        .stat-card .sub { font-size: 11px; color: #a0aec0; margin-top: 2px; }
 
         .section {
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, .06);
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
             border: 1px solid #e2e8f0;
             margin-bottom: 20px;
         }
@@ -419,237 +325,63 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .section-header h2 {
-            font-size: 15px;
-            font-weight: 600;
-            color: #2d3748;
-        }
+        .section-header h2 { font-size: 15px; font-weight: 700; color: #2d3748; }
+        .section-body { padding: 20px; }
 
-        .section-body {
-            padding: 20px;
-        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .tbl-wrap { overflow-x: auto; width: 100%; }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead tr { background: #f7fafc; }
+        th { padding: 11px 14px; text-align: left; font-weight: 600; color: #718096; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+        td { padding: 12px 14px; border-bottom: 1px solid #edf2f7; vertical-align: middle; }
+        tr:hover td { background: #fafbfc; }
 
-        .tbl-wrap {
-            overflow-x: auto;
-            width: 100%;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        thead tr {
-            background: #f7fafc;
-        }
-
-        th {
-            padding: 11px 14px;
-            text-align: left;
-            font-weight: 600;
-            color: #718096;
-            border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 12px 14px;
-            border-bottom: 1px solid #edf2f7;
-            vertical-align: middle;
-        }
-
-        tr:hover td {
-            background: #fafbfc;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
+        .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
         .badge-admin { background: #e9d8fd; color: #553c9a; }
         .badge-nutricionista { background: #c6f6d5; color: #22543d; }
         .badge-colaborador { background: #bee3f8; color: #2a4365; }
         .badge-confirmed { background: #c6f6d5; color: #22543d; }
         .badge-canceled { background: #fed7d7; color: #742a2a; }
 
-        .meal-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
+        .meal-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .meal-pill.cafe_manha { background: #fefce8; color: #854d0e; }
         .meal-pill.almoco { background: #dcfce7; color: #166534; }
         .meal-pill.lanche_tarde { background: #fff7ed; color: #9a3412; }
         .meal-pill.janta { background: #ede9fe; color: #5b21b6; }
         .meal-pill.lanche_noite { background: #e0f2fe; color: #075985; }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 10px;
-            margin: 12px 0;
-        }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 12px 0; }
+        .option-card { padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: .2s; text-align: center; font-size: 13px; font-weight: 600; color: #4a5568; }
+        .option-card:hover { border-color: #1e5f9e; background: #ebf4ff; color: #1e5f9e; }
+        .option-card.selected { border-color: #16a34a; background: #f0fdf4; color: #166534; }
 
-        .option-card {
-            padding: 14px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: .2s;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a5568;
-        }
+        .menu-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+        .menu-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .menu-card-title { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #2d3748; }
 
-        .option-card:hover {
-            border-color: #1e5f9e;
-            background: #ebf4ff;
-            color: #1e5f9e;
-        }
+        .option-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .option-tag { padding: 4px 10px; background: #edf2f7; border-radius: 20px; font-size: 12px; color: #4a5568; }
 
-        .option-card.selected {
-            border-color: #16a34a;
-            background: #f0fdf4;
-            color: #166534;
-        }
+        .options-input-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .option-input-row { display: flex; gap: 8px; align-items: center; }
+        .option-input-row input { flex: 1; padding: 8px 10px; border: 1.5px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
 
-        .menu-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
+        .chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .chip { padding: 4px 10px; background: #ebf4ff; color: #1e5f9e; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .chip-x { cursor: pointer; font-size: 14px; line-height: 1; color: #90cdf4; }
+        .chip-x:hover { color: #1e5f9e; }
 
-        .menu-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
+        .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: none; }
+        .alert-error { background: #fff5f5; border: 1px solid #fed7d7; color: #c53030; }
+        .alert-success { background: #f0fff4; border: 1px solid #c6f6d5; color: #276749; }
 
-        .menu-card-title {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-            color: #2d3748;
-        }
-
-        .option-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .option-tag {
-            padding: 4px 10px;
-            background: #edf2f7;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #4a5568;
-        }
-
-        .options-input-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .option-input-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .option-input-row input {
-            flex: 1;
-            padding: 8px 10px;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-
-        .chip-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 6px;
-        }
-
-        .chip {
-            padding: 4px 10px;
-            background: #ebf4ff;
-            color: #1e5f9e;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .chip-x {
-            cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
-            color: #90cdf4;
-        }
-
-        .chip-x:hover {
-            color: #1e5f9e;
-        }
-
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            display: none;
-        }
-
-        .alert-error {
-            background: #fff5f5;
-            border: 1px solid #fed7d7;
-            color: #c53030;
-        }
-
-        .alert-success {
-            background: #f0fff4;
-            border: 1px solid #c6f6d5;
-            color: #276749;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: #a0aec0;
-        }
-
-        .empty-icon {
-            font-size: 44px;
-            margin-bottom: 10px;
-        }
+        .empty { text-align: center; padding: 40px 20px; color: #a0aec0; }
+        .empty-icon { font-size: 44px; margin-bottom: 10px; }
 
         .modal-backdrop {
             position: fixed !important;
@@ -667,10 +399,7 @@
             box-sizing: border-box;
         }
 
-        .modal-backdrop.open {
-            display: flex !important;
-        }
-
+        .modal-backdrop.open { display: flex !important; }
         .modal-dialog {
             background: #ffffff !important;
             border-radius: 14px !important;
@@ -685,31 +414,9 @@
             margin: auto !important;
         }
 
-        .modal-close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #a0aec0;
-            line-height: 1;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        .pass-strength-bar {
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            margin-top: 6px;
-            overflow: hidden;
-        }
-
-        .pass-strength-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: 4px;
-            transition: width .3s, background-color .3s;
-        }
+        .modal-close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #a0aec0; line-height: 1; padding: 4px 8px; border-radius: 6px; }
+        .pass-strength-bar { height: 6px; background: #e2e8f0; border-radius: 4px; margin-top: 6px; overflow: hidden; }
+        .pass-strength-fill { height: 100%; width: 0%; border-radius: 4px; transition: width .3s, background-color .3s; }
 
         .menu-toggle {
             display: none;
@@ -724,89 +431,31 @@
             z-index: 100000;
         }
 
-        .menu-toggle .bar {
-            width: 100%;
-            height: 3px;
-            background-color: #ffffff;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-        }
+        .menu-toggle .bar { width: 100%; height: 3px; background-color: #ffffff; border-radius: 2px; transition: all 0.3s ease; }
 
         @media (max-width: 768px) {
-            .layout {
-                flex-direction: column !important;
-                height: 100vh !important;
-                width: 100vw !important;
-                overflow: hidden !important;
-            }
+            .layout { flex-direction: column !important; height: 100vh !important; width: 100vw !important; overflow: hidden !important; }
+            .sidebar { width: 100% !important; height: auto !important; position: relative !important; z-index: 500 !important; border-right: none !important; border-bottom: 1px solid rgba(255, 255, 255, .1) !important; }
+            .sidebar-brand { display: block !important; position: relative !important; width: 100% !important; padding: 14px 18px !important; background: #1a365d !important; }
+            .menu-toggle { display: flex !important; }
+            .sidebar .sidebar-nav, .sidebar .sidebar-footer { display: none !important; }
+            .sidebar.open { position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; height: 100dvh !important; background: #1a365d !important; display: flex !important; flex-direction: column !important; z-index: 99999 !important; overflow: hidden !important; }
+            .sidebar.open .sidebar-nav { display: flex !important; flex-direction: column !important; flex: 1 1 auto !important; padding: 16px 0 !important; overflow-y: auto !important; }
+            .sidebar.open .sidebar-footer { display: flex !important; flex-direction: column !important; padding: 16px 20px !important; background: #152d4f !important; }
+            .form-row { grid-template-columns: 1fr !important; }
+            .stats-grid { grid-template-columns: 1fr !important; }
+            .main { padding: 16px !important; height: calc(100vh - 65px) !important; }
+        }
 
-            .sidebar {
-                width: 100% !important;
-                height: auto !important;
-                position: relative !important;
-                z-index: 500 !important;
-                border-right: none !important;
-                border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
-            }
-
-            .sidebar-brand {
-                display: block !important;
-                position: relative !important;
-                width: 100% !important;
-                padding: 14px 18px !important;
-                background: #1a365d !important;
-            }
-
-            .menu-toggle {
-                display: flex !important;
-            }
-
-            .sidebar .sidebar-nav,
-            .sidebar .sidebar-footer {
-                display: none !important;
-            }
-
-            .sidebar.open {
-                position: fixed !important;
-                top: 0 !important;
-                left: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                height: 100dvh !important;
-                background: #1a365d !important;
-                display: flex !important;
-                flex-direction: column !important;
-                z-index: 99999 !important;
-                overflow: hidden !important;
-            }
-
-            .sidebar.open .sidebar-nav {
-                display: flex !important;
-                flex-direction: column !important;
-                flex: 1 1 auto !important;
-                padding: 16px 0 !important;
-                overflow-y: auto !important;
-            }
-
-            .sidebar.open .sidebar-footer {
-                display: flex !important;
-                flex-direction: column !important;
-                padding: 16px 20px !important;
-                background: #152d4f !important;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr !important;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr !important;
-            }
-
-            .main {
-                padding: 16px !important;
-                height: calc(100vh - 65px) !important;
-            }
+        /* ── ESTILOS EXCLUSIVOS DE IMPRESSÃO / RELATÓRIO PDF ── */
+        @media print {
+            body { background: #ffffff !important; overflow: visible !important; }
+            .sidebar, .menu-toggle, #btnExportPdf, .section-header form, .btn, .nav-item { display: none !important; }
+            .main { padding: 0 !important; height: auto !important; overflow: visible !important; }
+            .section { box-shadow: none !important; border: 1px solid #cbd5e1 !important; page-break-inside: avoid; }
+            .stat-card { border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+            .page { display: block !important; max-width: 100% !important; padding: 0 !important; }
+            #screenApp, .layout { height: auto !important; overflow: visible !important; display: block !important; }
         }
     </style>
 </head>
@@ -1041,24 +690,64 @@
                     </div>
                 </div>
 
-                <!-- PAGE: Estatísticas (nutri) -->
+                <!-- PAGE: Dashboard Estatístico (nutri/admin) -->
                 <div class="page" id="pageStats">
-                    <div class="page-header">
-                        <h1>📈 Estatísticas</h1>
-                        <p>Resumo de refeições por opção</p>
+                    <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                        <div>
+                            <h1>📈 Dashboard de Estatísticas</h1>
+                            <p>Análise de demandas de refeições, pratos preferidos e relatórios</p>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnExportPdf" onclick="exportStatsPdf()">
+                            📥 Baixar Relatório em PDF
+                        </button>
                     </div>
+
+                    <!-- Indicadores Chave (KPIs) -->
+                    <div class="stats-grid" id="statsKpis">
+                        <div class="stat-card">
+                            <div class="val" id="kpiTotalReqs">0</div>
+                            <div class="lbl">Refeições Pedidas</div>
+                            <div class="sub">Total no período</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="val" id="kpiTopMeal" style="font-size:18px;color:#16a34a">-</div>
+                            <div class="lbl">Refeição Mais Pedida</div>
+                            <div class="sub">Horário de maior pico</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="val" id="kpiTopOption" style="font-size:16px;color:#553c9a">-</div>
+                            <div class="lbl">Prato Campeão</div>
+                            <div class="sub">Opção com mais escolhas</div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros do Dashboard -->
                     <div class="section">
                         <div class="section-header">
-                            <h2>Filtrar por data</h2>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <input type="date" id="statsDate" onchange="loadStats()">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('statsDate').value='';loadStats()">Todas</button>
+                            <h2>Filtrar Dados</h2>
+                            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <label style="font-size:12px;color:#718096;font-weight:600">Data:</label>
+                                    <input type="date" id="statsDate" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <label style="font-size:12px;color:#718096;font-weight:600">Tipo:</label>
+                                    <select id="statsMealType" onchange="loadStats()" style="padding:6px 10px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:12px">
+                                        <option value="">Todas</option>
+                                        <option value="cafe_manha">☕ Café da manhã</option>
+                                        <option value="almoco">🍛 Almoço</option>
+                                        <option value="lanche_tarde">🥪 Lanche da tarde</option>
+                                        <option value="janta">🍽️ Jantar</option>
+                                        <option value="lanche_noite">🌙 Lanche da noite</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="clearStatsFilters()">Limpar Filtros</button>
                             </div>
                         </div>
                         <div class="section-body" id="statsBody">
                             <div class="empty">
                                 <div class="empty-icon">📊</div>
-                                <p>Carregando...</p>
+                                <p>Carregando estatísticas...</p>
                             </div>
                         </div>
                     </div>
@@ -2039,56 +1728,104 @@
         }
 
         // ══════════════════════════════════════════════
-        //  ESTATÍSTICAS (NUTRI)
+        //  DASHBOARD DE ESTATÍSTICAS E RELATÓRIOS
         // ══════════════════════════════════════════════
+        let currentStatsData = [];
+
+        function clearStatsFilters() {
+            document.getElementById('statsDate').value = '';
+            document.getElementById('statsMealType').value = '';
+            loadStats();
+        }
+
         async function loadStats() {
             const el = document.getElementById('statsBody');
             const date = document.getElementById('statsDate').value;
+            const mealType = document.getElementById('statsMealType').value;
+
             try {
                 let query = sb.from('meal_requests')
                     .select('menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
                     .eq('menus.company_id', state.company.id);
 
                 if (date) query = query.eq('menus.meal_date', date);
+                if (mealType) query = query.eq('menus.meal_type', mealType);
 
                 const { data, error } = await query;
                 if (error) throw error;
 
+                currentStatsData = data || [];
+
                 if (!data || !data.length) {
-                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado disponível</p></div>';
+                    document.getElementById('kpiTotalReqs').textContent = '0';
+                    document.getElementById('kpiTopMeal').textContent = '—';
+                    document.getElementById('kpiTopOption').textContent = '—';
+                    el.innerHTML = '<div class="empty"><div class="empty-icon">📊</div><p>Nenhum dado encontrado para o filtro selecionado.</p></div>';
                     return;
                 }
 
+                // Cálculo dos KPIs
+                const totalReqs = data.length;
+                document.getElementById('kpiTotalReqs').textContent = totalReqs;
+
+                const mealTypeCounts = {};
+                const optionCounts = {};
                 const groups = {};
+
                 data.forEach(r => {
+                    // Contagem por refeição
+                    mealTypeCounts[r.menus.meal_type] = (mealTypeCounts[r.menus.meal_type] || 0) + 1;
+
+                    // Contagem por prato
+                    const optDesc = r.menu_options?.description || 'Opção Geral';
+                    optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
+
+                    // Agrupamento por Cardápio (Data + Refeição)
                     const key = `${r.menus.meal_date}_${r.menus.meal_type}`;
-                    if (!groups[key]) groups[key] = { meal_date: r.menus.meal_date, meal_type: r.menus.meal_type, meal_time: r.menus.meal_time, counts: {} };
-                    const opt = r.menu_options?.description || 'Opção';
-                    groups[key].counts[opt] = (groups[key].counts[opt] || 0) + 1;
+                    if (!groups[key]) {
+                        groups[key] = {
+                            meal_date: r.menus.meal_date,
+                            meal_type: r.menus.meal_type,
+                            meal_time: r.menus.meal_time,
+                            counts: {}
+                        };
+                    }
+                    groups[key].counts[optDesc] = (groups[key].counts[optDesc] || 0) + 1;
                 });
 
+                // Top Meal Type
+                const topMeal = Object.entries(mealTypeCounts).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('kpiTopMeal').textContent = topMeal ? `${MEAL_LABELS[topMeal[0]] || topMeal[0]} (${topMeal[1]})` : '—';
+
+                // Top Option
+                const topOption = Object.entries(optionCounts).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('kpiTopOption').textContent = topOption ? `${topOption[0]} (${topOption[1]})` : '—';
+
+                // Renderização dos Grupos
                 el.innerHTML = Object.values(groups).map(g => {
-                    const total = Object.values(g.counts).reduce((a, b) => a + b, 0);
+                    const totalCardapio = Object.values(g.counts).reduce((a, b) => a + b, 0);
                     return `
-                        <div class="menu-card">
-                            <div class="menu-card-header">
+                        <div class="menu-card" style="background:#fafbfc;border:1px solid #e2e8f0;margin-bottom:18px;padding:20px;border-radius:12px">
+                            <div class="menu-card-header" style="border-bottom:1px solid #e2e8f0;padding-bottom:12px;margin-bottom:14px">
                                 <div class="menu-card-title">
                                     <span class="meal-pill ${escapeHtml(g.meal_type)}">${escapeHtml(MEAL_LABELS[g.meal_type] || g.meal_type)}</span>
-                                    <span>${escapeHtml(fmtDate(g.meal_date))} (${escapeHtml(g.meal_time)})</span>
+                                    <span style="font-size:14px;font-weight:700;color:#2d3748">${escapeHtml(fmtDate(g.meal_date))} às ${escapeHtml(g.meal_time)}</span>
                                 </div>
-                                <strong>Total: ${total} refeição(ões)</strong>
+                                <span class="badge" style="background:#ebf4ff;color:#1e5f9e;font-size:13px;padding:5px 12px">
+                                    Total: <strong>${totalCardapio}</strong> pedido(s)
+                                </span>
                             </div>
-                            <div style="margin-top:10px">
+                            <div>
                                 ${Object.entries(g.counts).map(([opt, count]) => {
-                        const pct = total ? Math.round((count / total) * 100) : 0;
+                        const pct = totalCardapio ? Math.round((count / totalCardapio) * 100) : 0;
                         return `
-                                        <div style="margin-bottom:8px">
-                                            <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
-                                                <span>${escapeHtml(opt)}</span>
-                                                <strong>${count} (${pct}%)</strong>
+                                        <div style="margin-bottom:12px">
+                                            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px">
+                                                <span style="color:#4a5568">🍽️ ${escapeHtml(opt)}</span>
+                                                <span style="color:#1e5f9e">${count} pedidos (${pct}%)</span>
                                             </div>
-                                            <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
-                                                <div style="background:#1e5f9e;width:${pct}%;height:8px;border-radius:4px;transition:.4s"></div>
+                                            <div style="background:#e2e8f0;border-radius:6px;height:9px;overflow:hidden">
+                                                <div style="background:linear-gradient(90deg, #1e5f9e, #3b82f6);width:${pct}%;height:9px;border-radius:6px;transition:width .4s ease"></div>
                                             </div>
                                         </div>
                                     `;
@@ -2098,8 +1835,17 @@
                     `;
                 }).join('');
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar estatísticas: ${escapeHtml(e.message)}</div>`;
             }
+        }
+
+        // Exportação do Relatório Estatístico em PDF
+        function exportStatsPdf() {
+            if (!currentStatsData || !currentStatsData.length) {
+                alert('Não há dados estatísticos disponíveis para exportar no filtro atual.');
+                return;
+            }
+            window.print();
         }
 
         // ══════════════════════════════════════════════
