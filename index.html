@@ -1756,8 +1756,6 @@
             // ══════════════════════════════════════════════
             //  SOLICITAR REFEIÇÃO (ANTI-XSS & PREVENÇÃO 24H)
             // ══════════════════════════════════════════════
-            let selectedOptions = {};
-
             async function loadRequestPage() {
                 const el = document.getElementById('requestMenuList');
                 el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Carregando refeições...</p></div>';
@@ -1782,58 +1780,74 @@
 
                     el.innerHTML = available.map(m => {
                         const already = requestedMenuIds.has(m.id);
+                        const hasOptions = m.options && m.options.length > 0;
                         return `
                             <div class="section" id="menuSection${m.id}">
                                 <div class="section-header">
-                                <div>
-                                    <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                    <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</strong>
-                                </div>
-                                ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
-                            </div>
-                            <div class="section-body">
-                                ${already ? '<p style="color:#718096;font-size:13px">Você já solicitou esta refeição. Acesse "Minhas solicitações" para acompanhar.</p>' : `
-                                    <p style="font-size:13px;color:#718096;margin-bottom:8px">Escolha uma opção:</p>
-                                    <div class="options-grid">
-                                        ${(m.options || []).map(o => `
-                                            <div class="option-card" id="opt_${m.id}_${o.id}" onclick="window.NutriApp.selectOption(${m.id}, ${o.id})">
-                                                ${escapeHtml(o.description)}
-                                            </div>
-                                        `).join('')}
+                                    <div>
+                                        <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                        <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</strong>
                                     </div>
-                                    <button type="button" class="btn btn-primary btn-sm" onclick="window.NutriApp.submitRequest(${m.id})">Confirmar solicitação</button>
-                                `}
+                                    ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
+                                </div>
+                                <div class="section-body">
+                                    <div style="background:var(--surface-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px">
+                                        <div style="font-size:11.5px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px">
+                                            🍽️ Composição do Cardápio / Itens Inclusos:
+                                        </div>
+                                        <div class="option-tags" style="display:flex;flex-wrap:wrap;gap:8px">
+                                            ${hasOptions
+                                                ? m.options.map(o => `<span class="option-tag" style="background:var(--surface);border:1.5px solid var(--border);padding:6px 14px;font-size:13px;font-weight:600;color:var(--text-primary);border-radius:20px;box-shadow:var(--shadow-xs);">✨ ${escapeHtml(o.description)}</span>`).join('')
+                                                : '<span style="font-size:12.5px;color:var(--text-muted);font-style:italic">Cardápio completo padrão do serviço</span>'
+                                            }
+                                        </div>
+                                    </div>
+                                    ${already ? `
+                                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                                            <p style="color:var(--brand);font-weight:600;font-size:13px;margin:0">✅ Sua refeição para este serviço já está confirmada.</p>
+                                            <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.navigateTo('pageMyReqs')">Ver em Minhas Solicitações</button>
+                                        </div>
+                                    ` : `
+                                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                                            <span style="font-size:12.5px;color:var(--text-secondary)">A solicitação registrará seu pedido para o cardápio completo desta refeição.</span>
+                                            <button type="button" class="btn btn-primary" onclick="window.NutriApp.submitRequest(${m.id})">
+                                                🍽️ Solicitar esta refeição
+                                            </button>
+                                        </div>
+                                    `}
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
                     }).join('');
                 } catch (e) {
                     el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
                 }
             }
 
-            function selectOption(menuId, optionId) {
-                selectedOptions[menuId] = optionId;
-                document.querySelectorAll(`[id^="opt_${menuId}_"]`).forEach(el => el.classList.remove('selected'));
-                const optEl = document.getElementById(`opt_${menuId}_${optionId}`);
-                if (optEl) optEl.classList.add('selected');
-            }
-
             async function submitRequest(menuId) {
-                const optionId = selectedOptions[menuId];
-                if (!optionId) return alert_('reqError', 'Selecione uma opção antes de confirmar');
                 try {
-                    const { error } = await sb.from('meal_requests').insert({
+                    // Busca opção de referência caso a tabela possua foreign key option_id
+                    const { data: menuOpt } = await sb.from('menu_options')
+                        .select('id')
+                        .eq('menu_id', menuId)
+                        .limit(1)
+                        .maybeSingle();
+
+                    const insertPayload = {
                         user_id: state.user.id,
-                        menu_id: menuId,
-                        option_id: optionId
-                    });
+                        menu_id: menuId
+                    };
+                    if (menuOpt && menuOpt.id) {
+                        insertPayload.option_id = menuOpt.id;
+                    }
+
+                    const { error } = await sb.from('meal_requests').insert(insertPayload);
                     if (error) throw error;
-                    alert_('reqSuccess', 'Solicitação enviada com sucesso!', 'success');
-                    delete selectedOptions[menuId];
-                    setTimeout(() => loadRequestPage(), 1200);
+
+                    alert_('reqSuccess', 'Refeição solicitada com sucesso!', 'success');
+                    setTimeout(() => loadRequestPage(), 800);
                 } catch (e) {
-                    alert_('reqError', e.message);
+                    alert_('reqError', e.message || 'Erro ao registrar solicitação');
                 }
             }
 
@@ -1844,7 +1858,7 @@
                 const el = document.getElementById('myReqsBody');
                 try {
                     const { data, error } = await sb.from('meal_requests')
-                        .select('id, menu:menus(*), option:menu_options(*)')
+                        .select('id, menu:menus(*, options:menu_options(*)), option:menu_options(*)')
                         .eq('user_id', state.user.id)
                         .order('id', { ascending: false });
 
@@ -1856,16 +1870,20 @@
                     }
 
                     el.innerHTML = `<div class="tbl-wrap"><table>
-                        <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção escolhida</th><th>Ação</th></tr></thead>
+                        <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Itens do Cardápio</th><th>Ação</th></tr></thead>
                         <tbody>
                             ${data.map(r => {
                         const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
                         const canCancel = hrs >= 24;
+                        const itemsSummary = (r.menu?.options && r.menu.options.length)
+                            ? r.menu.options.map(o => escapeHtml(o.description)).join(', ')
+                            : (r.option?.description ? escapeHtml(r.option.description) : 'Cardápio Completo');
+
                         return `<tr>
                                     <td><strong>${r.menu ? escapeHtml(fmtDate(r.menu.meal_date)) : '-'}</strong></td>
                                     <td><span class="meal-pill ${escapeHtml(r.menu?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menu?.meal_type] || '-')}</span></td>
                                     <td>${escapeHtml(r.menu?.meal_time || '-')}</td>
-                                    <td>${escapeHtml(r.option?.description || '-')}</td>
+                                    <td><span style="font-size:12.5px;color:var(--text-secondary)">${itemsSummary}</span></td>
                                     <td>${canCancel
                                 ? `<button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.cancelMyReq(${r.id})">Cancelar</button>`
                                 : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado (&lt;24h)</span>`}
@@ -2069,7 +2087,7 @@
                     });
 
                     let query = sb.from('meal_requests')
-                        .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                        .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time, options:menu_options(*)), menu_options(description)')
                         .eq('menus.company_id', state.company.id)
                         .order('id', { ascending: false });
 
@@ -2090,15 +2108,21 @@
                     const profilesMap = Object.fromEntries((profilesData || []).map(p => [p.id, p.name]));
 
                     el.innerHTML = `<div class="tbl-wrap"><table>
-                        <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
+                        <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Itens do Cardápio</th><th>Status</th></tr></thead>
                         <tbody>
-                            ${data.map(r => `<tr>
-                                <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
-                                <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
-                                <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
-                                <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
-                                <td>${escapeHtml(r.menu_options?.description || '-')}</td>
-                            </tr>`).join('')}
+                            ${data.map(r => {
+                                const itemsSummary = (r.menus?.options && r.menus.options.length)
+                                    ? r.menus.options.map(o => escapeHtml(o.description)).join(', ')
+                                    : (r.menu_options?.description ? escapeHtml(r.menu_options.description) : 'Cardápio Completo');
+                                return `<tr>
+                                    <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
+                                    <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
+                                    <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
+                                    <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                                    <td><span style="font-size:12.5px;color:var(--text-secondary)">${itemsSummary}</span></td>
+                                    <td><span class="badge badge-confirmed">Confirmado ✅</span></td>
+                                </tr>`;
+                            }).join('')}
                         </tbody></table></div>`;
                 } catch (e) {
                     el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
@@ -3166,7 +3190,6 @@
                 toggleLoginPassword,
                 updatePassStrength,
                 changePassword,
-                selectOption,
                 submitRequest,
                 cancelMyReq,
                 addOptionInput,
