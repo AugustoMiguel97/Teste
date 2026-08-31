@@ -2378,8 +2378,13 @@
 
             async function loadUsers() {
                 try {
+                    const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
+
                     const { data: comps } = await sb.from('companies').select('*').order('id');
-                    allCompanies = comps || [];
+                    
+                    // Se não for admin, só permite vincular nas empresas que ele mesmo pertence
+                    allCompanies = isCurrentSuperAdmin ? (comps || []) : (state.pendingCompanies || []);
+                    
                     const sel = document.getElementById('nuCompanySelect');
                     if (sel) {
                         sel.innerHTML = '<option value="">Selecione para adicionar...</option>';
@@ -2390,9 +2395,11 @@
                         });
                     }
 
-                    const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
                     const optNuAdmin = document.getElementById('optNuRoleAdmin');
-                    if (optNuAdmin) optNuAdmin.disabled = !isCurrentSuperAdmin;
+                    if (optNuAdmin) {
+                        optNuAdmin.disabled = !isCurrentSuperAdmin;
+                        optNuAdmin.style.display = isCurrentSuperAdmin ? '' : 'none';
+                    }
 
                     const { data: users, error: uErr } = await sb.from('profiles').select('*').order('name');
                     if (uErr) throw uErr;
@@ -2402,7 +2409,7 @@
                     const userCompsMap = {};
                     (compUsers || []).forEach(cu => {
                         if (!userCompsMap[cu.user_id]) userCompsMap[cu.user_id] = [];
-                        const foundComp = allCompanies.find(c => String(c.id) === String(cu.company_id));
+                        const foundComp = (comps || []).find(c => String(c.id) === String(cu.company_id));
                         userCompsMap[cu.user_id].push({
                             company_id: cu.company_id,
                             companies: foundComp || { id: cu.company_id, name: 'Empresa ' + cu.company_id }
@@ -2415,8 +2422,19 @@
                         usersMap[u.id] = u;
                     });
 
+                    // FILTRAGEM: Usuários não-administradores NUNCA veem o administrador e só veem usuários da sua própria unidade
+                    let visibleUsers = users || [];
+                    if (!isCurrentSuperAdmin) {
+                        visibleUsers = visibleUsers.filter(u => u.role !== 'admin' && u.email !== 'admin@hospital.com');
+                        const myCompIds = new Set((state.pendingCompanies || []).map(c => String(c.id)));
+                        visibleUsers = visibleUsers.filter(u => {
+                            const uComps = userCompsMap[u.id] || [];
+                            return uComps.some(cu => myCompIds.has(String(cu.company_id)));
+                        });
+                    }
+
                     const el = document.getElementById('usersBody');
-                    if (!users || !users.length) {
+                    if (!visibleUsers || !visibleUsers.length) {
                         el.innerHTML = '<div class="empty"><div class="empty-icon">👥</div><p>Nenhum usuário cadastrado</p></div>';
                         return;
                     }
@@ -2424,7 +2442,7 @@
                     el.innerHTML = `<div class="tbl-wrap"><table>
                         <thead><tr><th>Nome</th><th>Usuário</th><th>Email</th><th>Tipo</th><th>Permissões</th><th>Empresas</th><th>Status</th><th>Ações</th></tr></thead>
                         <tbody>
-                            ${users.map(u => {
+                            ${visibleUsers.map(u => {
                         const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
                         const perms = u.extra_permissions || [];
                         const permBadges = perms.length
@@ -2586,7 +2604,10 @@
                 document.getElementById('editUserUsername').value = u.username || '';
 
                 const optAdmin = document.getElementById('optEditRoleAdmin');
-                if (optAdmin) optAdmin.disabled = !isCurrentSuperAdmin;
+                if (optAdmin) {
+                    optAdmin.disabled = !isCurrentSuperAdmin;
+                    optAdmin.style.display = isCurrentSuperAdmin ? '' : 'none';
+                }
 
                 const perms = u.extra_permissions || [];
                 document.getElementById('editPermCriarUsuario').checked = Array.isArray(perms) && perms.includes('criar_usuario');
