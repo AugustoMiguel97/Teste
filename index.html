@@ -23,7 +23,6 @@
             background: #f0f4f8;
             color: #1a202c;
             overflow: hidden;
-            /* Scroll tratado dentro das áreas específicas */
         }
 
         .screen {
@@ -48,7 +47,6 @@
             box-sizing: border-box;
         }
 
-        /* ── LOGIN / SELECT-COMPANY ── */
         .auth-card {
             background: #fff;
             padding: 40px;
@@ -129,7 +127,6 @@
             color: #1e5f9e;
         }
 
-        /* ── BUTTONS ── */
         .btn {
             padding: 10px 18px;
             border: none;
@@ -192,7 +189,6 @@
             border-radius: 6px;
         }
 
-        /* ── LAYOUT FIXO COM SCROLL INDEPENDENTE NO CONTEÚDO ── */
         #screenApp {
             height: 100vh;
             width: 100vw;
@@ -226,7 +222,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* A sidebar em si NUNCA rola para fora */
             border-right: 1px solid rgba(255, 255, 255, .08);
             position: relative;
             z-index: 100;
@@ -265,7 +260,6 @@
         .sidebar-nav {
             flex: 1;
             overflow-y: auto;
-            /* Apenas os itens de menu rolam se houver muitos */
             overflow-x: hidden;
             padding: 14px 0;
         }
@@ -322,7 +316,6 @@
             border-top: 1px solid rgba(255, 255, 255, .1);
             background: #152d4f;
             flex-shrink: 0;
-            /* FIXO NO RODAPÉ: Nunca se move */
             margin-top: auto;
             display: flex;
             flex-direction: column;
@@ -350,14 +343,12 @@
             height: 100vh;
             max-height: 100vh;
             overflow-y: auto;
-            /* Apenas o container principal rola */
             overflow-x: hidden;
             padding: 28px 36px;
             box-sizing: border-box;
             background: #f0f4f8;
         }
 
-        /* ── PAGES ── */
         .page {
             display: none;
             max-width: 1100px;
@@ -385,7 +376,6 @@
             margin-top: 3px;
         }
 
-        /* ── CARDS & STATS ── */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -415,7 +405,6 @@
             margin-top: 2px;
         }
 
-        /* ── SECTION ── */
         .section {
             background: #fff;
             border-radius: 10px;
@@ -442,22 +431,12 @@
             padding: 20px;
         }
 
-        /* ── FORM ── */
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 14px;
         }
 
-        .form-row.cols3 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        .form-row.col1 {
-            grid-template-columns: 1fr;
-        }
-
-        /* ── TABLE ── */
         .tbl-wrap {
             overflow-x: auto;
             width: 100%;
@@ -488,15 +467,10 @@
             vertical-align: middle;
         }
 
-        tr:last-child td {
-            border-bottom: none;
-        }
-
         tr:hover td {
             background: #fafbfc;
         }
 
-        /* ── BADGE ── */
         .badge {
             display: inline-block;
             padding: 3px 9px;
@@ -506,32 +480,12 @@
             white-space: nowrap;
         }
 
-        .badge-admin {
-            background: #e9d8fd;
-            color: #553c9a;
-        }
+        .badge-admin { background: #e9d8fd; color: #553c9a; }
+        .badge-nutricionista { background: #c6f6d5; color: #22543d; }
+        .badge-colaborador { background: #bee3f8; color: #2a4365; }
+        .badge-confirmed { background: #c6f6d5; color: #22543d; }
+        .badge-canceled { background: #fed7d7; color: #742a2a; }
 
-        .badge-nutricionista {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .badge-colaborador {
-            background: #bee3f8;
-            color: #2a4365;
-        }
-
-        .badge-confirmed {
-            background: #c6f6d5;
-            color: #22543d;
-        }
-
-        .badge-canceled {
-            background: #fed7d7;
-            color: #742a2a;
-        }
-
-        /* ── MEAL TYPE PILL ── */
         .meal-pill {
             display: inline-flex;
             align-items: center;
@@ -542,32 +496,12 @@
             font-weight: 600;
         }
 
-        .meal-pill.cafe_manha {
-            background: #fefce8;
-            color: #854d0e;
-        }
+        .meal-pill.cafe_manha { background: #fefce8; color: #854d0e; }
+        .meal-pill.almoco { background: #dcfce7; color: #166534; }
+        .meal-pill.lanche_tarde { background: #fff7ed; color: #9a3412; }
+        .meal-pill.janta { background: #ede9fe; color: #5b21b6; }
+        .meal-pill.lanche_noite { background: #e0f2fe; color: #075985; }
 
-        .meal-pill.almoco {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .meal-pill.lanche_tarde {
-            background: #fff7ed;
-            color: #9a3412;
-        }
-
-        .meal-pill.janta {
-            background: #ede9fe;
-            color: #5b21b6;
-        }
-
-        .meal-pill.lanche_noite {
-            background: #e0f2fe;
-            color: #075985;
-        }
-
-        /* ── MEAL OPTION CARDS ── */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -599,7 +533,6 @@
             color: #166534;
         }
 
-        /* ── MENU ITEMS ── */
         .menu-card {
             border: 1px solid #e2e8f0;
             border-radius: 10px;
@@ -636,7 +569,6 @@
             color: #4a5568;
         }
 
-        /* ── OPTIONS INPUT ── */
         .options-input-list {
             display: flex;
             flex-direction: column;
@@ -658,7 +590,6 @@
             font-size: 13px;
         }
 
-        /* ── COMPANY CHIPS ── */
         .chip-list {
             display: flex;
             flex-wrap: wrap;
@@ -689,7 +620,6 @@
             color: #1e5f9e;
         }
 
-        /* ── ALERT ── */
         .alert {
             padding: 12px 16px;
             border-radius: 8px;
@@ -710,7 +640,6 @@
             color: #276749;
         }
 
-        /* ── EMPTY ── */
         .empty {
             text-align: center;
             padding: 40px 20px;
@@ -722,7 +651,6 @@
             margin-bottom: 10px;
         }
 
-        /* ── MODAL DE EDIÇÃO DE USUÁRIO (100% BLINDADO E COM SCROLL PRÓPRIO) ── */
         .modal-backdrop {
             position: fixed !important;
             top: 0 !important;
@@ -731,7 +659,6 @@
             height: 100vh !important;
             background: rgba(15, 23, 42, 0.7) !important;
             backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
             z-index: 999999 !important;
             display: none;
             align-items: center;
@@ -753,7 +680,6 @@
             max-height: 90vh !important;
             overflow-y: auto !important;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
-            position: relative !important;
             border: 1px solid #e2e8f0 !important;
             box-sizing: border-box !important;
             margin: auto !important;
@@ -768,17 +694,6 @@
             line-height: 1;
             padding: 4px 8px;
             border-radius: 6px;
-        }
-
-        .modal-close-btn:hover {
-            color: #4a5568;
-            background: #f7fafc;
-        }
-
-        /* ── CHANGE PASSWORD PAGE ── */
-        .change-pass-card {
-            max-width: 480px;
-            margin: 0 auto;
         }
 
         .pass-strength-bar {
@@ -796,40 +711,6 @@
             transition: width .3s, background-color .3s;
         }
 
-        /* ── PULL TO REFRESH ── */
-        #pullToRefreshIndicator {
-            position: fixed;
-            top: -70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #1a365d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 16px rgba(0,0,0,.25);
-            transition: top 0.2s ease, opacity 0.2s ease;
-            z-index: 999999;
-            opacity: 0;
-            font-size: 20px;
-        }
-
-        #pullToRefreshIndicator.visible {
-            opacity: 1;
-        }
-
-        #pullToRefreshIndicator.releasing {
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: translateX(-50%) rotate(0deg); }
-            to   { transform: translateX(-50%) rotate(360deg); }
-        }
-
-        /* ── RESPONSIVE & MOBILE MENU ── */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -851,38 +732,21 @@
             transition: all 0.3s ease;
         }
 
-        .menu-toggle.active .bar:nth-child(1) {
-            transform: translateY(8px) rotate(45deg);
-        }
-
-        .menu-toggle.active .bar:nth-child(2) {
-            opacity: 0;
-        }
-
-        .menu-toggle.active .bar:nth-child(3) {
-            transform: translateY(-8px) rotate(-45deg);
-        }
-
         @media (max-width: 768px) {
             .layout {
                 flex-direction: column !important;
                 height: 100vh !important;
                 width: 100vw !important;
                 overflow: hidden !important;
-                position: relative !important;
             }
 
             .sidebar {
                 width: 100% !important;
                 height: auto !important;
-                max-height: none !important;
-                flex-direction: column !important;
-                flex-shrink: 0 !important;
                 position: relative !important;
                 z-index: 500 !important;
                 border-right: none !important;
                 border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
-                overflow: visible !important;
             }
 
             .sidebar-brand {
@@ -891,11 +755,6 @@
                 width: 100% !important;
                 padding: 14px 18px !important;
                 background: #1a365d !important;
-            }
-
-            .sidebar-brand .sidebar-logo {
-                max-width: 130px !important;
-                height: 30px !important;
             }
 
             .menu-toggle {
@@ -907,25 +766,18 @@
                 display: none !important;
             }
 
-            /* Quando aberto: gaveta em tela cheia – usa dvh para celulares reais */
             .sidebar.open {
                 position: fixed !important;
                 top: 0 !important;
                 left: 0 !important;
                 width: 100vw !important;
-                /* fallback para navegadores sem suporte a dvh */
                 height: 100vh !important;
                 height: 100dvh !important;
-                min-height: 100vh !important;
-                min-height: 100dvh !important;
                 background: #1a365d !important;
                 display: flex !important;
                 flex-direction: column !important;
                 z-index: 99999 !important;
                 overflow: hidden !important;
-                /* Evita que a barra de endereços/navegação do celular corte o conteúdo */
-                padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-                box-sizing: border-box !important;
             }
 
             .sidebar.open .sidebar-nav {
@@ -934,29 +786,16 @@
                 flex: 1 1 auto !important;
                 padding: 16px 0 !important;
                 overflow-y: auto !important;
-                -webkit-overflow-scrolling: touch !important;
-                /* Garante que o footer nunca empurre o nav para fora */
-                min-height: 0 !important;
-            }
-
-            .sidebar.open .sidebar-nav .nav-item {
-                padding: 14px 22px !important;
-                font-size: 15px !important;
             }
 
             .sidebar.open .sidebar-footer {
                 display: flex !important;
                 flex-direction: column !important;
                 padding: 16px 20px !important;
-                /* margem de segurança para botões de home iOS */
-                padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
                 background: #152d4f !important;
-                flex-shrink: 0 !important;
-                gap: 8px !important;
             }
 
-            .form-row,
-            .form-row.cols3 {
+            .form-row {
                 grid-template-columns: 1fr !important;
             }
 
@@ -966,10 +805,7 @@
 
             .main {
                 padding: 16px !important;
-                flex: 1 !important;
                 height: calc(100vh - 65px) !important;
-                overflow-y: auto !important;
-                -webkit-overflow-scrolling: touch !important;
             }
         }
     </style>
@@ -981,12 +817,11 @@
     <div id="screenLogin" class="screen auth-wrap active">
         <div class="auth-card">
             <div style="text-align:center;margin-bottom:12px">
-                <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true?raw=true?raw=true?raw=true"
+                <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true"
                     alt="NutriStaff"
                     style="max-width:240px;width:100%;height:auto;display:block;margin:0 auto;border-radius:6px">
             </div>
-            <p style="margin-bottom:20px;font-size:13px;color:#718096;text-align:center">Sistema de refeições
-                hospitalares</p>
+            <p style="margin-bottom:20px;font-size:13px;color:#718096;text-align:center">Sistema de refeições hospitalares</p>
             <div class="alert alert-error" id="loginError"></div>
             <div class="form-group">
                 <label>Email ou Usuário</label>
@@ -997,16 +832,13 @@
                     onkeydown="if(event.key==='Enter')doLogin()">
             </div>
             <div style="display:flex;align-items:center;margin-top:-8px;margin-bottom:18px">
-                <label
-                    style="display:flex;align-items:center;gap:7px;font-size:13px;color:#4a5568;cursor:pointer;user-select:none;font-weight:400">
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#4a5568;cursor:pointer;user-select:none;font-weight:400">
                     <input type="checkbox" id="chkShowLoginPass" onchange="toggleLoginPassword(this.checked)"
                         style="width:15px;height:15px;accent-color:#1e5f9e;cursor:pointer">
                     <span>Mostrar senha</span>
                 </label>
             </div>
             <button type="button" class="btn btn-primary btn-full" onclick="doLogin()">Entrar</button>
-            <p style="text-align:center;margin-top:14px;font-size:11px;color:#a0aec0">
-                Admin padrão: admin@hospital.com / Admin@2024</p>
         </div>
     </div>
 
@@ -1017,8 +849,7 @@
             <p id="companyGreeting">Escolha em qual empresa deseja entrar</p>
             <div class="alert alert-error" id="companyError"></div>
             <div class="company-list" id="companyList"></div>
-            <button type="button" id="btnCompanyBack" class="btn btn-secondary btn-full" onclick="handleCompanyBack()">←
-                Voltar</button>
+            <button type="button" id="btnCompanyBack" class="btn btn-secondary btn-full" onclick="handleCompanyBack()">← Voltar</button>
         </div>
     </div>
 
@@ -1032,7 +863,6 @@
                     <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly%20menu.png?raw=true" alt="NutriStaff" class="sidebar-logo" onclick="navigateTo('pageHome')" style="cursor:pointer" title="Ir para o Início">
                     <p id="sbUser" onclick="navigateTo('pageHome')" style="font-weight:600;font-size:12px;color:#90cdf4;margin:0 0 1px 0;cursor:pointer"></p>
                     <small id="sbCompany" style="font-size:10px;color:#63b3ed;font-style:italic"></small>
-                    <!-- BOTÃO HAMBÚRGUER MOBILE -->
                     <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menu" style="position:absolute;right:16px;top:50%;transform:translateY(-50%)">
                         <span class="bar"></span>
                         <span class="bar"></span>
@@ -1043,8 +873,7 @@
                 <div class="sidebar-footer">
                     <button type="button" id="btnSwitchCompany" onclick="goToSelectCompany()">↩ Trocar empresa</button>
                     <button type="button" onclick="doLogout()"
-                        style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕
-                        Sair</button>
+                        style="margin-top:6px;background:rgba(220,38,38,.3);border-color:rgba(220,38,38,.4)">✕ Sair</button>
                 </div>
             </div>
 
@@ -1061,11 +890,11 @@
                     <div id="homeContent"></div>
                 </div>
 
-                <!-- PAGE: Fazer solicitação (colaborador/nutri) -->
+                <!-- PAGE: Fazer solicitação -->
                 <div class="page" id="pageRequest">
                     <div class="page-header">
                         <h1>🍽️ Solicitar refeição</h1>
-                        <p>Escolha a refeição e sua opção preferida</p>
+                        <p>Escolha a refeição e sua opção preferida (antecedência mínima de 24h)</p>
                     </div>
                     <div class="alert alert-error" id="reqError"></div>
                     <div class="alert alert-success" id="reqSuccess"></div>
@@ -1115,15 +944,13 @@
                                 <div class="pass-strength-bar">
                                     <div class="pass-strength-fill" id="passStrengthFill"></div>
                                 </div>
-                                <span id="passStrengthLabel"
-                                    style="font-size:11px;color:#a0aec0;margin-top:3px;display:block"></span>
+                                <span id="passStrengthLabel" style="font-size:11px;color:#a0aec0;margin-top:3px;display:block"></span>
                             </div>
                             <div class="form-group">
                                 <label>Confirmar nova senha</label>
                                 <input type="password" id="changeConfirmPass" placeholder="Repita a nova senha">
                             </div>
-                            <button type="button" class="btn btn-primary" onclick="changePassword()">💾 Salvar nova
-                                senha</button>
+                            <button type="button" class="btn btn-primary" onclick="changePassword()">💾 Salvar nova senha</button>
                         </div>
                     </div>
                 </div>
@@ -1161,17 +988,14 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label>Opções disponíveis <span style="color:#a0aec0;font-weight:400">(adicione pelo
-                                        menos 1)</span></label>
+                                <label>Opções disponíveis</label>
                                 <div id="optionInputs" class="options-input-list">
                                     <div class="option-input-row">
                                         <input type="text" placeholder="Ex: Frango grelhado">
-                                        <button type="button" class="btn btn-danger btn-sm"
-                                            onclick="removeOptionInput(this)">✕</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="removeOptionInput(this)">✕</button>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px"
-                                    onclick="addOptionInput()">+ Adicionar opção</button>
+                                <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px" onclick="addOptionInput()">+ Adicionar opção</button>
                             </div>
                             <button type="button" class="btn btn-success" onclick="saveMenu()">Salvar refeição</button>
                         </div>
@@ -1182,8 +1006,7 @@
                             <h2>Cardápio cadastrado</h2>
                             <div style="display:flex;gap:8px;align-items:center">
                                 <input type="date" id="menuFilterDate" onchange="loadMenuNutri()">
-                                <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('menuFilterDate').value='';loadMenuNutri()">Limpar</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('menuFilterDate').value='';loadMenuNutri()">Limpar</button>
                             </div>
                         </div>
                         <div class="section-body" id="menuListBody">
@@ -1206,8 +1029,7 @@
                             <h2>Filtrar por data</h2>
                             <div style="display:flex;gap:8px;align-items:center">
                                 <input type="date" id="reqFilterDate" onchange="loadAllRequests()">
-                                <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('reqFilterDate').value='';loadAllRequests()">Limpar</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('reqFilterDate').value='';loadAllRequests()">Limpar</button>
                             </div>
                         </div>
                         <div class="section-body" id="allReqsBody">
@@ -1230,8 +1052,7 @@
                             <h2>Filtrar por data</h2>
                             <div style="display:flex;gap:8px;align-items:center">
                                 <input type="date" id="statsDate" onchange="loadStats()">
-                                <button type="button" class="btn btn-secondary btn-sm"
-                                    onclick="document.getElementById('statsDate').value='';loadStats()">Todas</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('statsDate').value='';loadStats()">Todas</button>
                             </div>
                         </div>
                         <div class="section-body" id="statsBody">
@@ -1258,23 +1079,16 @@
                         </div>
                         <div class="section-body">
                             <div class="form-row">
-                                <div class="form-group"><label>Nome</label><input type="text" id="nuName"
-                                        placeholder="João Silva"></div>
-                                <div class="form-group"><label>Email</label><input type="email" id="nuEmail"
-                                        placeholder="joao@hospital.com"></div>
+                                <div class="form-group"><label>Nome</label><input type="text" id="nuName" placeholder="João Silva"></div>
+                                <div class="form-group"><label>Email</label><input type="email" id="nuEmail" placeholder="joao@hospital.com"></div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Usuário <span style="color:#a0aec0;font-weight:400">(para login
-                                            alternativo)</span></label>
-                                    <input type="text" id="nuUsername" placeholder="joao_silva"
-                                        style="font-family:monospace"
+                                    <label>Usuário (login alternativo)</label>
+                                    <input type="text" id="nuUsername" placeholder="joao_silva" style="font-family:monospace"
                                         oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_.]/g,'')">
-                                    <span style="font-size:11px;color:#a0aec0;display:block;margin-top:3px">Apenas
-                                        letras minúsculas, números, ponto e underscore. Sem espaços.</span>
                                 </div>
-                                <div class="form-group"><label>Senha</label><input type="password" id="nuPass"
-                                        placeholder="Senha segura"></div>
+                                <div class="form-group"><label>Senha</label><input type="password" id="nuPass" placeholder="Senha segura"></div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group"><label>Tipo de acesso</label>
@@ -1293,20 +1107,13 @@
                                 <div class="chip-list" id="nuCompanyChips"></div>
                             </div>
                             <div class="form-group">
-                                <label>Permissões extras <span
-                                        style="color:#a0aec0;font-weight:400">(opcional)</span></label>
+                                <label>Permissões extras</label>
                                 <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
-                                    <label
-                                        style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;transition:.2s"
-                                        onmouseover="this.style.borderColor='#1e5f9e'"
-                                        onmouseout="this.style.borderColor='#e2e8f0'">
-                                        <input type="checkbox" id="permCriarUsuario"
-                                            style="width:16px;height:16px;accent-color:#1e5f9e">
+                                    <label style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px">
+                                        <input type="checkbox" id="permCriarUsuario" style="width:16px;height:16px;accent-color:#1e5f9e">
                                         <div>
-                                            <div style="font-size:13px;font-weight:600;color:#2d3748">👤 Criar usuário
-                                            </div>
-                                            <div style="font-size:11px;color:#a0aec0">Permite criar e gerenciar outros
-                                                usuários no sistema</div>
+                                            <div style="font-size:13px;font-weight:600;color:#2d3748">👤 Criar usuário</div>
+                                            <div style="font-size:11px;color:#a0aec0">Permite criar e gerenciar outros usuários</div>
                                         </div>
                                     </label>
                                 </div>
@@ -1343,15 +1150,10 @@
                         </div>
                         <div class="section-body">
                             <div class="form-row">
-                                <div class="form-group"><label>Nome da empresa</label><input type="text" id="ncName"
-                                        placeholder="Hospital São Lucas"></div>
-                                <div class="form-group"><label>CNPJ <span
-                                            style="color:#a0aec0;font-weight:400">(opcional)</span></label>
-                                    <input type="text" id="ncCnpj" placeholder="00.000.000/0001-00">
-                                </div>
+                                <div class="form-group"><label>Nome da empresa</label><input type="text" id="ncName" placeholder="Hospital São Lucas"></div>
+                                <div class="form-group"><label>CNPJ</label><input type="text" id="ncCnpj" placeholder="00.000.000/0001-00"></div>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="createCompany()">Criar
-                                empresa</button>
+                            <button type="button" class="btn btn-success" onclick="createCompany()">Criar empresa</button>
                         </div>
                     </div>
 
@@ -1388,9 +1190,8 @@
                     <input type="text" id="editUserName" placeholder="Nome completo">
                 </div>
                 <div class="form-group">
-                    <label>Email <span style="color:#a0aec0;font-size:11px">(não editável)</span></label>
-                    <input type="email" id="editUserEmail" disabled
-                        style="background:#f7fafc;color:#a0aec0;cursor:not-allowed">
+                    <label>Email (não editável)</label>
+                    <input type="email" id="editUserEmail" disabled style="background:#f7fafc;color:#a0aec0;cursor:not-allowed">
                 </div>
             </div>
 
@@ -1429,10 +1230,8 @@
             <div class="form-group" style="margin-bottom:24px">
                 <label>Permissões extras</label>
                 <div style="margin-top:8px">
-                    <label
-                        style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px">
-                        <input type="checkbox" id="editPermCriarUsuario"
-                            style="width:16px;height:16px;accent-color:#1e5f9e">
+                    <label style="display:flex;align-items:center;gap:10px;font-weight:400;cursor:pointer;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px">
+                        <input type="checkbox" id="editPermCriarUsuario" style="width:16px;height:16px;accent-color:#1e5f9e">
                         <div>
                             <div style="font-size:13px;font-weight:600;color:#2d3748">👤 Criar usuário</div>
                             <div style="font-size:11px;color:#a0aec0">Permite criar e gerenciar outros usuários</div>
@@ -1442,8 +1241,7 @@
             </div>
 
             <div style="display:flex;gap:12px">
-                <button type="button" class="btn btn-success" style="flex:1" onclick="saveEditUser()">💾 Salvar
-                    alterações</button>
+                <button type="button" class="btn btn-success" style="flex:1" onclick="saveEditUser()">💾 Salvar alterações</button>
                 <button type="button" class="btn btn-secondary" onclick="closeEditUser()">Cancelar</button>
             </div>
 
@@ -1452,15 +1250,27 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script>
         // ══════════════════════════════════════════════
-        //  1. CONFIGURAÇÃO DO SUPABASE
+        //  CONFIGURAÇÃO DO SUPABASE
         // ══════════════════════════════════════════════
         const SUPABASE_URL = 'https://ollzdkbldquovpmnesbi.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
 
         const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ══════════════════════════════════════════════
+        //  FUNÇÃO DE SANITIZAÇÃO (ANTI-XSS)
+        // ══════════════════════════════════════════════
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
 
         // ══════════════════════════════════════════════
         //  ESTADO GLOBAL
@@ -1481,9 +1291,6 @@
             lanche_noite: '🌙 Lanche da noite'
         };
 
-        // ══════════════════════════════════════════════
-        //  FUNÇÕES DE TELA
-        // ══════════════════════════════════════════════
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => {
                 s.classList.remove('active');
@@ -1504,7 +1311,6 @@
             document.querySelectorAll('.nav-item').forEach(n => {
                 n.classList.toggle('active', n.dataset.page === id);
             });
-            // Rola o container principal de volta ao topo suavemente
             const mainContainer = document.querySelector('.main');
             if (mainContainer) mainContainer.scrollTop = 0;
         }
@@ -1547,7 +1353,7 @@
 
                     if (usernameErr) throw usernameErr;
                     if (!profileByUsername) {
-                        return alert_('loginError', 'Usuário "' + rawInput + '" não encontrado. Verifique o nome de usuário ou use seu e-mail.');
+                        return alert_('loginError', 'Usuário "' + escapeHtml(rawInput) + '" não encontrado.');
                     }
                     emailToUse = profileByUsername.email;
                 }
@@ -1555,7 +1361,6 @@
                 const { data, error } = await sb.auth.signInWithPassword({ email: emailToUse, password });
                 if (error) throw error;
 
-                // Limpa o input de senha
                 const passEl = document.getElementById('loginPassword');
                 if (passEl) passEl.value = '';
 
@@ -1612,7 +1417,7 @@
         // ══════════════════════════════════════════════
         //  TEMPORIZADOR DE INATIVIDADE (3 MINUTOS)
         // ══════════════════════════════════════════════
-        const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutos
+        const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000;
         const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
         const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
         const STORAGE_KEY_ACTIVE_PAGE = 'nutriflow_active_page';
@@ -1665,7 +1470,7 @@
         }
 
         function renderCompanySelectionScreen() {
-            document.getElementById('companyGreeting').textContent = `Olá, ${state.user.name}! Escolha em qual empresa deseja entrar:`;
+            document.getElementById('companyGreeting').textContent = `Olá, ${escapeHtml(state.user.name)}! Escolha em qual empresa deseja entrar:`;
             const list = document.getElementById('companyList');
             list.innerHTML = '';
 
@@ -1674,7 +1479,7 @@
                 btn.type = 'button';
                 btn.className = 'company-btn';
                 const isCurrent = state.company && state.company.id === c.id;
-                btn.innerHTML = `<span>🏢 ${c.name}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
+                btn.innerHTML = `<span>🏢 ${escapeHtml(c.name)}</span>${isCurrent ? ' <span style="font-size:12px;color:#16a34a;font-weight:600">(Atual)</span>' : ''}`;
                 btn.onclick = () => {
                     state.company = c;
                     localStorage.setItem(STORAGE_KEY_COMPANY_ID, c.id.toString());
@@ -1687,11 +1492,7 @@
 
             const backBtn = document.getElementById('btnCompanyBack');
             if (backBtn) {
-                if (state.company) {
-                    backBtn.textContent = '← Voltar ao sistema';
-                } else {
-                    backBtn.textContent = '← Voltar ao login';
-                }
+                backBtn.textContent = state.company ? '← Voltar ao sistema' : '← Voltar ao login';
             }
         }
 
@@ -1711,9 +1512,7 @@
 
         function toggleLoginPassword(show) {
             const passInput = document.getElementById('loginPassword');
-            if (passInput) {
-                passInput.type = show ? 'text' : 'password';
-            }
+            if (passInput) passInput.type = show ? 'text' : 'password';
         }
 
         function clearLoginForm() {
@@ -1748,10 +1547,6 @@
             showScreen('screenLogin');
         }
 
-        function goToLogin() {
-            doLogout();
-        }
-
         // ══════════════════════════════════════════════
         //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
         // ══════════════════════════════════════════════
@@ -1763,14 +1558,9 @@
             document.getElementById('homeSubtitle').textContent =
                 `${state.company.name} · ${role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador'}`;
 
-            // Controle do botão "Trocar empresa": exibe apenas se houver mais de 1 empresa vinculada
             const switchBtn = document.getElementById('btnSwitchCompany');
             if (switchBtn) {
-                if (state.pendingCompanies && state.pendingCompanies.length > 1) {
-                    switchBtn.style.display = 'block';
-                } else {
-                    switchBtn.style.display = 'none';
-                }
+                switchBtn.style.display = (state.pendingCompanies && state.pendingCompanies.length > 1) ? 'block' : 'none';
             }
 
             const nav = document.getElementById('sidebarNav');
@@ -1819,9 +1609,7 @@
                 }
             });
 
-            // Restaura a última página visitada (F5), ou vai para Home
             const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
-            // Verifica se a página salva existe e o usuário tem acesso
             const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
             const targetPage = (savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome';
             navigateTo(targetPage);
@@ -1829,7 +1617,6 @@
 
         function navigateTo(pageId) {
             showPage(pageId);
-            // Persiste a página ativa para restaurar no F5
             localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
             if (pageId === 'pageHome') loadHome();
             if (pageId === 'pageRequest') loadRequestPage();
@@ -1944,12 +1731,12 @@
                                     <div class="menu-card">
                                         <div class="menu-card-header">
                                             <div class="menu-card-title">
-                                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                                                <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                                <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
                                             </div>
                                         </div>
                                         <div class="option-tags">
-                                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                                            ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
                                         </div>
                                     </div>
                                 `).join('')}
@@ -1962,12 +1749,12 @@
                     </div></div>`;
                 }
             } catch (e) {
-                contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${e.message}</div>`;
+                contentEl.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar dados: ${escapeHtml(e.message)}</div>`;
             }
         }
 
         // ══════════════════════════════════════════════
-        //  SOLICITAR REFEIÇÃO
+        //  SOLICITAR REFEIÇÃO (ANTI-XSS & PREVENÇÃO 24H)
         // ══════════════════════════════════════════════
         let selectedOptions = {};
 
@@ -1999,8 +1786,8 @@
                         <div class="section" id="menuSection${m.id}">
                             <div class="section-header">
                                 <div>
-                                    <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                    <strong style="margin-left:8px">${fmtDate(m.meal_date)} às ${m.meal_time}</strong>
+                                    <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                    <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</strong>
                                 </div>
                                 ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
                             </div>
@@ -2010,7 +1797,7 @@
                                     <div class="options-grid">
                                         ${(m.options || []).map(o => `
                                             <div class="option-card" id="opt_${m.id}_${o.id}" onclick="selectOption(${m.id}, ${o.id})">
-                                                ${o.description}
+                                                ${escapeHtml(o.description)}
                                             </div>
                                         `).join('')}
                                     </div>
@@ -2021,7 +1808,7 @@
                     `;
                 }).join('');
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2075,19 +1862,19 @@
                     const hrs = r.menu ? hoursUntil(r.menu.meal_date, r.menu.meal_time) : 0;
                     const canCancel = hrs >= 24;
                     return `<tr>
-                                <td><strong>${r.menu ? fmtDate(r.menu.meal_date) : '-'}</strong></td>
-                                <td><span class="meal-pill ${r.menu?.meal_type}">${MEAL_LABELS[r.menu?.meal_type] || '-'}</span></td>
-                                <td>${r.menu?.meal_time || '-'}</td>
-                                <td>${r.option?.description || '-'}</td>
+                                <td><strong>${r.menu ? escapeHtml(fmtDate(r.menu.meal_date)) : '-'}</strong></td>
+                                <td><span class="meal-pill ${escapeHtml(r.menu?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menu?.meal_type] || '-')}</span></td>
+                                <td>${escapeHtml(r.menu?.meal_time || '-')}</td>
+                                <td>${escapeHtml(r.option?.description || '-')}</td>
                                 <td>${canCancel
                             ? `<button type="button" class="btn btn-danger btn-sm" onclick="cancelMyReq(${r.id})">Cancelar</button>`
-                            : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado</span>`}
+                            : `<span style="font-size:11px;color:#a0aec0">Prazo encerrado (&lt;24h)</span>`}
                                 </td>
                             </tr>`;
                 }).join('')}
                     </tbody></table></div>`;
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2180,18 +1967,18 @@
                     <div class="menu-card">
                         <div class="menu-card-header">
                             <div class="menu-card-title">
-                                <span class="meal-pill ${m.meal_type}">${MEAL_LABELS[m.meal_type] || m.meal_type}</span>
-                                <span>${fmtDate(m.meal_date)} às ${m.meal_time}</span>
+                                <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
+                                <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
                             </div>
                             <button type="button" class="btn btn-danger btn-sm" onclick="deleteMenu(${m.id})">Excluir</button>
                         </div>
                         <div class="option-tags">
-                            ${(m.options || []).map(o => `<span class="option-tag">${o.description}</span>`).join('')}
+                            ${(m.options || []).map(o => `<span class="option-tag">${escapeHtml(o.description)}</span>`).join('')}
                         </div>
                     </div>
                 `).join('');
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2229,7 +2016,6 @@
                     return;
                 }
 
-                // Busca nomes dos usuários separadamente
                 const userIds = [...new Set(data.map(r => r.user_id))];
                 const { data: profilesData } = await sb.from('profiles')
                     .select('id, name')
@@ -2240,15 +2026,15 @@
                     <thead><tr><th>Colaborador</th><th>Data</th><th>Refeição</th><th>Horário</th><th>Opção</th></tr></thead>
                     <tbody>
                         ${data.map(r => `<tr>
-                            <td><strong>${profilesMap[r.user_id] || 'Colaborador'}</strong></td>
-                            <td>${fmtDate(r.menus?.meal_date)}</td>
-                            <td><span class="meal-pill ${r.menus?.meal_type}">${MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type}</span></td>
-                            <td>${r.menus?.meal_time || '-'}</td>
-                            <td>${r.menu_options?.description || '-'}</td>
+                            <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
+                            <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
+                            <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
+                            <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                            <td>${escapeHtml(r.menu_options?.description || '-')}</td>
                         </tr>`).join('')}
                     </tbody></table></div>`;
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2287,8 +2073,8 @@
                         <div class="menu-card">
                             <div class="menu-card-header">
                                 <div class="menu-card-title">
-                                    <span class="meal-pill ${g.meal_type}">${MEAL_LABELS[g.meal_type] || g.meal_type}</span>
-                                    <span>${fmtDate(g.meal_date)} (${g.meal_time})</span>
+                                    <span class="meal-pill ${escapeHtml(g.meal_type)}">${escapeHtml(MEAL_LABELS[g.meal_type] || g.meal_type)}</span>
+                                    <span>${escapeHtml(fmtDate(g.meal_date))} (${escapeHtml(g.meal_time)})</span>
                                 </div>
                                 <strong>Total: ${total} refeição(ões)</strong>
                             </div>
@@ -2298,7 +2084,7 @@
                         return `
                                         <div style="margin-bottom:8px">
                                             <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px">
-                                                <span>${opt}</span>
+                                                <span>${escapeHtml(opt)}</span>
                                                 <strong>${count} (${pct}%)</strong>
                                             </div>
                                             <div style="background:#e2e8f0;border-radius:4px;height:8px;overflow:hidden">
@@ -2312,12 +2098,12 @@
                     `;
                 }).join('');
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
         // ══════════════════════════════════════════════
-        //  USUÁRIOS
+        //  USUÁRIOS (ADMIN / PERMISSÃO CRIAR_USUARIO)
         // ══════════════════════════════════════════════
         let nuCompanyIds = [];
         let allCompanies = [];
@@ -2377,7 +2163,7 @@
                     const compsList = (u.company_users || []).map(cu => cu.companies?.name).filter(Boolean).join(', ') || 'Nenhuma';
                     const perms = u.extra_permissions || [];
                     const permBadges = perms.length
-                        ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : p}</span>`).join('')
+                        ? perms.map(p => `<span class="badge" style="background:#fef3c7;color:#92400e;margin-right:3px">${p === 'criar_usuario' ? '👤 Criar usuário' : escapeHtml(p)}</span>`).join('')
                         : '<span style="color:#a0aec0;font-size:11px">—</span>';
 
                     const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
@@ -2388,35 +2174,27 @@
                     if (canEdit) {
                         actionButtons += `<button type="button" class="btn btn-secondary btn-sm" onclick="openEditUser('${u.id}')">✏️ Editar</button>`;
                     } else {
-                        actionButtons += `<span class="badge" style="background:#edf2f7;color:#718096" title="Apenas o Administrador pode editar esta conta">🔒 Protegido</span>`;
+                        actionButtons += `<span class="badge" style="background:#edf2f7;color:#718096">🔒 Protegido</span>`;
                     }
 
-                    if (!isMainAdmin) {
-                        if (canEdit) {
-                            actionButtons += `<button type="button" class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`;
-                        }
-                    } else {
-                        actionButtons += `<span style="font-size:11px;color:#a0aec0;align-self:center">Admin padrão</span>`;
+                    if (!isMainAdmin && canEdit) {
+                        actionButtons += `<button type="button" class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">Excluir</button>`;
                     }
 
                     return `<tr>
-                                <td><strong>${u.name || '-'}</strong></td>
-                                <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + u.username : '<span style="color:#a0aec0">—</span>'}</td>
-                                <td style="color:#718096;font-size:12px">${u.email || '-'}</td>
-                                <td><span class="badge badge-${u.role}">${u.role}</span></td>
+                                <td><strong>${escapeHtml(u.name || '-')}</strong></td>
+                                <td style="font-family:monospace;color:#1e5f9e;font-size:12px">${u.username ? '@' + escapeHtml(u.username) : '<span style="color:#a0aec0">—</span>'}</td>
+                                <td style="color:#718096;font-size:12px">${escapeHtml(u.email || '-')}</td>
+                                <td><span class="badge badge-${escapeHtml(u.role)}">${escapeHtml(u.role)}</span></td>
                                 <td>${permBadges}</td>
-                                <td style="font-size:12px">${compsList}</td>
+                                <td style="font-size:12px">${escapeHtml(compsList)}</td>
                                 <td>${u.active ? '<span class="badge badge-confirmed">Ativo</span>' : '<span class="badge badge-canceled">Inativo</span>'}</td>
-                                <td>
-                                    <div style="display:flex;gap:6px;align-items:center">
-                                        ${actionButtons}
-                                    </div>
-                                </td>
+                                <td><div style="display:flex;gap:6px;align-items:center">${actionButtons}</div></td>
                             </tr>`;
                 }).join('')}
                     </tbody></table></div>`;
             } catch (e) {
-                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar usuários: ${e.message}</div>`;
+                document.getElementById('usersBody').innerHTML = `<div class="alert alert-error" style="display:block">Erro ao carregar usuários: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2438,7 +2216,7 @@
             const el = document.getElementById('nuCompanyChips');
             el.innerHTML = nuCompanyIds.map(id => {
                 const c = allCompanies.find(comp => String(comp.id) === String(id));
-                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeChip('${id}')">×</span></div>`;
+                return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="removeChip('${id}')">×</span></div>`;
             }).join('');
         }
 
@@ -2458,7 +2236,7 @@
             try {
                 if (username) {
                     const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
-                    if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso. Escolha outro.`);
+                    if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso.`);
                 }
 
                 const { data, error } = await sb.auth.signUp({ email, password });
@@ -2484,7 +2262,7 @@
                     }
                 }
 
-                alert_('usersSuccess', `Usuário ${name} criado com sucesso!${username ? ' Login: @' + username + ' ou ' + email : ''}`, 'success');
+                alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
                 document.getElementById('nuName').value = '';
                 document.getElementById('nuEmail').value = '';
                 document.getElementById('nuUsername').value = '';
@@ -2503,12 +2281,8 @@
             const isTargetAdmin = u && (u.email === 'admin@hospital.com' || u.role === 'admin');
             const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
 
-            if (u && u.email === 'admin@hospital.com') {
-                return alert('O Administrador principal não pode ser excluído.');
-            }
-            if (isTargetAdmin && !isCurrentSuperAdmin) {
-                return alert('Você não tem permissão para excluir um Administrador.');
-            }
+            if (u && u.email === 'admin@hospital.com') return alert('O Administrador principal não pode ser excluído.');
+            if (isTargetAdmin && !isCurrentSuperAdmin) return alert('Você não tem permissão para excluir um Administrador.');
 
             if (!confirm(`Excluir o usuário "${u?.name || 'selecionado'}"?`)) return;
             try {
@@ -2529,16 +2303,13 @@
 
         function openEditUser(userId) {
             const u = usersMap[userId];
-            if (!u) {
-                alert('Usuário não encontrado. Recarregue a página.');
-                return;
-            }
+            if (!u) return alert('Usuário não encontrado. Recarregue a página.');
 
             const isTargetAdmin = (u.email === 'admin@hospital.com' || u.role === 'admin');
             const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
 
             if (isTargetAdmin && !isCurrentSuperAdmin) {
-                alert('Você não possui permissão para editar o usuário Administrador.');
+                alert('Você não possui permissão para editar o Administrador.');
                 return;
             }
 
@@ -2550,9 +2321,7 @@
             document.getElementById('editUserUsername').value = u.username || '';
 
             const optAdmin = document.getElementById('optEditRoleAdmin');
-            if (optAdmin) {
-                optAdmin.disabled = !isCurrentSuperAdmin;
-            }
+            if (optAdmin) optAdmin.disabled = !isCurrentSuperAdmin;
 
             const perms = u.extra_permissions || [];
             document.getElementById('editPermCriarUsuario').checked = Array.isArray(perms) && perms.includes('criar_usuario');
@@ -2572,22 +2341,13 @@
 
             renderEditChips();
 
-            const errEl = document.getElementById('editUserError');
-            if (errEl) errEl.style.display = 'none';
-            const succEl = document.getElementById('editUserSuccess');
-            if (succEl) succEl.style.display = 'none';
-
-            const modal = document.getElementById('modalEditUser');
-            if (modal) {
-                modal.classList.add('open');
-            }
+            document.getElementById('editUserError').style.display = 'none';
+            document.getElementById('editUserSuccess').style.display = 'none';
+            document.getElementById('modalEditUser').classList.add('open');
         }
 
         function closeEditUser() {
-            const modal = document.getElementById('modalEditUser');
-            if (modal) {
-                modal.classList.remove('open');
-            }
+            document.getElementById('modalEditUser').classList.remove('open');
         }
 
         document.getElementById('modalEditUser').addEventListener('click', function (e) {
@@ -2612,7 +2372,7 @@
             const el = document.getElementById('editCompanyChips');
             el.innerHTML = editCompanyIds.map(id => {
                 const c = allCompanies.find(comp => String(comp.id) === String(id));
-                return `<div class="chip">${c?.name || id} <span class="chip-x" onclick="removeEditChip('${id}')">×</span></div>`;
+                return `<div class="chip">${escapeHtml(c?.name || id)} <span class="chip-x" onclick="removeEditChip('${id}')">×</span></div>`;
             }).join('');
         }
 
@@ -2642,7 +2402,7 @@
                 if (username) {
                     const { data: existingUser } = await sb.from('profiles')
                         .select('id').eq('username', username).neq('id', id).maybeSingle();
-                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso. Escolha outro.`);
+                    if (existingUser) return alert_('editUserError', `O usuário "@${username}" já está em uso.`);
                 }
 
                 const { error: profErr } = await sb.from('profiles')
@@ -2684,16 +2444,14 @@
                     <thead><tr><th>Nome</th><th>CNPJ</th><th>Status</th><th>Ação</th></tr></thead>
                     <tbody>
                         ${data.map(c => `<tr>
-                            <td><strong>${c.name}</strong></td>
-                            <td>${c.cnpj || '-'}</td>
+                            <td><strong>${escapeHtml(c.name)}</strong></td>
+                            <td>${escapeHtml(c.cnpj || '-')}</td>
                             <td>${c.active ? '<span class="badge badge-confirmed">Ativa</span>' : '<span class="badge badge-canceled">Inativa</span>'}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button>
-                            </td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteCompany(${c.id})">Excluir</button></td>
                         </tr>`).join('')}
                     </tbody></table></div>`;
             } catch (e) {
-                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${e.message}</div>`;
+                el.innerHTML = `<div class="alert alert-error" style="display:block">Erro: ${escapeHtml(e.message)}</div>`;
             }
         }
 
@@ -2704,7 +2462,7 @@
             try {
                 const { error } = await sb.from('companies').insert({ name, cnpj, active: true });
                 if (error) throw error;
-                alert_('compSuccess', `Empresa "${name}" criada!`, 'success');
+                alert_('compSuccess', `Empresa "${escapeHtml(name)}" criada!`, 'success');
                 document.getElementById('ncName').value = '';
                 document.getElementById('ncCnpj').value = '';
                 loadCompanies();
@@ -2736,7 +2494,6 @@
                     return;
                 }
 
-                // Verifica se a inatividade anterior não ultrapassou 3 minutos
                 const lastActivity = parseInt(localStorage.getItem(STORAGE_KEY_LAST_ACTIVITY) || '0', 10);
                 if (lastActivity && (Date.now() - lastActivity >= INACTIVITY_TIMEOUT_MS)) {
                     await sb.auth.signOut();
@@ -2747,7 +2504,6 @@
                     return;
                 }
 
-                // Busca dados do perfil
                 const { data: profile, error: profErr } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
                 if (profErr || !profile) {
                     await sb.auth.signOut();
@@ -2766,7 +2522,6 @@
                 };
                 state.token = session.access_token;
 
-                // Busca empresas vinculadas
                 let companies = [];
                 if (role === 'admin') {
                     const { data: allComps } = await sb.from('companies').select('*').eq('active', true).order('id');
@@ -2791,7 +2546,6 @@
                     return;
                 }
 
-                // Restaura a empresa previamente selecionada ou seleciona a única empresa
                 const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
                 const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
 
@@ -2816,98 +2570,14 @@
             }
         }
 
-        // Inicializa o app restaurando a sessão no F5 ou exibindo o login
         initApp();
 
-        // ══ CONTROLE DO MENU MOBILE ══
         function toggleMobileMenu() {
             const sidebar = document.querySelector('.sidebar');
             const menuToggle = document.getElementById('menuToggle');
             if (sidebar) sidebar.classList.toggle('open');
             if (menuToggle) menuToggle.classList.toggle('active');
         }
-
-        document.addEventListener('click', function (event) {
-            const isNavClick = event.target.closest('.sidebar-nav') || event.target.closest('.sidebar-footer button');
-            const isToggleClick = event.target.closest('#menuToggle');
-
-            if (isNavClick && !isToggleClick) {
-                const sidebar = document.querySelector('.sidebar');
-                const menuToggle = document.getElementById('menuToggle');
-                if (sidebar && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    if (menuToggle) menuToggle.classList.remove('active');
-                }
-            }
-        });
-        // ══ PULL TO REFRESH (MOBILE) ══
-        (function () {
-            let touchStartY = 0;
-            let pulling = false;
-            const THRESHOLD = 80; // px necessários para disparar o refresh
-
-            // Cria o indicador visual
-            const indicator = document.createElement('div');
-            indicator.id = 'pullToRefreshIndicator';
-            indicator.textContent = '↓';
-            document.body.appendChild(indicator);
-
-            function getScrollTop() {
-                const main = document.querySelector('.main');
-                return main ? main.scrollTop : window.scrollY;
-            }
-
-            document.addEventListener('touchstart', function (e) {
-                // Só ativa se estiver no topo do scroll E na tela do app
-                if (getScrollTop() === 0 && document.getElementById('screenApp')?.classList.contains('active')) {
-                    touchStartY = e.touches[0].clientY;
-                    pulling = true;
-                }
-            }, { passive: true });
-
-            document.addEventListener('touchmove', function (e) {
-                if (!pulling) return;
-                const delta = e.touches[0].clientY - touchStartY;
-                if (delta <= 0) { pulling = false; indicator.style.top = '-70px'; indicator.classList.remove('visible'); return; }
-
-                const progress = Math.min(delta, THRESHOLD * 1.5);
-                const topPos = Math.min(progress - 70, 24);
-                indicator.style.top = topPos + 'px';
-                indicator.classList.add('visible');
-                indicator.classList.remove('releasing');
-                indicator.textContent = delta >= THRESHOLD ? '↺' : '↓';
-            }, { passive: true });
-
-            document.addEventListener('touchend', function (e) {
-                if (!pulling) return;
-                pulling = false;
-                const delta = e.changedTouches[0].clientY - touchStartY;
-
-                if (delta >= THRESHOLD) {
-                    // Dispara o refresh
-                    indicator.textContent = '↺';
-                    indicator.classList.add('releasing');
-                    indicator.style.top = '16px';
-
-                    setTimeout(() => {
-                        // Recarrega os dados da aba atual
-                        const activePage = document.querySelector('.page.active');
-                        if (activePage) navigateTo(activePage.id);
-
-                        // Esconde o indicador
-                        indicator.style.top = '-70px';
-                        indicator.classList.remove('visible', 'releasing');
-                        indicator.textContent = '↓';
-                    }, 600);
-                } else {
-                    indicator.style.top = '-70px';
-                    indicator.classList.remove('visible');
-                }
-            }, { passive: true });
-        })();
-
     </script>
-
 </body>
-
 </html>
