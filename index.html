@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>NutriFlow — Gestão de Refeições</title>
+    <title>NutriStaff — Gestão de Refeições</title>
     <style>
         /* ── DESIGN SYSTEM: NUTRIÇÃO & SAÚDE HUMANIZADA ─────── */
         :root {
@@ -739,13 +739,22 @@
                     <div class="date-selector-container">
                         <div class="date-selector-header">
                             <div>
-                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Navegação Rápida por Data</h3>
-                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Dias com ponto verde 🟢 possuem solicitações feitas</p>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Filtrar Solicitações por Período</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Selecione uma data ou intervalo (De / Até). Dias com ponto verde 🟢 têm solicitações.</p>
                             </div>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqFilterDateToday()">Hoje</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearReqFilterDate()">Ver Todos</button>
-                                <input type="date" id="reqFilterDate" onchange="window.NutriApp.loadAllRequests()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">De:</span>
+                                    <input type="date" id="reqStartDate" onchange="window.NutriApp.loadAllRequests()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">Até:</span>
+                                    <input type="date" id="reqEndDate" onchange="window.NutriApp.loadAllRequests()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqPeriod('today')">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqPeriod('7days')">7 Dias</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqPeriod('month')">Este Mês</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReqPeriod('all')">Ver Todos</button>
                             </div>
                         </div>
                         <div class="date-strip-row" id="reqDateStrip"></div>
@@ -753,7 +762,7 @@
 
                     <div class="section">
                         <div class="section-header">
-                            <h2 id="reqSectionTitle">Solicitações do Dia</h2>
+                            <h2 id="reqSectionTitle">Solicitações Recebidas</h2>
                         </div>
                         <div class="section-body" id="allReqsBody">
                             <div class="empty">
@@ -805,17 +814,22 @@
                         </div>
                     </div>
 
-                    <!-- Linha de Filtros Dinâmicos com Seletor Visual -->
+                    <!-- Linha de Filtros Dinâmicos com Seletor Visual de Período -->
                     <div class="date-selector-container">
                         <div class="date-selector-header">
                             <div>
-                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Filtrar por Data</h3>
-                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Dias com pedidos registrados 🟢</p>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Filtrar Painel Analítico por Período</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Analise o consumo diário ou consolidado do período</p>
                             </div>
                             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsDateToday()">Hoje</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearStatsFilters()">Geral (Todos)</button>
-                                <input type="date" id="statsDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">De:</span>
+                                    <input type="date" id="statsStartDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">Até:</span>
+                                    <input type="date" id="statsEndDate" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
                                 <select id="statsMealType" onchange="window.NutriApp.loadStats()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
                                     <option value="">Todas as refeições</option>
                                     <option value="cafe_manha">☕ Café da manhã</option>
@@ -824,6 +838,10 @@
                                     <option value="janta">🍽️ Jantar</option>
                                     <option value="lanche_noite">🌙 Lanche da noite</option>
                                 </select>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsPeriod('today')">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsPeriod('7days')">7 Dias</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsPeriod('month')">Este Mês</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setStatsPeriod('all')">Geral (Todos)</button>
                             </div>
                         </div>
                         <div class="date-strip-row" id="statsDateStrip"></div>
@@ -864,17 +882,26 @@
                         </button>
                     </div>
 
-                    <!-- Seletor Visual de Data do Relatório -->
+                    <!-- Seletor Visual de Período do Relatório -->
                     <div class="date-selector-container">
                         <div class="date-selector-header">
                             <div>
-                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Selecionar Data do Relatório</h3>
-                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Clique no dia desejado ou escolha no calendário</p>
+                                <h3 style="font-size:14px;font-weight:700;color:var(--text-primary);margin:0 0 2px">📅 Filtrar Relatório por Período</h3>
+                                <p style="font-size:12px;color:var(--text-secondary);margin:0">Gere relatórios por data única ou intervalo consolidado</p>
                             </div>
-                            <div style="display:flex;gap:8px;align-items:center">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportDateToday()">Hoje</button>
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.clearReportDate()">Todas as Datas</button>
-                                <input type="date" id="reportDate" onchange="window.NutriApp.generateReport()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">De:</span>
+                                    <input type="date" id="reportStartDate" onchange="window.NutriApp.generateReport()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <span style="font-size:12px;color:var(--text-secondary);font-weight:600">Até:</span>
+                                    <input type="date" id="reportEndDate" onchange="window.NutriApp.generateReport()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px">
+                                </div>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportPeriod('today')">Hoje</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportPeriod('7days')">7 Dias</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportPeriod('month')">Este Mês</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="window.NutriApp.setReportPeriod('all')">Todas as Datas</button>
                             </div>
                         </div>
                         <div class="date-strip-row" id="reportDateStrip"></div>
@@ -1231,6 +1258,29 @@
                 return `${y}-${m}-${d}`;
             }
 
+            function getPeriodDates(type) {
+                const today = getTodayStr();
+                if (type === 'today') {
+                    return { start: today, end: today };
+                }
+                if (type === '7days') {
+                    const d = new Date();
+                    d.setDate(d.getDate() - 6);
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    return { start: `${y}-${m}-${day}`, end: today };
+                }
+                if (type === 'month') {
+                    const d = new Date();
+                    const y = d.getFullYear();
+                    const m = String(d.getMonth() + 1).padStart(2, '0');
+                    const lastDay = new Date(y, d.getMonth() + 1, 0).getDate();
+                    return { start: `${y}-${m}-01`, end: `${y}-${m}-${String(lastDay).padStart(2, '0')}` };
+                }
+                return { start: '', end: '' };
+            }
+
             const stripCallbacks = {};
 
             function _selectStripDate(containerId, dateIso) {
@@ -1262,7 +1312,17 @@
 
                 el.innerHTML = dates.map(item => {
                     const count = countMap[item.iso] || 0;
-                    const isActive = activeDate === item.iso;
+                    let isActive = false;
+                    if (typeof activeDate === 'object' && activeDate !== null) {
+                        const s = activeDate.start;
+                        const e = activeDate.end;
+                        if (s && e) isActive = (item.iso >= s && item.iso <= e);
+                        else if (s) isActive = (item.iso === s);
+                        else if (e) isActive = (item.iso === e);
+                    } else {
+                        isActive = (activeDate === item.iso);
+                    }
+
                     const hasData = count > 0;
 
                     let badgeHtml = '';
@@ -1373,9 +1433,9 @@
             //  TEMPORIZADOR DE INATIVIDADE (3 MINUTOS)
             // ══════════════════════════════════════════════
             const INACTIVITY_TIMEOUT_MS = 3 * 60 * 1000;
-            const STORAGE_KEY_LAST_ACTIVITY = 'nutriflow_last_activity';
-            const STORAGE_KEY_COMPANY_ID = 'nutriflow_selected_company_id';
-            const STORAGE_KEY_ACTIVE_PAGE = 'nutriflow_active_page';
+            const STORAGE_KEY_LAST_ACTIVITY = 'nutristaff_last_activity';
+            const STORAGE_KEY_COMPANY_ID = 'nutristaff_selected_company_id';
+            const STORAGE_KEY_ACTIVE_PAGE = 'nutristaff_active_page';
             let inactivityTimerInterval = null;
 
             function recordActivity() {
@@ -1610,18 +1670,33 @@
                     loadMenuNutri();
                 }
                 if (pageId === 'pageRequests') {
-                    const inp = document.getElementById('reqFilterDate');
-                    if (inp && !inp.value) inp.value = getTodayStr();
+                    const startInp = document.getElementById('reqStartDate');
+                    const endInp = document.getElementById('reqEndDate');
+                    if (startInp && !startInp.value && endInp && !endInp.value) {
+                        const today = getTodayStr();
+                        startInp.value = today;
+                        endInp.value = today;
+                    }
                     loadAllRequests();
                 }
                 if (pageId === 'pageStats') {
-                    const inp = document.getElementById('statsDate');
-                    if (inp && !inp.value) inp.value = getTodayStr();
+                    const startInp = document.getElementById('statsStartDate');
+                    const endInp = document.getElementById('statsEndDate');
+                    if (startInp && !startInp.value && endInp && !endInp.value) {
+                        const today = getTodayStr();
+                        startInp.value = today;
+                        endInp.value = today;
+                    }
                     loadStats();
                 }
                 if (pageId === 'pageReports') {
-                    const inp = document.getElementById('reportDate');
-                    if (inp && !inp.value) inp.value = getTodayStr();
+                    const startInp = document.getElementById('reportStartDate');
+                    const endInp = document.getElementById('reportEndDate');
+                    if (startInp && !startInp.value && endInp && !endInp.value) {
+                        const today = getTodayStr();
+                        startInp.value = today;
+                        endInp.value = today;
+                    }
                     generateReport();
                 }
                 if (pageId === 'pageUsers') loadUsers();
@@ -2054,19 +2129,43 @@
             // ══════════════════════════════════════════════
             //  SOLICITAÇÕES RECEBIDAS (NUTRI)
             // ══════════════════════════════════════════════
+            function setReqPeriod(type) {
+                const dates = getPeriodDates(type);
+                const sInp = document.getElementById('reqStartDate');
+                const eInp = document.getElementById('reqEndDate');
+                if (sInp) sInp.value = dates.start;
+                if (eInp) eInp.value = dates.end;
+                loadAllRequests();
+            }
+
             async function loadAllRequests() {
                 const el = document.getElementById('allReqsBody');
-                const dateInput = document.getElementById('reqFilterDate');
+                const startInp = document.getElementById('reqStartDate');
+                const endInp = document.getElementById('reqEndDate');
                 
-                // Se estiver vazio, define como padrão a data de hoje
-                if (!dateInput.value) {
-                    dateInput.value = getTodayStr();
+                if (startInp && !startInp.value && endInp && !endInp.value && startInp.dataset.initialized !== 'true') {
+                    const today = getTodayStr();
+                    startInp.value = today;
+                    endInp.value = today;
+                    startInp.dataset.initialized = 'true';
                 }
-                const date = dateInput.value;
+
+                const startDate = startInp ? startInp.value : '';
+                const endDate = endInp ? endInp.value : '';
 
                 const titleEl = document.getElementById('reqSectionTitle');
                 if (titleEl) {
-                    titleEl.textContent = date ? `Solicitações de ${fmtFullDate(date)}` : 'Todas as Solicitações Recebidas';
+                    if (startDate && endDate) {
+                        titleEl.textContent = (startDate === endDate) 
+                            ? `Solicitações de ${fmtFullDate(startDate)}` 
+                            : `Solicitações de ${fmtFullDate(startDate)} até ${fmtFullDate(endDate)}`;
+                    } else if (startDate) {
+                        titleEl.textContent = `Solicitações a partir de ${fmtFullDate(startDate)}`;
+                    } else if (endDate) {
+                        titleEl.textContent = `Solicitações até ${fmtFullDate(endDate)}`;
+                    } else {
+                        titleEl.textContent = 'Todas as Solicitações Recebidas';
+                    }
                 }
 
                 try {
@@ -2081,8 +2180,9 @@
                         if (d) reqCountMap[d] = (reqCountMap[d] || 0) + 1;
                     });
 
-                    renderDateStrip('reqDateStrip', date, reqCountMap, (selectedDate) => {
-                        dateInput.value = selectedDate;
+                    renderDateStrip('reqDateStrip', { start: startDate, end: endDate }, reqCountMap, (selectedDate) => {
+                        if (startInp) startInp.value = selectedDate;
+                        if (endInp) endInp.value = selectedDate;
                         loadAllRequests();
                     });
 
@@ -2091,13 +2191,19 @@
                         .eq('menus.company_id', state.company.id)
                         .order('id', { ascending: false });
 
-                    if (date) query = query.eq('menus.meal_date', date);
+                    if (startDate) query = query.gte('menus.meal_date', startDate);
+                    if (endDate) query = query.lte('menus.meal_date', endDate);
 
                     const { data, error } = await query;
                     if (error) throw error;
 
                     if (!data || !data.length) {
-                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada para ${date ? fmtFullDate(date) : 'este período'}</p></div>`;
+                        let periodLabel = 'este período';
+                        if (startDate && endDate) periodLabel = (startDate === endDate) ? fmtFullDate(startDate) : `${fmtFullDate(startDate)} a ${fmtFullDate(endDate)}`;
+                        else if (startDate) periodLabel = `a partir de ${fmtFullDate(startDate)}`;
+                        else if (endDate) periodLabel = `até ${fmtFullDate(endDate)}`;
+
+                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhuma solicitação encontrada para ${periodLabel}</p></div>`;
                         return;
                     }
 
@@ -2129,18 +2235,6 @@
                 }
             }
 
-            function setReqFilterDateToday() {
-                const inp = document.getElementById('reqFilterDate');
-                if (inp) inp.value = getTodayStr();
-                loadAllRequests();
-            }
-
-            function clearReqFilterDate() {
-                const inp = document.getElementById('reqFilterDate');
-                if (inp) inp.value = '';
-                loadAllRequests();
-            }
-
             // ══════════════════════════════════════════════
             //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
             // ══════════════════════════════════════════════
@@ -2149,27 +2243,33 @@
             let chartInstanceDailyTrend = null;
             let chartInstanceTopOptions = null;
 
+            function setStatsPeriod(type) {
+                const dates = getPeriodDates(type);
+                const sInp = document.getElementById('statsStartDate');
+                const eInp = document.getElementById('statsEndDate');
+                if (sInp) sInp.value = dates.start;
+                if (eInp) eInp.value = dates.end;
+                loadStats();
+            }
+
             function clearStatsFilters() {
-                const dateInp = document.getElementById('statsDate');
-                if (dateInp) dateInp.value = '';
+                setStatsPeriod('all');
                 const mealInp = document.getElementById('statsMealType');
                 if (mealInp) mealInp.value = '';
                 loadStats();
             }
 
-            function setStatsDateToday() {
-                const dateInp = document.getElementById('statsDate');
-                if (dateInp) dateInp.value = getTodayStr();
-                loadStats();
-            }
-
             async function loadStats() {
-                const dateInput = document.getElementById('statsDate');
-                if (dateInput && !dateInput.value && dateInput.dataset.initialized !== 'true') {
-                    dateInput.value = getTodayStr();
-                    dateInput.dataset.initialized = 'true';
+                const startInp = document.getElementById('statsStartDate');
+                const endInp = document.getElementById('statsEndDate');
+                if (startInp && !startInp.value && endInp && !endInp.value && startInp.dataset.initialized !== 'true') {
+                    const today = getTodayStr();
+                    startInp.value = today;
+                    endInp.value = today;
+                    startInp.dataset.initialized = 'true';
                 }
-                const date = dateInput ? dateInput.value : '';
+                const startDate = startInp ? startInp.value : '';
+                const endDate = endInp ? endInp.value : '';
                 const mealType = document.getElementById('statsMealType') ? document.getElementById('statsMealType').value : '';
 
                 try {
@@ -2184,16 +2284,18 @@
                         if (d) statsCountMap[d] = (statsCountMap[d] || 0) + 1;
                     });
 
-                    renderDateStrip('statsDateStrip', date, statsCountMap, (selectedDate) => {
-                        if (dateInput) dateInput.value = selectedDate;
+                    renderDateStrip('statsDateStrip', { start: startDate, end: endDate }, statsCountMap, (selectedDate) => {
+                        if (startInp) startInp.value = selectedDate;
+                        if (endInp) endInp.value = selectedDate;
                         loadStats();
                     });
 
                     let query = sb.from('meal_requests')
-                        .select('menus!inner(id, company_id, meal_date, meal_type, meal_time), menu_options(id, description)')
+                        .select('menus!inner(id, company_id, meal_date, meal_type, meal_time, options:menu_options(*)), menu_options(id, description)')
                         .eq('menus.company_id', state.company.id);
 
-                    if (date) query = query.eq('menus.meal_date', date);
+                    if (startDate) query = query.gte('menus.meal_date', startDate);
+                    if (endDate) query = query.lte('menus.meal_date', endDate);
                     if (mealType) query = query.eq('menus.meal_type', mealType);
 
                     const { data, error } = await query;
@@ -2222,12 +2324,19 @@
                     data.forEach(r => {
                         const mType = r.menus.meal_type;
                         const mDate = r.menus.meal_date;
-                        const optDesc = r.menu_options?.description || 'Opção Geral';
-
                         distinctMenuIds.add(r.menus.id);
                         mealTypeCounts[mType] = (mealTypeCounts[mType] || 0) + 1;
-                        optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
                         dailyTrendCounts[mDate] = (dailyTrendCounts[mDate] || 0) + 1;
+
+                        if (r.menus?.options && r.menus.options.length) {
+                            r.menus.options.forEach(opt => {
+                                const desc = opt.description || 'Opção Geral';
+                                optionCounts[desc] = (optionCounts[desc] || 0) + 1;
+                            });
+                        } else {
+                            const optDesc = r.menu_options?.description || 'Opção Geral';
+                            optionCounts[optDesc] = (optionCounts[optDesc] || 0) + 1;
+                        }
                     });
 
                     const topMeal = Object.entries(mealTypeCounts).sort((a, b) => b[1] - a[1])[0];
@@ -2426,7 +2535,7 @@
                             ${barImg ? `<img src="${barImg}">` : '<p>Sem gráfico</p>'}
                         </div>
 
-                        <div class="footer">NutriFlow - Sistema Hospitalar de Gestão de Refeições</div>
+                        <div class="footer">NutriStaff - Sistema Hospitalar de Gestão de Refeições</div>
                     </body>
                     </html>
                 `);
@@ -2443,14 +2552,27 @@
             let currentReportData = [];
             let currentReportHtml = '';
 
+            function setReportPeriod(type) {
+                const dates = getPeriodDates(type);
+                const sInp = document.getElementById('reportStartDate');
+                const eInp = document.getElementById('reportEndDate');
+                if (sInp) sInp.value = dates.start;
+                if (eInp) eInp.value = dates.end;
+                generateReport();
+            }
+
             async function generateReport() {
                 const model = document.getElementById('reportModel').value;
-                const dateInput = document.getElementById('reportDate');
-                if (dateInput && !dateInput.value && dateInput.dataset.initialized !== 'true') {
-                    dateInput.value = getTodayStr();
-                    dateInput.dataset.initialized = 'true';
+                const startInp = document.getElementById('reportStartDate');
+                const endInp = document.getElementById('reportEndDate');
+                if (startInp && !startInp.value && endInp && !endInp.value && startInp.dataset.initialized !== 'true') {
+                    const today = getTodayStr();
+                    startInp.value = today;
+                    endInp.value = today;
+                    startInp.dataset.initialized = 'true';
                 }
-                const date = dateInput ? dateInput.value : '';
+                const startDate = startInp ? startInp.value : '';
+                const endDate = endInp ? endInp.value : '';
                 const mealType = document.getElementById('reportMealType').value;
                 const el = document.getElementById('reportContentBody');
                 const badge = document.getElementById('reportCountBadge');
@@ -2470,17 +2592,19 @@
                         if (d) reportCountMap[d] = (reportCountMap[d] || 0) + 1;
                     });
 
-                    renderDateStrip('reportDateStrip', date, reportCountMap, (selectedDate) => {
-                        if (dateInput) dateInput.value = selectedDate;
+                    renderDateStrip('reportDateStrip', { start: startDate, end: endDate }, reportCountMap, (selectedDate) => {
+                        if (startInp) startInp.value = selectedDate;
+                        if (endInp) endInp.value = selectedDate;
                         generateReport();
                     });
 
                     let query = sb.from('meal_requests')
-                        .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time), menu_options(description)')
+                        .select('id, user_id, created_at, menus!inner(company_id, meal_date, meal_type, meal_time, options:menu_options(*)), menu_options(description)')
                         .eq('menus.company_id', state.company.id)
                         .order('id', { ascending: false });
 
-                    if (date) query = query.eq('menus.meal_date', date);
+                    if (startDate) query = query.gte('menus.meal_date', startDate);
+                    if (endDate) query = query.lte('menus.meal_date', endDate);
                     if (mealType) query = query.eq('menus.meal_type', mealType);
 
                     const { data, error } = await query;
@@ -2489,8 +2613,13 @@
                     currentReportData = data || [];
                     badge.textContent = `${currentReportData.length} registros`;
 
+                    let periodLabel = 'este período';
+                    if (startDate && endDate) periodLabel = (startDate === endDate) ? fmtFullDate(startDate) : `${fmtFullDate(startDate)} a ${fmtFullDate(endDate)}`;
+                    else if (startDate) periodLabel = `a partir de ${fmtFullDate(startDate)}`;
+                    else if (endDate) periodLabel = `até ${fmtFullDate(endDate)}`;
+
                     if (!data || !data.length) {
-                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para ${date ? fmtFullDate(date) : 'este período'}.</p></div>`;
+                        el.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><p>Nenhum registro encontrado para ${periodLabel}.</p></div>`;
                         return;
                     }
 
@@ -2509,12 +2638,19 @@
                                     items: {}
                                 };
                             }
-                            const opt = r.menu_options?.description || 'Opção Geral';
-                            prodGroups[key].items[opt] = (prodGroups[key].items[opt] || 0) + 1;
+                            if (r.menus?.options && r.menus.options.length) {
+                                r.menus.options.forEach(opt => {
+                                    const optDesc = opt.description || 'Prato Geral';
+                                    prodGroups[key].items[optDesc] = (prodGroups[key].items[optDesc] || 0) + 1;
+                                });
+                            } else {
+                                const opt = r.menu_options?.description || 'Opção Geral';
+                                prodGroups[key].items[opt] = (prodGroups[key].items[opt] || 0) + 1;
+                            }
                         });
 
                         let html = `<div class="tbl-wrap"><table>
-                            <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Prato / Opção</th><th style="text-align:right">Quantidade a Preparar</th></tr></thead>
+                            <thead><tr><th>Data</th><th>Refeição</th><th>Horário</th><th>Prato / Item</th><th style="text-align:right">Total a Produzir</th></tr></thead>
                             <tbody>`;
 
                         Object.values(prodGroups).forEach(g => {
@@ -2546,18 +2682,22 @@
                         const profsMap = Object.fromEntries((profs || []).map(p => [p.id, p]));
 
                         let html = `<div class="tbl-wrap"><table>
-                            <thead><tr><th>Colaborador</th><th>Identificador</th><th>Data Refeição</th><th>Refeição</th><th>Horário</th><th>Opção Escolhida</th></tr></thead>
+                            <thead><tr><th>Colaborador</th><th>Identificador</th><th>Data Refeição</th><th>Refeição</th><th>Horário</th><th>Itens Inclusos</th></tr></thead>
                             <tbody>`;
 
                         data.forEach(r => {
                             const p = profsMap[r.user_id] || { name: 'Colaborador', email: '-', username: '' };
+                            const itemsSummary = (r.menus?.options && r.menus.options.length)
+                                ? r.menus.options.map(o => escapeHtml(o.description)).join(', ')
+                                : (r.menu_options?.description ? escapeHtml(r.menu_options.description) : 'Cardápio Completo');
+
                             html += `<tr>
                                 <td><strong>${escapeHtml(p.name)}</strong></td>
                                 <td style="font-size:12px;color:#718096">${p.username ? '@' + escapeHtml(p.username) : escapeHtml(p.email)}</td>
                                 <td>${escapeHtml(fmtFullDate(r.menus?.meal_date))}</td>
                                 <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || '-')}</span></td>
                                 <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
-                                <td><strong>${escapeHtml(r.menu_options?.description || '-')}</strong></td>
+                                <td><span style="font-size:12px;color:var(--text-secondary)">${itemsSummary}</span></td>
                             </tr>`;
                         });
 
@@ -2603,18 +2743,6 @@
                 } catch (e) {
                     el.innerHTML = `<div class="alert alert-error" style="display:block">Erro ao gerar relatório: ${escapeHtml(e.message)}</div>`;
                 }
-            }
-
-            function setReportDateToday() {
-                const inp = document.getElementById('reportDate');
-                if (inp) inp.value = getTodayStr();
-                generateReport();
-            }
-
-            function clearReportDate() {
-                const inp = document.getElementById('reportDate');
-                if (inp) inp.value = '';
-                generateReport();
             }
 
             // Exportação Exclusiva do Relatório em PDF
@@ -2668,7 +2796,7 @@
                             <div class="sign-box">Coordenação de Nutrição & Dietética</div>
                         </div>
 
-                        <div class="footer">NutriFlow - Documento Oficial de Gestão de Alimentação Hospitalar</div>
+                        <div class="footer">NutriStaff - Documento Oficial de Gestão de Alimentação Hospitalar</div>
                     </body>
                     </html>
                 `);
@@ -3200,15 +3328,18 @@
                 setMenuFilterDateToday,
                 clearMenuFilterDate,
                 loadAllRequests,
-                setReqFilterDateToday,
-                clearReqFilterDate,
+                setReqPeriod,
+                setReqFilterDateToday: () => setReqPeriod('today'),
+                clearReqFilterDate: () => setReqPeriod('all'),
                 loadStats,
-                setStatsDateToday,
+                setStatsPeriod,
+                setStatsDateToday: () => setStatsPeriod('today'),
                 clearStatsFilters,
                 exportDashboardPdf,
                 generateReport,
-                setReportDateToday,
-                clearReportDate,
+                setReportPeriod,
+                setReportDateToday: () => setReportPeriod('today'),
+                clearReportDate: () => setReportPeriod('all'),
                 exportReportsPdf,
                 _selectStripDate,
                 addCompanyChip,
