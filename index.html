@@ -785,7 +785,7 @@
                         </button>
                     </div>
 
-                    <!-- 6 Indicadores Executivos (KPIs) -->
+                    <!-- 5 Indicadores Executivos (KPIs) -->
                     <div class="stats-grid" id="statsKpis">
                         <div class="stat-card">
                             <div class="val" id="kpiTotalReqs">0</div>
@@ -1146,10 +1146,8 @@
             // ══════════════════════════════════════════════
             //  CAMADA DE PROTEÇÃO CONTRA DEVTOOLS E ATALHOS
             // ══════════════════════════════════════════════
-            // Bloqueia clique com o botão direito
             document.addEventListener('contextmenu', (e) => e.preventDefault());
 
-            // Bloqueia atalhos comuns de desenvolvedor (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U)
             document.addEventListener('keydown', (e) => {
                 if (
                     e.key === 'F12' ||
@@ -1172,7 +1170,7 @@
             const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             // ══════════════════════════════════════════════
-            //  ESTADO PRIVADO (NÃO ACESSÍVEL PELO CONSOLE)
+            //  ESTADO PRIVADO
             // ══════════════════════════════════════════════
             let state = {
                 token: null,
@@ -1646,6 +1644,13 @@
                 navigateTo(targetPage);
             }
 
+            function toggleMobileMenu() {
+                const sidebar = document.querySelector('.sidebar');
+                const menuToggle = document.getElementById('menuToggle');
+                if (sidebar) sidebar.classList.toggle('open');
+                if (menuToggle) menuToggle.classList.toggle('active');
+            }
+
             function closeMobileMenu() {
                 const sidebar = document.querySelector('.sidebar');
                 const menuToggle = document.getElementById('menuToggle');
@@ -1829,7 +1834,7 @@
             }
 
             // ══════════════════════════════════════════════
-            //  SOLICITAR REFEIÇÃO (ANTI-XSS & PREVENÇÃO 24H)
+            //  SOLICITAR REFEIÇÃO
             // ══════════════════════════════════════════════
             async function loadRequestPage() {
                 const el = document.getElementById('requestMenuList');
@@ -1901,7 +1906,6 @@
 
             async function submitRequest(menuId) {
                 try {
-                    // Busca opção de referência caso a tabela possua foreign key option_id
                     const { data: menuOpt } = await sb.from('menu_options')
                         .select('id')
                         .eq('menu_id', menuId)
@@ -2045,7 +2049,6 @@
                 const el = document.getElementById('menuListBody');
                 const dateInput = document.getElementById('menuFilterDate');
                 
-                // Se estiver vazio, define como padrão a data de hoje
                 if (!dateInput.value) {
                     dateInput.value = getTodayStr();
                 }
@@ -2057,7 +2060,6 @@
                 }
 
                 try {
-                    // Busca dados para o indicador visual de dias com cardápio
                     const { data: menuDates } = await sb.from('menus')
                         .select('meal_date')
                         .eq('company_id', state.company.id);
@@ -2169,7 +2171,6 @@
                 }
 
                 try {
-                    // Busca dados para o indicador visual de dias com solicitações
                     const { data: reqCounts } = await sb.from('meal_requests')
                         .select('menus!inner(company_id, meal_date)')
                         .eq('menus.company_id', state.company.id);
@@ -2236,7 +2237,7 @@
             }
 
             // ══════════════════════════════════════════════
-            //  DASHBOARD COM CHART.JS & EXPORTAÇÃO EXCLUSIVA
+            //  DASHBOARD COM CHART.JS & EXPORTAÇÃO
             // ══════════════════════════════════════════════
             let currentStatsData = [];
             let chartInstanceMealDist = null;
@@ -2273,7 +2274,6 @@
                 const mealType = document.getElementById('statsMealType') ? document.getElementById('statsMealType').value : '';
 
                 try {
-                    // Busca dados para o indicador visual de dias com dados no dashboard
                     const { data: allReqStats } = await sb.from('meal_requests')
                         .select('menus!inner(company_id, meal_date)')
                         .eq('menus.company_id', state.company.id);
@@ -2464,7 +2464,7 @@
             }
 
             // ══════════════════════════════════════════════
-            //  EXPORTAÇÃO EXCLUSIVA DO DASHBOARD EM PDF
+            //  EXPORTAÇÃO DO DASHBOARD EM PDF
             // ══════════════════════════════════════════════
             function exportDashboardPdf() {
                 if (!currentStatsData || !currentStatsData.length) {
@@ -2581,7 +2581,6 @@
                 el.innerHTML = '<div class="empty"><div class="empty-icon">⏳</div><p>Gerando relatório...</p></div>';
 
                 try {
-                    // Busca dados para o indicador visual de dias com dados nos relatórios
                     const { data: allReqReport } = await sb.from('meal_requests')
                         .select('menus!inner(company_id, meal_date)')
                         .eq('menus.company_id', state.company.id);
@@ -2745,7 +2744,6 @@
                 }
             }
 
-            // Exportação Exclusiva do Relatório em PDF
             function exportReportsPdf() {
                 if (!currentReportData || !currentReportData.length) {
                     alert('Não há dados no relatório para gerar o PDF.');
@@ -2820,7 +2818,6 @@
 
                     const { data: comps } = await sb.from('companies').select('*').order('id');
                     
-                    // Se não for admin, só permite vincular nas empresas que ele mesmo pertence
                     allCompanies = isCurrentSuperAdmin ? (comps || []) : (state.pendingCompanies || []);
                     
                     const sel = document.getElementById('nuCompanySelect');
@@ -2860,7 +2857,6 @@
                         usersMap[u.id] = u;
                     });
 
-                    // FILTRAGEM: Usuários não-administradores NUNCA veem o administrador e só veem usuários da sua própria unidade
                     let visibleUsers = users || [];
                     if (!isCurrentSuperAdmin) {
                         visibleUsers = visibleUsers.filter(u => u.role !== 'admin' && u.email !== 'admin@hospital.com');
@@ -3264,7 +3260,6 @@
                     state.pendingCompanies = companies;
 
                     if (companies.length === 0) {
-                        await sb.auth.signOut();
                         showScreen('screenLogin');
                         alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
                         return;
@@ -3273,14 +3268,14 @@
                     const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
                     const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
 
-                    if (companies.length === 1) {
-                        state.company = companies[0];
-                        localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
+                    if (matchedCompany) {
+                        state.company = matchedCompany;
                         startInactivityMonitor();
                         buildApp();
                         showScreen('screenApp');
-                    } else if (matchedCompany) {
-                        state.company = matchedCompany;
+                    } else if (companies.length === 1) {
+                        state.company = companies[0];
+                        localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
                         startInactivityMonitor();
                         buildApp();
                         showScreen('screenApp');
@@ -3289,33 +3284,23 @@
                         showScreen('screenCompany');
                     }
                 } catch (e) {
-                    console.error('Erro na inicialização da sessão:', e);
+                    console.error('Erro ao inicializar aplicativo:', e);
                     showScreen('screenLogin');
                 }
             }
 
-            function toggleMobileMenu() {
-                const sidebar = document.querySelector('.sidebar');
-                const menuToggle = document.getElementById('menuToggle');
-                if (sidebar) sidebar.classList.toggle('open');
-                if (menuToggle) menuToggle.classList.toggle('active');
-            }
-
-            // Inicia o app automaticamente
-            initApp();
-
             // ══════════════════════════════════════════════
-            //  DISPATCHER PÚBLICO SEGURO (WINDOW.NutriApp)
-            //  Expõe apenas os gatilhos de clique, mas
-            //  MANTÉM TODAS AS VARIÁVEIS INTERNAS 100% OCULTAS
+            //  EXPOSIÇÃO GLOBAL SEGURA (API DO APP)
             // ══════════════════════════════════════════════
-            window.NutriApp = Object.freeze({
+            window.NutriApp = {
                 doLogin,
                 doLogout,
-                navigateTo,
                 handleCompanyBack,
                 goToSelectCompany,
                 toggleLoginPassword,
+                navigateTo,
+                toggleMobileMenu,
+                closeMobileMenu,
                 updatePassStrength,
                 changePassword,
                 submitRequest,
@@ -3324,24 +3309,19 @@
                 removeOptionInput,
                 saveMenu,
                 loadMenuNutri,
-                deleteMenu,
                 setMenuFilterDateToday,
                 clearMenuFilterDate,
-                loadAllRequests,
+                deleteMenu,
                 setReqPeriod,
-                setReqFilterDateToday: () => setReqPeriod('today'),
-                clearReqFilterDate: () => setReqPeriod('all'),
-                loadStats,
+                loadAllRequests,
                 setStatsPeriod,
-                setStatsDateToday: () => setStatsPeriod('today'),
                 clearStatsFilters,
+                loadStats,
                 exportDashboardPdf,
-                generateReport,
                 setReportPeriod,
-                setReportDateToday: () => setReportPeriod('today'),
-                clearReportDate: () => setReportPeriod('all'),
+                generateReport,
                 exportReportsPdf,
-                _selectStripDate,
+                loadUsers,
                 addCompanyChip,
                 removeChip,
                 createUser,
@@ -3351,12 +3331,18 @@
                 addEditCompanyChip,
                 removeEditChip,
                 saveEditUser,
+                loadCompanies,
                 createCompany,
                 deleteCompany,
-                toggleMobileMenu,
-                closeMobileMenu
-            });
+                _selectStripDate
+            };
 
+            // Inicia o app após carregar a árvore DOM
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initApp);
+            } else {
+                initApp();
+            }
         })();
     </script>
 </body>
