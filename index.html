@@ -1601,7 +1601,7 @@
                         state.company = companies[0];
                         localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
                         startInactivityMonitor();
-                        buildApp();
+                        buildApp('pageHome');
                         showScreen('screenApp');
                     } else {
                         renderCompanySelectionScreen();
@@ -1682,7 +1682,7 @@
                         state.company = c;
                         localStorage.setItem(STORAGE_KEY_COMPANY_ID, c.id.toString());
                         startInactivityMonitor();
-                        buildApp();
+                        buildApp('pageHome');
                         showScreen('screenApp');
                     };
                     list.appendChild(btn);
@@ -1742,6 +1742,7 @@
                 }
                 state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
                 clearLoginForm();
+                window.history.replaceState(null, '', window.location.pathname);
                 showScreen('screenLogin');
             }
 
@@ -1772,7 +1773,7 @@
                 }
             });
 
-            function buildApp() {
+            function buildApp(initialPage = null) {
                 const role = state.user.role;
                 const roleLabel = role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador';
                 
@@ -1883,11 +1884,30 @@
                     }
                 });
 
-                const currentHash = window.location.hash.replace('#', '');
-                const hashPage = PAGE_BY_ROUTE[currentHash];
-                const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
-                const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
-                const targetPage = hashPage || ((savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome');
+                let targetPage = 'pageHome';
+                if (initialPage) {
+                    targetPage = initialPage;
+                } else {
+                    const currentHash = window.location.hash.replace('#', '');
+                    const hashPage = PAGE_BY_ROUTE[currentHash];
+                    const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
+                    const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
+                    targetPage = hashPage || ((savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome');
+                }
+
+                // Validação de permissões da página destino
+                const nutriPages = ['pageMenu', 'pageRequests', 'pageStats', 'pageReports'];
+                if (nutriPages.includes(targetPage) && role !== 'nutricionista' && role !== 'admin') {
+                    targetPage = 'pageHome';
+                }
+                if (targetPage === 'pageUsers') {
+                    const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
+                    if (!canManageUsers) targetPage = 'pageHome';
+                }
+                if (targetPage === 'pageCompanies' && role !== 'admin') {
+                    targetPage = 'pageHome';
+                }
+
                 navigateTo(targetPage, true);
             }
 
@@ -3654,19 +3674,21 @@
                         return;
                     }
 
-                    const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
-                    const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
+                    const currentHash = window.location.hash.replace('#', '');
+                    const hashPage = PAGE_BY_ROUTE[currentHash];
+                    const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
+                    const targetInitialPage = hashPage || savedPage || 'pageHome';
 
                     if (matchedCompany) {
                         state.company = matchedCompany;
                         startInactivityMonitor();
-                        buildApp();
+                        buildApp(targetInitialPage);
                         showScreen('screenApp');
                     } else if (companies.length === 1) {
                         state.company = companies[0];
                         localStorage.setItem(STORAGE_KEY_COMPANY_ID, companies[0].id.toString());
                         startInactivityMonitor();
-                        buildApp();
+                        buildApp(targetInitialPage);
                         showScreen('screenApp');
                     } else {
                         renderCompanySelectionScreen();
