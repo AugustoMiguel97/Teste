@@ -239,6 +239,86 @@
             letter-spacing: 1.2px; color: rgba(242, 248, 244, 0.45); font-weight: 700;
         }
 
+        /* ── SEÇÕES RECOLHÍVEIS (ACCORDION) NA SIDEBAR ────── */
+        .nav-group {
+            margin-bottom: 4px;
+        }
+        .nav-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 12px;
+            color: rgba(242, 248, 244, 0.75);
+            cursor: pointer;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-radius: var(--radius);
+            transition: background var(--transition), color var(--transition);
+            user-select: none;
+            margin-top: 6px;
+            margin-bottom: 2px;
+        }
+        .nav-group-header:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+        .nav-group-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-group-arrow {
+            font-size: 11px;
+            color: rgba(242, 248, 244, 0.5);
+            transition: transform 0.2s var(--ease), color var(--transition);
+            display: inline-block;
+        }
+        .nav-group.open .nav-group-arrow {
+            transform: rotate(90deg);
+            color: #34d399;
+        }
+        .nav-group-body {
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            padding-left: 8px;
+            margin-top: 2px;
+            margin-bottom: 4px;
+        }
+        .nav-group.open .nav-group-body {
+            display: flex;
+            animation: fadeInGroup 0.18s var(--ease);
+        }
+        @keyframes fadeInGroup {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-sub-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8.5px 12px;
+            color: rgba(242, 248, 244, 0.8);
+            cursor: pointer;
+            font-size: 12.5px;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            transition: background var(--transition), color var(--transition), transform var(--transition);
+        }
+        .nav-sub-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+        .nav-sub-item.active {
+            background: rgba(52, 211, 153, 0.18);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: inset 0 0 0 1px rgba(52, 211, 153, 0.3);
+        }
+
         .sidebar-footer {
             padding: 14px 16px; border-top: 1px solid var(--sidebar-border);
             background: rgba(0, 0, 0, 0.2); flex-shrink: 0; margin-top: auto;
@@ -1227,6 +1307,24 @@
             document.addEventListener('contextmenu', (e) => e.preventDefault());
 
             document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' || e.key === 'Esc') {
+                    const modalChangePass = document.getElementById('modalChangePassword');
+                    if (modalChangePass && modalChangePass.classList.contains('open')) {
+                        closeChangePasswordModal();
+                        return;
+                    }
+                    const modalEditUser = document.getElementById('modalEditUser');
+                    if (modalEditUser && modalEditUser.classList.contains('open')) {
+                        closeEditUser();
+                        return;
+                    }
+                    const popover = document.getElementById('userSettingsPopover');
+                    if (popover && popover.classList.contains('open')) {
+                        closeSettingsMenu();
+                        return;
+                    }
+                }
+
                 if (
                     e.key === 'F12' ||
                     (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
@@ -1296,8 +1394,13 @@
                 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
                 const el = document.getElementById(id);
                 if (el) el.classList.add('active');
-                document.querySelectorAll('.nav-item').forEach(n => {
-                    n.classList.toggle('active', n.dataset.page === id);
+                document.querySelectorAll('.nav-item, .nav-sub-item').forEach(n => {
+                    const isCurrent = (n.dataset.page === id);
+                    n.classList.toggle('active', isCurrent);
+                    if (isCurrent) {
+                        const parentGroup = n.closest('.nav-group');
+                        if (parentGroup) parentGroup.classList.add('open');
+                    }
                 });
                 const mainContainer = document.querySelector('.main');
                 if (mainContainer) mainContainer.scrollTop = 0;
@@ -1703,35 +1806,73 @@
                 ];
 
                 if (role === 'nutricionista' || role === 'admin') {
-                    items.push(
-                        { sep: 'Nutrição & Relatórios' },
-                        { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
-                        { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
-                        { page: 'pageStats', icon: '📈', label: 'Dashboards' },
-                        { page: 'pageReports', icon: '📑', label: 'Relatórios' }
-                    );
+                    items.push({
+                        group: 'nutricao',
+                        label: 'Nutrição & Relatórios',
+                        icon: '🥗',
+                        children: [
+                            { page: 'pageMenu', icon: '📅', label: 'Cardápio' },
+                            { page: 'pageRequests', icon: '📊', label: 'Solicitações' },
+                            { page: 'pageStats', icon: '📈', label: 'Dashboards' },
+                            { page: 'pageReports', icon: '📑', label: 'Relatórios' }
+                        ]
+                    });
                 }
                 const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
-                if (canManageUsers) {
-                    items.push(
-                        { sep: 'Administração' },
-                        { page: 'pageUsers', icon: '👥', label: 'Usuários' }
-                    );
-                }
-                if (role === 'admin') {
-                    items.push(
-                        { page: 'pageCompanies', icon: '🏢', label: 'Empresas' }
-                    );
+                if (canManageUsers || role === 'admin') {
+                    const adminChildren = [];
+                    if (canManageUsers) {
+                        adminChildren.push({ page: 'pageUsers', icon: '👥', label: 'Usuários' });
+                    }
+                    if (role === 'admin') {
+                        adminChildren.push({ page: 'pageCompanies', icon: '🏢', label: 'Empresas' });
+                    }
+                    if (adminChildren.length > 0) {
+                        items.push({
+                            group: 'administracao',
+                            label: 'Administração',
+                            icon: '🛡️',
+                            children: adminChildren
+                        });
+                    }
                 }
 
                 items.forEach(item => {
-                    if (item.sep) {
-                        const s = document.createElement('div');
-                        s.className = 'nav-sep'; s.textContent = item.sep;
-                        nav.appendChild(s);
+                    if (item.group) {
+                        const grp = document.createElement('div');
+                        grp.className = 'nav-group';
+                        grp.id = `navGroup_${item.group}`;
+
+                        const header = document.createElement('div');
+                        header.className = 'nav-group-header';
+                        header.innerHTML = `
+                            <div class="nav-group-title">
+                                <span style="font-size:13px">${item.icon}</span>
+                                <span>${item.label}</span>
+                            </div>
+                            <span class="nav-group-arrow">▶</span>
+                        `;
+                        header.onclick = () => toggleNavGroup(item.group);
+
+                        const body = document.createElement('div');
+                        body.className = 'nav-group-body';
+
+                        item.children.forEach(child => {
+                            const sub = document.createElement('div');
+                            sub.className = 'nav-sub-item';
+                            sub.dataset.page = child.page;
+                            sub.innerHTML = `<span class="nav-icon" style="font-size:14px;width:18px">${child.icon}</span>${child.label}`;
+                            sub.onclick = () => navigateTo(child.page);
+                            body.appendChild(sub);
+                        });
+
+                        grp.appendChild(header);
+                        grp.appendChild(body);
+                        nav.appendChild(grp);
                     } else {
                         const a = document.createElement('div');
-                        a.className = 'nav-item'; a.dataset.page = item.page;
+                        a.className = 'nav-item';
+                        a.dataset.page = item.page;
                         a.innerHTML = `<span class="nav-icon">${item.icon}</span>${item.label}`;
                         a.onclick = () => navigateTo(item.page);
                         nav.appendChild(a);
@@ -1744,6 +1885,11 @@
                 const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
                 const targetPage = hashPage || ((savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome');
                 navigateTo(targetPage, true);
+            }
+
+            function toggleNavGroup(groupId) {
+                const grp = document.getElementById(`navGroup_${groupId}`);
+                if (grp) grp.classList.toggle('open');
             }
 
             function toggleMobileMenu() {
@@ -3540,6 +3686,7 @@
                 navigateTo,
                 toggleMobileMenu,
                 closeMobileMenu,
+                toggleNavGroup,
                 toggleSettingsMenu,
                 closeSettingsMenu,
                 openChangePasswordFromSettings,
