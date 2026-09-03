@@ -254,6 +254,24 @@
         }
         .sidebar-footer button:hover { background: rgba(255, 255, 255, .12); color: #fff; }
 
+        .user-settings-btn {
+            width: 32px !important; height: 32px !important; padding: 0 !important;
+            background: rgba(255, 255, 255, 0.08) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            border-radius: var(--radius-sm) !important;
+            color: rgba(242, 248, 244, 0.9) !important;
+            font-size: 15px !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
+            cursor: pointer !important;
+            transition: transform var(--transition), background var(--transition), border-color var(--transition) !important;
+            flex-shrink: 0 !important;
+        }
+        .user-settings-btn:hover {
+            background: rgba(52, 211, 153, 0.22) !important;
+            border-color: rgba(52, 211, 153, 0.45) !important;
+            transform: rotate(45deg) scale(1.08) !important;
+        }
+
         /* ── ÁREA PRINCIPAL ──────────────────────────────── */
         .main {
             flex: 1; height: 100vh; max-height: 100vh;
@@ -565,11 +583,14 @@
                 <nav class="sidebar-nav" id="sidebarNav"></nav>
                 <div class="sidebar-footer">
                     <div style="display:flex;align-items:center;gap:10px;padding:4px 2px 8px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:4px">
-                        <div style="width:34px;height:34px;border-radius:50%;background:rgba(52,211,153,0.18);border:1px solid rgba(52,211,153,0.4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#34d399;flex-shrink:0" id="sbUserAvatar">U</div>
-                        <div style="overflow:hidden;flex:1">
+                        <div style="width:34px;height:34px;border-radius:50%;background:rgba(52,211,153,0.18);border:1px solid rgba(52,211,153,0.4);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#34d399;flex-shrink:0;cursor:pointer" id="sbUserAvatar" onclick="window.NutriApp.navigateTo('pageChangePassword')" title="Configurações / Alterar Senha">U</div>
+                        <div style="overflow:hidden;flex:1;cursor:pointer" onclick="window.NutriApp.navigateTo('pageChangePassword')" title="Clique para alterar sua senha ou acessar configurações">
                             <div id="sbUser" style="font-weight:600;font-size:12.5px;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div>
                             <div id="sbUserRole" style="font-size:10.5px;color:rgba(242,248,244,0.65)"></div>
                         </div>
+                        <button type="button" class="user-settings-btn" onclick="window.NutriApp.navigateTo('pageChangePassword')" title="Configurações / Alterar Senha" aria-label="Configurações">
+                            ⚙️
+                        </button>
                     </div>
                     <button type="button" id="btnSwitchCompany" onclick="window.NutriApp.goToSelectCompany()">🔄 Trocar unidade</button>
                     <button type="button" onclick="window.NutriApp.doLogout()"
@@ -1563,6 +1584,31 @@
             // ══════════════════════════════════════════════
             //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
             // ══════════════════════════════════════════════
+            const ROUTE_MAP = {
+                'pageHome': 'inicio',
+                'pageRequest': 'solicitar-refeicao',
+                'pageMyReqs': 'minhas-solicitacoes',
+                'pageChangePassword': 'alterar-senha',
+                'pageMenu': 'cardapio',
+                'pageRequests': 'solicitacoes',
+                'pageStats': 'dashboards',
+                'pageReports': 'relatorios',
+                'pageUsers': 'usuarios',
+                'pageCompanies': 'empresas'
+            };
+
+            const PAGE_BY_ROUTE = Object.fromEntries(
+                Object.entries(ROUTE_MAP).map(([page, route]) => [route, page])
+            );
+
+            window.addEventListener('popstate', () => {
+                const currentHash = window.location.hash.replace('#', '');
+                const targetPage = PAGE_BY_ROUTE[currentHash];
+                if (targetPage && state.user && state.company) {
+                    navigateTo(targetPage, false);
+                }
+            });
+
             function buildApp() {
                 const role = state.user.role;
                 const roleLabel = role === 'admin' ? 'Administrador' : role === 'nutricionista' ? 'Nutricionista' : 'Colaborador';
@@ -1638,10 +1684,12 @@
                     }
                 });
 
+                const currentHash = window.location.hash.replace('#', '');
+                const hashPage = PAGE_BY_ROUTE[currentHash];
                 const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
                 const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
-                const targetPage = (savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome';
-                navigateTo(targetPage);
+                const targetPage = hashPage || ((savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome');
+                navigateTo(targetPage, true);
             }
 
             function toggleMobileMenu() {
@@ -1662,10 +1710,15 @@
                 }
             }
 
-            function navigateTo(pageId) {
+            function navigateTo(pageId, updateUrl = true) {
                 closeMobileMenu();
                 showPage(pageId);
                 localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
+
+                if (updateUrl && ROUTE_MAP[pageId]) {
+                    window.history.pushState(null, '', '#' + ROUTE_MAP[pageId]);
+                }
+
                 if (pageId === 'pageHome') loadHome();
                 if (pageId === 'pageRequest') loadRequestPage();
                 if (pageId === 'pageMyReqs') loadMyReqs();
