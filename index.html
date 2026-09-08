@@ -807,8 +807,13 @@
                                         <option value="lanche_noite">🌙 Lanche da noite</option>
                                     </select>
                                 </div>
-                                <div class="form-group"><label>Horário</label>
-                                    <input type="time" id="newMenuTime">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>Horário de início</label>
+                                    <input type="time" id="newMenuTimeStart">
+                                </div>
+                                <div class="form-group"><label>Horário de término (fim)</label>
+                                    <input type="time" id="newMenuTimeEnd">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -1439,7 +1444,17 @@
             }
 
             function hoursUntil(dateStr, timeStr) {
-                return (new Date(`${dateStr}T${timeStr}`) - new Date()) / 3600000;
+                if (!timeStr) return 0;
+                const cleanTime = String(timeStr).split(' ')[0].substring(0, 5);
+                return (new Date(`${dateStr}T${cleanTime}`) - new Date()) / 3600000;
+            }
+
+            function fmtMealTime(menu) {
+                if (!menu) return '-';
+                const start = menu.meal_time ? String(menu.meal_time).substring(0, 5) : '';
+                const end = menu.meal_time_end ? String(menu.meal_time_end).substring(0, 5) : '';
+                if (start && end) return `${start} às ${end}`;
+                return start || end || '-';
             }
 
             function getTodayStr() {
@@ -2256,7 +2271,7 @@
                                             <div class="menu-card-header">
                                                 <div class="menu-card-title">
                                                     <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                                    <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
+                                                    <span>${escapeHtml(fmtDate(m.meal_date))} · ${escapeHtml(fmtMealTime(m))}</span>
                                                 </div>
                                             </div>
                                             <div class="option-tags">
@@ -2310,7 +2325,7 @@
                                 <div class="section-header">
                                     <div>
                                         <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                        <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</strong>
+                                        <strong style="margin-left:8px">${escapeHtml(fmtDate(m.meal_date))} · ${escapeHtml(fmtMealTime(m))}</strong>
                                     </div>
                                     ${already ? '<span class="badge badge-confirmed">Solicitado ✅</span>' : ''}
                                 </div>
@@ -2405,7 +2420,7 @@
                         return `<tr>
                                     <td><strong>${r.menu ? escapeHtml(fmtDate(r.menu.meal_date)) : '-'}</strong></td>
                                     <td><span class="meal-pill ${escapeHtml(r.menu?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menu?.meal_type] || '-')}</span></td>
-                                    <td>${escapeHtml(r.menu?.meal_time || '-')}</td>
+                                    <td>${escapeHtml(fmtMealTime(r.menu))}</td>
                                     <td><span style="font-size:12.5px;color:var(--text-secondary)">${itemsSummary}</span></td>
                                     <td>${canCancel
                                 ? `<button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.cancelMyReq(${r.id})">Cancelar</button>`
@@ -2452,20 +2467,37 @@
             async function saveMenu() {
                 const meal_date = document.getElementById('newMenuDate').value;
                 const meal_type = document.getElementById('newMenuType').value;
-                const meal_time = document.getElementById('newMenuTime').value;
+                const meal_time_start = document.getElementById('newMenuTimeStart').value;
+                const meal_time_end = document.getElementById('newMenuTimeEnd').value;
                 const inputs = [...document.querySelectorAll('#optionInputs input')];
                 const options = inputs.map(i => i.value.trim()).filter(Boolean);
 
-                if (!meal_date || !meal_type || !meal_time) return alert_('menuError', 'Preencha data, tipo e horário');
+                if (!meal_date || !meal_type || !meal_time_start) return alert_('menuError', 'Preencha a data, o tipo e o horário de início');
+                if (meal_time_end && meal_time_end <= meal_time_start) {
+                    return alert_('menuError', 'O horário de término deve ser posterior ao horário de início');
+                }
                 if (!options.length) return alert_('menuError', 'Adicione pelo menos uma opção');
 
                 try {
-                    const { data: newMenu, error: menuErr } = await sb.from('menus').insert({
+                    const payload = {
                         company_id: state.company.id,
                         meal_date,
                         meal_type,
-                        meal_time
-                    }).select().single();
+                        meal_time: meal_time_start
+                    };
+                    if (meal_time_end) {
+                        payload.meal_time_end = meal_time_end;
+                    }
+
+                    let { data: newMenu, error: menuErr } = await sb.from('menus').insert(payload).select().single();
+
+                    // Fallback caso a coluna meal_time_end ainda não tenha sido criada no Supabase
+                    if (menuErr && (menuErr.message?.includes('meal_time_end') || menuErr.details?.includes('meal_time_end') || menuErr.code === 'PGRST204')) {
+                        delete payload.meal_time_end;
+                        const retry = await sb.from('menus').insert(payload).select().single();
+                        newMenu = retry.data;
+                        menuErr = retry.error;
+                    }
 
                     if (menuErr) throw menuErr;
 
@@ -2476,7 +2508,8 @@
                     alert_('menuSuccess', 'Refeição cadastrada com sucesso!', 'success');
                     document.getElementById('newMenuDate').value = '';
                     document.getElementById('newMenuType').value = '';
-                    document.getElementById('newMenuTime').value = '';
+                    document.getElementById('newMenuTimeStart').value = '';
+                    document.getElementById('newMenuTimeEnd').value = '';
                     document.getElementById('optionInputs').innerHTML = `
                         <div class="option-input-row">
                             <input type="text" placeholder="Ex: Frango grelhado">
@@ -2534,7 +2567,7 @@
                             <div class="menu-card-header">
                                 <div class="menu-card-title">
                                     <span class="meal-pill ${escapeHtml(m.meal_type)}">${escapeHtml(MEAL_LABELS[m.meal_type] || m.meal_type)}</span>
-                                    <span>${escapeHtml(fmtDate(m.meal_date))} às ${escapeHtml(m.meal_time)}</span>
+                                    <span>${escapeHtml(fmtDate(m.meal_date))} · ${escapeHtml(fmtMealTime(m))}</span>
                                 </div>
                                 <button type="button" class="btn btn-danger btn-sm" onclick="window.NutriApp.deleteMenu(${m.id})">Excluir</button>
                             </div>
@@ -2632,7 +2665,7 @@
                     });
 
                     let query = sb.from('meal_requests')
-                        .select('id, user_id, menus!inner(company_id, meal_date, meal_type, meal_time, options:menu_options(*)), menu_options(description)')
+                        .select('id, user_id, menus!inner(*, options:menu_options(*)), menu_options(description)')
                         .eq('menus.company_id', state.company.id)
                         .order('id', { ascending: false });
 
@@ -2669,7 +2702,7 @@
                                     <td><strong>${escapeHtml(profilesMap[r.user_id] || 'Colaborador')}</strong></td>
                                     <td>${escapeHtml(fmtDate(r.menus?.meal_date))}</td>
                                     <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || r.menus?.meal_type)}</span></td>
-                                    <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                                    <td>${escapeHtml(fmtMealTime(r.menus))}</td>
                                     <td><span style="font-size:12.5px;color:var(--text-secondary)">${itemsSummary}</span></td>
                                     <td><span class="badge badge-confirmed">Confirmado ✅</span></td>
                                 </tr>`;
@@ -3077,7 +3110,7 @@
                                 prodGroups[key] = {
                                     date: r.menus.meal_date,
                                     type: r.menus.meal_type,
-                                    time: r.menus.meal_time,
+                                    time: fmtMealTime(r.menus),
                                     items: {}
                                 };
                             }
@@ -3139,7 +3172,7 @@
                                 <td style="font-size:12px;color:#718096">${p.username ? '@' + escapeHtml(p.username) : escapeHtml(p.email)}</td>
                                 <td>${escapeHtml(fmtFullDate(r.menus?.meal_date))}</td>
                                 <td><span class="meal-pill ${escapeHtml(r.menus?.meal_type)}">${escapeHtml(MEAL_LABELS[r.menus?.meal_type] || '-')}</span></td>
-                                <td>${escapeHtml(r.menus?.meal_time || '-')}</td>
+                                <td>${escapeHtml(fmtMealTime(r.menus))}</td>
                                 <td><span style="font-size:12px;color:var(--text-secondary)">${itemsSummary}</span></td>
                             </tr>`;
                         });
