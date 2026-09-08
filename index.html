@@ -624,6 +624,19 @@
         .pass-strength-bar { height: 5px; background: var(--border); border-radius: 4px; margin-top: 7px; overflow: hidden; }
         .pass-strength-fill { height: 100%; width: 0%; border-radius: 4px; transition: width .35s var(--ease), background-color .35s; }
 
+        /* ── SPINNER DE CARREGAMENTO / SPLASH ────────────── */
+        .splash-spinner {
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #34d399;
+            border-radius: 50%;
+            animation: splashSpin 0.75s linear infinite;
+        }
+        @keyframes splashSpin {
+            to { transform: rotate(360deg); }
+        }
+
         /* ── MENU TOGGLE MOBILE ──────────────────────────── */
         .menu-toggle { display: none; flex-direction: column; justify-content: space-between; width: 26px; height: 19px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 100000; }
         .menu-toggle .bar { width: 100%; height: 2.5px; background-color: rgba(242, 248, 244, .9); border-radius: 2px; transition: all .3s var(--ease); }
@@ -647,8 +660,21 @@
 
 <body>
 
+    <!-- ══ TELA 0: CARREGAMENTO / SPLASH SCREEN ══ -->
+    <div id="screenSplash" class="screen auth-wrap active">
+        <div style="text-align:center; animation: fadeIn .3s var(--ease); max-width: 340px; margin: auto;">
+            <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true"
+                alt="NutriStaff"
+                style="max-width:220px;width:100%;height:auto;display:block;margin:0 auto 20px;border-radius:8px;box-shadow:0 12px 35px rgba(0,0,0,0.3)">
+            <div style="display:inline-flex;align-items:center;justify-content:center;gap:10px;color:rgba(255,255,255,0.9);font-size:13px;font-weight:600;background:rgba(255,255,255,0.1);padding:8px 20px;border-radius:20px;border:1px solid rgba(255,255,255,0.15)">
+                <div class="splash-spinner"></div>
+                <span>Carregando NutriStaff...</span>
+            </div>
+        </div>
+    </div>
+
     <!-- ══ TELA 1: LOGIN ══ -->
-    <div id="screenLogin" class="screen auth-wrap active">
+    <div id="screenLogin" class="screen auth-wrap">
         <div class="auth-card">
             <div style="text-align:center;margin-bottom:12px">
                 <img src="https://github.com/AugustoMiguel97/Teste/blob/main/Firefly.png?raw=true"
