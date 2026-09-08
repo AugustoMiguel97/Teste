@@ -1392,6 +1392,15 @@
                     target.classList.add('active');
                     target.style.setProperty('display', 'flex', 'important');
                 }
+
+                if (id === 'screenLogin' || id === 'screenCompany') {
+                    localStorage.removeItem(STORAGE_KEY_ACTIVE_PAGE);
+                    try {
+                        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                    } catch (e) {
+                        window.location.hash = '';
+                    }
+                }
             }
 
             function showPage(id) {
@@ -1742,12 +1751,16 @@
                 }
                 state = { token: null, user: null, company: null, pendingUser: null, pendingCompanies: [] };
                 clearLoginForm();
-                window.history.replaceState(null, '', window.location.pathname);
+                try {
+                    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                } catch (e) {
+                    window.location.hash = '';
+                }
                 showScreen('screenLogin');
             }
 
             // ══════════════════════════════════════════════
-            //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO
+            //  CONSTRUÇÃO DO MENU E NAVEGAÇÃO SEGURA
             // ══════════════════════════════════════════════
             const ROUTE_MAP = {
                 'pageHome': 'inicio',
@@ -1765,12 +1778,37 @@
                 Object.entries(ROUTE_MAP).map(([page, route]) => [route, page])
             );
 
-            window.addEventListener('popstate', () => {
-                const currentHash = window.location.hash.replace('#', '');
-                const targetPage = PAGE_BY_ROUTE[currentHash];
-                if (targetPage && state.user && state.company) {
-                    navigateTo(targetPage, false);
+            function canAccessPage(pageId) {
+                if (!state.user) return false;
+                const role = state.user.role;
+                const nutriPages = ['pageMenu', 'pageRequests', 'pageStats', 'pageReports'];
+                if (nutriPages.includes(pageId)) {
+                    return (role === 'nutricionista' || role === 'admin');
                 }
+                if (pageId === 'pageUsers') {
+                    return role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
+                }
+                if (pageId === 'pageCompanies') {
+                    return role === 'admin';
+                }
+                return ['pageHome', 'pageRequest', 'pageMyReqs'].includes(pageId);
+            }
+
+            window.addEventListener('popstate', () => {
+                if (!state.user || !state.company) {
+                    try {
+                        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                    } catch (e) {
+                        window.location.hash = '';
+                    }
+                    return;
+                }
+                const currentHash = window.location.hash.replace('#', '');
+                let targetPage = PAGE_BY_ROUTE[currentHash] || 'pageHome';
+                if (!canAccessPage(targetPage)) {
+                    targetPage = 'pageHome';
+                }
+                navigateTo(targetPage, false);
             });
 
             function buildApp(initialPage = null) {
@@ -1885,27 +1923,14 @@
                 });
 
                 let targetPage = 'pageHome';
-                if (initialPage) {
+                if (initialPage && canAccessPage(initialPage)) {
                     targetPage = initialPage;
                 } else {
                     const currentHash = window.location.hash.replace('#', '');
                     const hashPage = PAGE_BY_ROUTE[currentHash];
                     const savedPage = localStorage.getItem(STORAGE_KEY_ACTIVE_PAGE);
-                    const allPageIds = [...document.querySelectorAll('.page')].map(p => p.id);
-                    targetPage = hashPage || ((savedPage && allPageIds.includes(savedPage)) ? savedPage : 'pageHome');
-                }
-
-                // Validação de permissões da página destino
-                const nutriPages = ['pageMenu', 'pageRequests', 'pageStats', 'pageReports'];
-                if (nutriPages.includes(targetPage) && role !== 'nutricionista' && role !== 'admin') {
-                    targetPage = 'pageHome';
-                }
-                if (targetPage === 'pageUsers') {
-                    const canManageUsers = role === 'admin' || (state.user.extra_permissions || []).includes('criar_usuario');
-                    if (!canManageUsers) targetPage = 'pageHome';
-                }
-                if (targetPage === 'pageCompanies' && role !== 'admin') {
-                    targetPage = 'pageHome';
+                    const candidatePage = hashPage || savedPage || 'pageHome';
+                    targetPage = canAccessPage(candidatePage) ? candidatePage : 'pageHome';
                 }
 
                 navigateTo(targetPage, true);
@@ -1935,13 +1960,23 @@
             }
 
             function navigateTo(pageId, updateUrl = true) {
+                // Trava de segurança: se o usuário não tem permissão, força página inicial
+                if (!canAccessPage(pageId)) {
+                    pageId = 'pageHome';
+                }
+
                 closeMobileMenu();
                 closeSettingsMenu();
                 showPage(pageId);
                 localStorage.setItem(STORAGE_KEY_ACTIVE_PAGE, pageId);
 
-                if (updateUrl && ROUTE_MAP[pageId]) {
-                    window.history.pushState(null, '', '#' + ROUTE_MAP[pageId]);
+                if (ROUTE_MAP[pageId]) {
+                    const targetHash = '#' + ROUTE_MAP[pageId];
+                    if (updateUrl) {
+                        window.history.pushState(null, '', targetHash);
+                    } else {
+                        window.history.replaceState(null, '', targetHash);
+                    }
                 }
 
                 if (pageId === 'pageHome') loadHome();
