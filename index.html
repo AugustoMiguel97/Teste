@@ -1646,9 +1646,7 @@
             let inactivityTimerInterval = null;
 
             function recordActivity() {
-                if (state.user) {
-                    localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
-                }
+                localStorage.setItem(STORAGE_KEY_LAST_ACTIVITY, Date.now().toString());
             }
 
             function startInactivityMonitor() {
@@ -3718,6 +3716,7 @@
                         extra_permissions: profile.extra_permissions || []
                     };
                     state.token = session.access_token;
+                    recordActivity();
 
                     let companies = [];
                     if (role === 'admin') {
@@ -3741,6 +3740,9 @@
                         alert_('loginError', 'Você não está vinculado a nenhuma empresa. Contate o administrador.');
                         return;
                     }
+
+                    const savedCompanyId = localStorage.getItem(STORAGE_KEY_COMPANY_ID);
+                    const matchedCompany = companies.find(c => String(c.id) === String(savedCompanyId));
 
                     const currentHash = window.location.hash.replace('#', '');
                     const hashPage = PAGE_BY_ROUTE[currentHash];
