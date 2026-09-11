@@ -3145,8 +3145,24 @@
 
             const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+            // Detecta se a página foi aberta a partir de um link de e-mail (recuperação, convite ou código PKCE)
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentHash = window.location.hash || '';
+            const isEmailAuthLink = urlParams.has('code') ||
+                urlParams.get('type') === 'recovery' ||
+                urlParams.get('type') === 'invite' ||
+                urlParams.get('type') === 'signup' ||
+                currentHash.includes('type=recovery') ||
+                currentHash.includes('type=invite') ||
+                currentHash.includes('type=signup') ||
+                currentHash.includes('access_token=');
+
+            let isRecoveryFlow = isEmailAuthLink;
+
             sb.auth.onAuthStateChange(async (event, session) => {
-                if (event === 'PASSWORD_RECOVERY') {
+                if (event === 'PASSWORD_RECOVERY' || (isRecoveryFlow && (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION'))) {
+                    isRecoveryFlow = true;
+                    showScreen('screenLogin');
                     openResetPasswordModal();
                 }
             });
@@ -4110,9 +4126,11 @@
                     if (error) throw error;
 
                     if (succEl) {
-                        succEl.textContent = 'Senha redefinida com sucesso! Entrando no sistema...';
+                        succEl.textContent = 'Senha cadastrada com sucesso! Entrando no sistema...';
                         succEl.style.display = 'block';
                     }
+
+                    isRecoveryFlow = false;
 
                     try {
                         window.history.replaceState(null, '', window.location.pathname);
@@ -5767,8 +5785,19 @@
             }
 
             async function initApp() {
-                if (window.location.hash && (window.location.hash.includes('type=recovery') || window.location.hash.includes('access_token='))) {
-                    openResetPasswordModal();
+                if (isRecoveryFlow) {
+                    showScreen('screenLogin');
+                    setTimeout(async () => {
+                        try {
+                            const { data: { session } } = await sb.auth.getSession();
+                            if (session && session.user) {
+                                state.token = session.access_token;
+                            }
+                        } catch (e) {
+                            console.warn('Erro ao carregar sessão no fluxo de senha:', e);
+                        }
+                        openResetPasswordModal();
+                    }, 200);
                     return;
                 }
 
