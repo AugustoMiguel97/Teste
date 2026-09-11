@@ -424,6 +424,24 @@
             color: var(--brand);
         }
 
+        .auth-forgot-link {
+            background: transparent;
+            border: none;
+            color: var(--brand);
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color var(--transition-fast), text-decoration var(--transition-fast);
+            font-family: inherit;
+            padding: 0;
+        }
+
+        .auth-forgot-link:hover {
+            color: var(--brand-dark);
+            text-decoration: underline;
+        }
+
         .splash-screen-clean {
             display: flex !important;
             align-items: center;
@@ -2061,7 +2079,8 @@
                         onkeydown="if(event.key==='Enter')window.NutriApp.doLogin()">
                 </div>
 
-                <div style="display:flex;align-items:center;margin-top:-6px;margin-bottom:20px">
+                <div
+                    style="display:flex;align-items:center;justify-content:space-between;margin-top:-6px;margin-bottom:20px;flex-wrap:wrap;gap:10px">
                     <label
                         style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);cursor:pointer;user-select:none;font-weight:500">
                         <input type="checkbox" id="chkShowLoginPass"
@@ -2069,6 +2088,8 @@
                             style="width:15px;height:15px;accent-color:var(--brand);cursor:pointer">
                         <span>Mostrar senha</span>
                     </label>
+                    <button type="button" class="auth-forgot-link"
+                        onclick="window.NutriApp.openForgotPasswordModal()">Esqueci minha senha</button>
                 </div>
 
                 <button type="button" class="btn btn-primary btn-full" onclick="window.NutriApp.doLogin()"
@@ -2664,8 +2685,21 @@
                                         style="font-family:monospace"
                                         oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_.]/g,'')">
                                 </div>
-                                <div class="form-group"><label for="nuPass">Senha de acesso</label><input
-                                        type="password" id="nuPass" placeholder="Senha segura"></div>
+                                <div class="form-group">
+                                    <label for="nuPass">Senha de acesso</label>
+                                    <input type="password" id="nuPass"
+                                        placeholder="Opcional (definida pelo usuário via e-mail)">
+                                </div>
+                            </div>
+                            <div style="margin-top:-6px;margin-bottom:14px">
+                                <label
+                                    style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-secondary);cursor:pointer;user-select:none;font-weight:500">
+                                    <input type="checkbox" id="nuSendInviteEmail" checked
+                                        onchange="window.NutriApp.toggleNuPassRequirement(this.checked)"
+                                        style="width:15px;height:15px;accent-color:var(--brand);cursor:pointer">
+                                    <span>Enviar link por e-mail para o usuário criar a primeira senha
+                                        (recomendado)</span>
+                                </label>
                             </div>
                             <div class="form-row">
                                 <div class="form-group"><label for="nuRole">Tipo de acesso</label>
@@ -2699,7 +2733,8 @@
                                     </label>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="window.NutriApp.createUser()">
+                            <button type="button" class="btn btn-success" id="btnCreateUser"
+                                onclick="window.NutriApp.createUser()">
                                 <i data-lucide="user-plus"></i> Criar usuário
                             </button>
                         </div>
@@ -2963,6 +2998,90 @@
         </div>
     </div>
 
+    <div id="modalForgotPassword" class="modal-backdrop" role="dialog" aria-modal="true"
+        aria-labelledby="forgotModalTitle">
+        <div class="modal-dialog" style="max-width: 450px !important;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <h2 id="forgotModalTitle"
+                    style="font-size:18px;color:var(--text-primary);font-weight:700;display:flex;align-items:center;gap:8px">
+                    <i data-lucide="key-round" class="icon-md" style="color:var(--brand)"></i> Recuperar Acesso
+                </h2>
+                <button type="button" class="modal-close-btn" onclick="window.NutriApp.closeForgotPasswordModal()"
+                    aria-label="Fechar modal">&times;</button>
+            </div>
+
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:18px">
+                Digite o e-mail cadastrado na sua conta. Você receberá um link seguro do Supabase para redefinir a sua
+                senha.
+            </p>
+
+            <div class="alert alert-error" id="forgotPassError" role="alert"></div>
+            <div class="alert alert-success" id="forgotPassSuccess" role="alert"></div>
+
+            <div class="form-group" style="margin-bottom:20px">
+                <label for="forgotPassEmail">Seu E-mail Cadastrado</label>
+                <input type="email" id="forgotPassEmail" placeholder="seu.email@hospital.com" autocomplete="email"
+                    onkeydown="if(event.key==='Enter')window.NutriApp.submitForgotPassword()">
+            </div>
+
+            <div style="display:flex;gap:12px">
+                <button type="button" class="btn btn-primary" id="btnSubmitForgot" style="flex:1"
+                    onclick="window.NutriApp.submitForgotPassword()">
+                    <i data-lucide="send"></i> Enviar Link de Recuperação
+                </button>
+                <button type="button" class="btn btn-secondary"
+                    onclick="window.NutriApp.closeForgotPasswordModal()">Voltar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalResetPassword" class="modal-backdrop" role="dialog" aria-modal="true"
+        aria-labelledby="resetModalTitle">
+        <div class="modal-dialog" style="max-width: 460px !important;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <h2 id="resetModalTitle"
+                    style="font-size:18px;color:var(--text-primary);font-weight:700;display:flex;align-items:center;gap:8px">
+                    <i data-lucide="shield-check" class="icon-md" style="color:var(--brand)"></i> Criar Nova Senha
+                </h2>
+                <button type="button" class="modal-close-btn" onclick="window.NutriApp.closeResetPasswordModal()"
+                    aria-label="Fechar modal">&times;</button>
+            </div>
+
+            <p style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-bottom:18px">
+                Você acessou pelo link de recuperação. Digite sua nova senha de acesso (mínimo de 6 caracteres).
+            </p>
+
+            <div class="alert alert-error" id="resetPassError" role="alert"></div>
+            <div class="alert alert-success" id="resetPassSuccess" role="alert"></div>
+
+            <div class="form-group">
+                <label for="resetNewPass">Nova senha</label>
+                <input type="password" id="resetNewPass" placeholder="Mínimo 6 caracteres"
+                    oninput="window.NutriApp.updateResetPassStrength(this.value)">
+                <div class="pass-strength-bar">
+                    <div class="pass-strength-fill" id="resetPassStrengthFill"></div>
+                </div>
+                <span id="resetPassStrengthLabel"
+                    style="font-size:11px;color:var(--text-muted);margin-top:3px;display:block"></span>
+            </div>
+
+            <div class="form-group" style="margin-bottom:22px">
+                <label for="resetConfirmPass">Confirmar nova senha</label>
+                <input type="password" id="resetConfirmPass" placeholder="Repita a nova senha"
+                    onkeydown="if(event.key==='Enter')window.NutriApp.submitResetPassword()">
+            </div>
+
+            <div style="display:flex;gap:12px">
+                <button type="button" class="btn btn-primary" id="btnSubmitReset" style="flex:1"
+                    onclick="window.NutriApp.submitResetPassword()">
+                    <i data-lucide="check"></i> Salvar e Entrar
+                </button>
+                <button type="button" class="btn btn-secondary"
+                    onclick="window.NutriApp.closeResetPasswordModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         (() => {
             'use strict';
@@ -2977,6 +3096,16 @@
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' || e.key === 'Esc') {
+                    const modalForgot = document.getElementById('modalForgotPassword');
+                    if (modalForgot && modalForgot.classList.contains('open')) {
+                        closeForgotPasswordModal();
+                        return;
+                    }
+                    const modalReset = document.getElementById('modalResetPassword');
+                    if (modalReset && modalReset.classList.contains('open')) {
+                        closeResetPasswordModal();
+                        return;
+                    }
                     const modalPrivacy = document.getElementById('modalPrivacyLGPD');
                     if (modalPrivacy && modalPrivacy.classList.contains('open')) {
                         closePrivacyModal();
@@ -3015,6 +3144,12 @@
             const SUPABASE_ANON_KEY = 'sb_publishable_aCDH_3lcCNwOxiSx0BSffA_O9DlOHJt';
 
             const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            sb.auth.onAuthStateChange(async (event, session) => {
+                if (event === 'PASSWORD_RECOVERY') {
+                    openResetPasswordModal();
+                }
+            });
 
             let state = {
                 token: null,
@@ -3795,6 +3930,210 @@
             document.getElementById('modalPrivacyLGPD')?.addEventListener('click', function (e) {
                 if (e.target === this) closePrivacyModal();
             });
+
+            function openForgotPasswordModal() {
+                const m = document.getElementById('modalForgotPassword');
+                const err = document.getElementById('forgotPassError');
+                const succ = document.getElementById('forgotPassSuccess');
+                const input = document.getElementById('forgotPassEmail');
+                const btn = document.getElementById('btnSubmitForgot');
+                if (err) { err.style.display = 'none'; err.textContent = ''; }
+                if (succ) { succ.style.display = 'none'; succ.textContent = ''; }
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i data-lucide="send"></i> Enviar Link de Recuperação`;
+                }
+                if (input) {
+                    const loginEmail = document.getElementById('loginEmail')?.value.trim() || '';
+                    if (loginEmail.includes('@')) input.value = loginEmail;
+                }
+                if (m) {
+                    m.classList.add('open');
+                    refreshIcons();
+                    if (input) setTimeout(() => input.focus(), 150);
+                }
+            }
+
+            function closeForgotPasswordModal() {
+                const m = document.getElementById('modalForgotPassword');
+                if (m) m.classList.remove('open');
+            }
+
+            document.getElementById('modalForgotPassword')?.addEventListener('click', function (e) {
+                if (e.target === this) closeForgotPasswordModal();
+            });
+
+            async function submitForgotPassword() {
+                const emailInput = document.getElementById('forgotPassEmail');
+                const email = emailInput?.value.trim();
+                const errEl = document.getElementById('forgotPassError');
+                const succEl = document.getElementById('forgotPassSuccess');
+                const btn = document.getElementById('btnSubmitForgot');
+
+                if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+                if (succEl) { succEl.style.display = 'none'; succEl.textContent = ''; }
+
+                if (!email || !email.includes('@')) {
+                    alert_('forgotPassError', 'Por favor, informe um endereço de e-mail válido.');
+                    return;
+                }
+
+                try {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `Enviando link...`;
+                    }
+
+                    let redirectUrl = window.location.origin + window.location.pathname;
+                    if (window.location.protocol === 'file:') {
+                        redirectUrl = 'http://localhost';
+                    }
+
+                    const { error } = await sb.auth.resetPasswordForEmail(email, {
+                        redirectTo: redirectUrl
+                    });
+
+                    if (error) throw error;
+
+                    if (succEl) {
+                        succEl.textContent = 'Link enviado com sucesso! Verifique sua caixa de entrada e pasta de spam.';
+                        succEl.style.display = 'block';
+                    }
+                    if (emailInput) emailInput.value = '';
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="check"></i> Link Enviado`;
+                        refreshIcons();
+                    }
+                } catch (err) {
+                    alert_('forgotPassError', err.message || 'Erro ao enviar e-mail de recuperação.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="send"></i> Tentar Novamente`;
+                        refreshIcons();
+                    }
+                }
+            }
+
+            function openResetPasswordModal() {
+                const m = document.getElementById('modalResetPassword');
+                const err = document.getElementById('resetPassError');
+                const succ = document.getElementById('resetPassSuccess');
+                const p1 = document.getElementById('resetNewPass');
+                const p2 = document.getElementById('resetConfirmPass');
+                const btn = document.getElementById('btnSubmitReset');
+                if (err) { err.style.display = 'none'; err.textContent = ''; }
+                if (succ) { succ.style.display = 'none'; succ.textContent = ''; }
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<i data-lucide="check"></i> Salvar e Entrar`;
+                }
+                if (p1) p1.value = '';
+                if (p2) p2.value = '';
+                updateResetPassStrength('');
+                if (m) {
+                    m.classList.add('open');
+                    refreshIcons();
+                    if (p1) setTimeout(() => p1.focus(), 150);
+                }
+            }
+
+            function closeResetPasswordModal() {
+                const m = document.getElementById('modalResetPassword');
+                if (m) m.classList.remove('open');
+            }
+
+            document.getElementById('modalResetPassword')?.addEventListener('click', function (e) {
+                if (e.target === this) closeResetPasswordModal();
+            });
+
+            function updateResetPassStrength(value) {
+                const fill = document.getElementById('resetPassStrengthFill');
+                const label = document.getElementById('resetPassStrengthLabel');
+                if (!fill || !label) return;
+                if (!value) {
+                    fill.style.width = '0%';
+                    label.textContent = '';
+                    return;
+                }
+                let score = 0;
+                if (value.length >= 6) score++;
+                if (value.length >= 10) score++;
+                if (/[A-Z]/.test(value)) score++;
+                if (/[0-9]/.test(value)) score++;
+                if (/[^A-Za-z0-9]/.test(value)) score++;
+
+                if (score <= 2) {
+                    fill.style.width = '33%';
+                    fill.style.backgroundColor = 'var(--red)';
+                    label.textContent = 'Senha fraca (mínimo 6 caracteres)';
+                    label.style.color = 'var(--red)';
+                } else if (score <= 4) {
+                    fill.style.width = '66%';
+                    fill.style.backgroundColor = 'var(--warm-gold)';
+                    label.textContent = 'Senha média';
+                    label.style.color = 'var(--warm-gold)';
+                } else {
+                    fill.style.width = '100%';
+                    fill.style.backgroundColor = 'var(--green)';
+                    label.textContent = 'Senha forte';
+                    label.style.color = 'var(--green)';
+                }
+            }
+
+            async function submitResetPassword() {
+                const p1 = document.getElementById('resetNewPass')?.value;
+                const p2 = document.getElementById('resetConfirmPass')?.value;
+                const errEl = document.getElementById('resetPassError');
+                const succEl = document.getElementById('resetPassSuccess');
+                const btn = document.getElementById('btnSubmitReset');
+
+                if (errEl) { errEl.style.display = 'none'; errEl.textContent = ''; }
+                if (succEl) { succEl.style.display = 'none'; succEl.textContent = ''; }
+
+                if (!p1 || p1.length < 6) {
+                    alert_('resetPassError', 'A nova senha deve ter pelo menos 6 caracteres.');
+                    return;
+                }
+                if (p1 !== p2) {
+                    alert_('resetPassError', 'A confirmação de senha não coincide com a nova senha.');
+                    return;
+                }
+
+                try {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `Salvando nova senha...`;
+                    }
+
+                    const { data, error } = await sb.auth.updateUser({ password: p1 });
+                    if (error) throw error;
+
+                    if (succEl) {
+                        succEl.textContent = 'Senha redefinida com sucesso! Entrando no sistema...';
+                        succEl.style.display = 'block';
+                    }
+
+                    try {
+                        window.history.replaceState(null, '', window.location.pathname);
+                    } catch (e) {
+                        window.location.hash = '';
+                    }
+
+                    setTimeout(() => {
+                        closeResetPasswordModal();
+                        initApp();
+                    }, 1200);
+
+                } catch (err) {
+                    alert_('resetPassError', err.message || 'Erro ao redefinir senha.');
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="check"></i> Salvar e Entrar`;
+                        refreshIcons();
+                    }
+                }
+            }
 
             function resetModalChangePasswordForm() {
                 const cur = document.getElementById('modalChangeCurrentPass');
@@ -5102,13 +5441,33 @@
                 }).join('');
             }
 
+            function toggleNuPassRequirement(sendInvite) {
+                const passInput = document.getElementById('nuPass');
+                if (passInput) {
+                    passInput.placeholder = sendInvite ? 'Opcional (definida pelo usuário via e-mail)' : 'Mínimo 6 caracteres';
+                }
+            }
+
             async function createUser() {
                 const name = document.getElementById('nuName').value.trim();
                 const email = document.getElementById('nuEmail').value.trim();
                 const username = document.getElementById('nuUsername').value.trim().toLowerCase();
-                const password = document.getElementById('nuPass').value;
                 const role = document.getElementById('nuRole').value;
-                if (!name || !email || !password) return alert_('usersError', 'Preencha nome, email e senha');
+                const sendInvite = document.getElementById('nuSendInviteEmail')?.checked ?? true;
+                let password = document.getElementById('nuPass')?.value || '';
+                const btn = document.getElementById('btnCreateUser');
+
+                if (!name || !email) return alert_('usersError', 'Preencha nome e e-mail.');
+                if (!email.includes('@')) return alert_('usersError', 'Informe um endereço de e-mail válido.');
+
+                if (!sendInvite && (!password || password.length < 6)) {
+                    return alert_('usersError', 'Informe uma senha com no mínimo 6 caracteres ou marque a opção de envio por e-mail.');
+                }
+
+                if (sendInvite && (!password || password.length < 6)) {
+                    // Gera senha temporária segura e complexa (o colaborador vai cadastrar a dele pelo link)
+                    password = 'Temp#' + Math.random().toString(36).slice(-8) + 'X9!' + Math.floor(Math.random() * 899 + 100);
+                }
 
                 const isCurrentSuperAdmin = (state.user?.email === 'admin@hospital.com' || state.user?.role === 'admin');
                 if (role === 'admin' && !isCurrentSuperAdmin) {
@@ -5116,19 +5475,34 @@
                 }
 
                 try {
-                    if (username) {
-                        const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
-                        if (existingUser) return alert_('usersError', `O usuário "@${username}" já está em uso.`);
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = `<i data-lucide="loader-2" class="spin"></i> Criando usuário...`;
+                        refreshIcons();
                     }
 
-                    const { data, error } = await sb.auth.signUp({ email, password });
+                    if (username) {
+                        const { data: existingUser } = await sb.from('profiles').select('id').eq('username', username).maybeSingle();
+                        if (existingUser) throw new Error(`O usuário "@${username}" já está em uso.`);
+                    }
+
+                    // Cria client de autenticação isolado para NUNCA sobrescrever ou alterar a sessão ativa do Administrador
+                    const authClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+                        auth: {
+                            persistSession: false,
+                            autoRefreshToken: false,
+                            detectSessionInUrl: false
+                        }
+                    });
+
+                    const { data, error } = await authClient.auth.signUp({ email, password });
                     if (error) throw error;
 
                     if (data.user) {
                         const extraPerms = [];
                         if (document.getElementById('permCriarUsuario')?.checked) extraPerms.push('criar_usuario');
 
-                        await sb.from('profiles').insert({
+                        const { error: profErr } = await sb.from('profiles').insert({
                             id: data.user.id,
                             name,
                             email,
@@ -5137,24 +5511,51 @@
                             active: true,
                             extra_permissions: extraPerms
                         });
+                        if (profErr) throw profErr;
+
                         if (nuCompanyIds.length > 0) {
-                            await sb.from('company_users').insert(
+                            const { error: compErr } = await sb.from('company_users').insert(
                                 nuCompanyIds.map(cid => ({ user_id: data.user.id, company_id: cid }))
                             );
+                            if (compErr) console.warn('Aviso ao vincular empresas:', compErr);
+                        }
+
+                        // Se envio de link estiver ativo, dispara o e-mail oficial do Supabase para criação da primeira senha
+                        if (sendInvite) {
+                            let redirectUrl = window.location.origin + window.location.pathname;
+                            if (window.location.protocol === 'file:') redirectUrl = 'http://localhost';
+
+                            const { error: resetErr } = await sb.auth.resetPasswordForEmail(email, {
+                                redirectTo: redirectUrl
+                            });
+                            if (resetErr) {
+                                console.warn('Aviso ao disparar e-mail de primeiro acesso:', resetErr);
+                            }
                         }
                     }
 
-                    alert_('usersSuccess', `Usuário ${name} criado com sucesso!`, 'success');
+                    if (sendInvite) {
+                        alert_('usersSuccess', `Usuário "${name}" criado com sucesso! Um link para cadastrar a primeira senha foi enviado para ${email}.`, 'success');
+                    } else {
+                        alert_('usersSuccess', `Usuário "${name}" criado com sucesso!`, 'success');
+                    }
+
                     document.getElementById('nuName').value = '';
                     document.getElementById('nuEmail').value = '';
                     document.getElementById('nuUsername').value = '';
-                    document.getElementById('nuPass').value = '';
+                    if (document.getElementById('nuPass')) document.getElementById('nuPass').value = '';
                     if (document.getElementById('permCriarUsuario')) document.getElementById('permCriarUsuario').checked = false;
                     nuCompanyIds = [];
                     renderChips();
                     loadUsers();
                 } catch (e) {
-                    alert_('usersError', e.message);
+                    alert_('usersError', e.message || 'Erro ao criar usuário');
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = `<i data-lucide="user-plus"></i> Criar usuário`;
+                        refreshIcons();
+                    }
                 }
             }
 
@@ -5366,6 +5767,11 @@
             }
 
             async function initApp() {
+                if (window.location.hash && (window.location.hash.includes('type=recovery') || window.location.hash.includes('access_token='))) {
+                    openResetPasswordModal();
+                    return;
+                }
+
                 try {
                     const { data: { session }, error: sessErr } = await sb.auth.getSession();
                     if (sessErr || !session || !session.user) {
@@ -5494,6 +5900,7 @@
                 loadUsers,
                 addCompanyChip,
                 removeChip,
+                toggleNuPassRequirement,
                 createUser,
                 deleteUser,
                 openEditUser,
@@ -5507,7 +5914,14 @@
                 _selectStripDate,
                 refreshIcons,
                 openPrivacyModal,
-                closePrivacyModal
+                closePrivacyModal,
+                openForgotPasswordModal,
+                closeForgotPasswordModal,
+                submitForgotPassword,
+                openResetPasswordModal,
+                closeResetPasswordModal,
+                updateResetPassStrength,
+                submitResetPassword
             };
 
             if (document.readyState === 'loading') {
